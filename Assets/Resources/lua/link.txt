@@ -1,0 +1,4 @@
+Resources/lua/global/prefabPath
+Resources/lua/global/simpleName
+Resources/lua/global/commonMethods
+Resources/lua/main

@@ -1,0 +1,13 @@
+LoginNetwork = "loginNetwork"
+LoginServerIP = "127.0.0.1"
+LoginServerPort = 8000
+
+Debug = CS.UnityEngine.Debug
+Button = CS.UnityEngine.UI.Button
+
+LoopType = CS.DG.Tweening.LoopType
+Ease = CS.DG.Tweening.Ease
+
+UIManager = CS.FengSheng.UIManager.Instance
+NetManager = CS.FengSheng.NetManager.Instance
+

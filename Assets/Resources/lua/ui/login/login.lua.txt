@@ -1,0 +1,17 @@
+local startBtn = nil
+
+function start()
+	startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
+	startBtn.onClick:AddListener(OnBtnStart);
+end
+
+function ondestroy()
+	startBtn.onClick:RemoveAllListeners();
+end
+
+
+function OnBtnStart()
+	CommonMethods.PlayBtnAnimation(startBtn)
+	NetManager:Connect(LoginNetwork, LoginServerIP, LoginServerPort)
+end
+
