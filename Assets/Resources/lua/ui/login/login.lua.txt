@@ -1,17 +1,46 @@
 local startBtn = nil
 
 function start()
-	startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
-	startBtn.onClick:AddListener(OnBtnStart);
+	InitUI()
+	AddBtnEvent()
+	AddListener()
 end
 
 function ondestroy()
-	startBtn.onClick:RemoveAllListeners();
+	RemoveBtnEvent()
+	RemoveListener()
 end
 
+function InitUI()
+	startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
+end
+
+function AddBtnEvent()
+	startBtn.onClick:AddListener(OnBtnStart)
+end
+
+function RemoveBtnEvent()
+	startBtn.onClick:RemoveAllListeners()
+end
+
+function AddListener()
+	EventManager:AddListener(EventConfig.Connect, OnConnect)
+end
+
+function RemoveListener()
+	EventManager:RemoveListener(EventConfig.Connect, OnConnect)
+end
 
 function OnBtnStart()
-	CommonMethods.PlayBtnAnimation(startBtn)
-	NetManager:Connect(LoginNetwork, LoginServerIP, LoginServerPort)
+	GlobalMethods.PlayBtnAnimation(startBtn)
+	NetManager:Connect(GlobalConfig.LoginNetwork, GlobalConfig.LoginServerIP, GlobalConfig.LoginServerPort)
+end
+
+function OnConnect(netWorkEventPackage)
+	if netWorkEventPackage.NetName == GlobalConfig.LoginNetwork then
+		if netWorkEventPackage.ConnectResult == true then
+			Debug.Log("网络连接成功")
+		end
+	end
 end
 

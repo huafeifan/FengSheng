@@ -64,11 +64,6 @@ namespace FengSheng
             }
         }
 
-        private void OnDestroy()
-        {
-            Unregister();
-        }
-
         public void LuaEnvInit()
         {
             //读取link文件数据

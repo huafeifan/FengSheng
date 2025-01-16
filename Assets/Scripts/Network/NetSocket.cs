@@ -1,25 +1,51 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq.Expressions;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace FengSheng
 {
     public class NetSocket
     {
-        private const int BufferSize = 1024;
+        /// <summary>
+        /// 网络名称
+        /// </summary>
+        private string mNetName;
+
+        /// <summary>
+        /// 服务器ip
+        /// </summary>
         private string mServerIp;
+
+        /// <summary>
+        /// 服务器端口
+        /// </summary>
         private int mServerPort;
+
+        /// <summary>
+        /// 超时
+        /// </summary>
         private int mTimeout = 10000;
 
+        /// <summary>
+        /// 心跳处理器
+        /// </summary>
+        private HeartBeat mHeartBeat;
+
+        /// <summary>
+        /// 消息发送器
+        /// </summary>
+        private MessageSender mSender;
+        public MessageSender Sender { get { return mSender; } }
+
+        /// <summary>
+        /// 消息接收器
+        /// </summary>
+        private MessageReceiver mReceiver;
+
+        /// <summary>
+        /// 连接状态
+        /// </summary>
         public enum State
         {
             Null,
@@ -28,29 +54,39 @@ namespace FengSheng
             Error
         }
 
+        /// <summary>
+        /// 当前连接状态
+        /// </summary>
         private State mState = State.Null;
+
         private TcpClient mClient;
         private Thread mThread;
-        private NetworkStream mStream;
-        private CancellationTokenSource mCts;
 
-        public NetSocket(string serverIp, int serverPort)
+        public NetSocket(string netName, string serverIp, int serverPort)
         {
+            mNetName = netName;
             mServerIp = serverIp;
             mServerPort = serverPort;
-
             mState = State.Null;
+            mHeartBeat = new HeartBeat();
+            mSender = new MessageSender();
+            mReceiver = new MessageReceiver();
         }
 
+        /// <summary>
+        /// 连接准备
+        /// </summary>
         public void Connect()
         {
             if (mState == State.Connected)
             {
+                TriggerConnectEvent(State.Error, "已连接");
                 Debug.Log("已连接");
                 return;
             }
             else if (mState == State.Busy)
             {
+                TriggerConnectEvent(State.Busy, "正在连接到服务器...");
                 Debug.Log("已有一个连接正在建立中...");
                 return;
             }
@@ -59,12 +95,14 @@ namespace FengSheng
             mThread.Start();
         }
 
-        public async void BeginConnect() 
+        public void BeginConnect()
         {
             try
             {
                 IAsyncResult result = mClient.BeginConnect(mServerIp, mServerPort, null, null);
                 mState = State.Busy;
+
+                TriggerConnectEvent(State.Busy, "正在连接到服务器...");
                 Debug.Log("正在连接到服务器...");
 
                 bool success = result.AsyncWaitHandle.WaitOne(mTimeout, false);
@@ -75,32 +113,35 @@ namespace FengSheng
                     {
                         mClient.EndConnect(result);
                         mState = State.Connected;
+
+                        //消息发送器初始化
+                        mSender.SetTcpClient(mClient);
+
+                        //消息接收器初始化
+                        mReceiver.SetTcpClient(mClient);
+
+                        //心跳处理器初始化
+                        mHeartBeat.SetSender(mSender);
+                        mHeartBeat.SetTcpClient(mClient);
+                        mHeartBeat.SetTimer(1000);
+
+                        TriggerConnectEvent(State.Connected, "已连接到服务器");
                         Debug.Log("已连接到服务器");
 
-                        mStream = mClient.GetStream();
-                        mCts = new CancellationTokenSource();
-
-                        string message = "Hello, Server!";
-                        byte[] data = Encoding.ASCII.GetBytes(message);
-                        mStream.Write(data, 0, data.Length);
-                        Debug.Log("已发送消息");
-
-                        _ = Task.Run(() => ReceiveDataAsync(mCts.Token));
-
-                        //while (true)
-                        //{
-                        //    string s = "";
-                        //    if (s == "exit") break;
-                        //}
+                        mSender.Start();
+                        mReceiver.Start();
+                        mHeartBeat.Start();
                     }
                     catch (SocketException ex)
                     {
+                        TriggerConnectEvent(State.Error, $"SocketException:{ex.Message}");
                         Debug.Log($"SocketException:{ex.Message}");
                         //mState = State.Error;
                         Close();
                     }
-                    catch (Exception socketEx) 
+                    catch (Exception socketEx)
                     {
+                        TriggerConnectEvent(State.Error, $"SocketException:{socketEx.Message}");
                         Debug.Log($"Exception during connection completion: {socketEx.Message}");
                         //mState = State.Error;
                         Close();
@@ -108,6 +149,7 @@ namespace FengSheng
                 }
                 else
                 {
+                    TriggerConnectEvent(State.Error, "连接超时！");
                     Debug.Log("连接超时！");
                     //mState = State.Error;
                     Close();
@@ -115,45 +157,17 @@ namespace FengSheng
             }
             catch (SocketException socketEx)
             {
+                TriggerConnectEvent(State.Error, $"SocketException during connection attempt: {socketEx.Message}");
                 Debug.Log($"SocketException during connection attempt: {socketEx.Message}");
                 //mState = State.Error;
                 Close();
             }
             catch (Exception ex)
             {
+                TriggerConnectEvent(State.Error, $"Exception during connection attempt: {ex.Message}");
                 Debug.Log($"Exception during connection attempt: {ex.Message}");
                 //mState = State.Error;
                 Close();
-            }
-        }
-
-        private async Task ReceiveDataAsync(CancellationToken ct)
-        {
-            byte[] buffer = new byte[BufferSize];
-            int bytesRead;
-
-            while (!ct.IsCancellationRequested)
-            {
-                try
-                {
-                    bytesRead = await mStream.ReadAsync(buffer, 0, BufferSize, ct);
-                    if (bytesRead > 0)
-                    {
-                        string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                        Debug.Log("收到服务端的消息: " + message);
-                    }
-                }
-                catch (IOException ex)
-                {
-                    // 处理连接断开等IO异常
-                    Debug.Log("接收数据时发生IOException：" + ex.Message);
-                    break;
-                }
-                catch (OperationCanceledException)
-                {
-                    // 正常情况下，当取消令牌被请求时，会抛出此异常
-                    break;
-                }
             }
         }
 
@@ -164,7 +178,32 @@ namespace FengSheng
                 if (mClient != null)
                 {
                     mClient.Close();
+                    mClient.Dispose();
                     mClient = null;
+                    Debug.Log($"网络{mNetName}连接已关闭");
+                }
+
+                if (mHeartBeat != null)
+                {
+                    mHeartBeat.Close();
+                    Debug.Log($"网络{mNetName}心跳处理器已关闭");
+                }
+
+                if (mSender != null)
+                {
+                    mSender.Close();
+                    Debug.Log($"网络{mNetName}消息发送器已关闭");
+                }
+
+                if (mReceiver != null)
+                {
+                    mReceiver.Close();
+                    Debug.Log($"网络{mNetName}消息接受器已关闭");
+                }
+
+                if (mThread != null)
+                {
+                    mThread.Join();
                 }
             }
             catch (Exception ex)
@@ -173,7 +212,41 @@ namespace FengSheng
             }
 
             mState = State.Null;
+            TriggerConnectEvent(State.Null, "客户端已关闭");
             Debug.Log("客户端已关闭");
+
+        }
+
+        /// <summary>
+        /// 触发连接事件
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="msg"></param>
+        public void TriggerConnectEvent(State state, string msg)
+        {
+            switch (state)
+            {
+                case State.Busy:
+                case State.Error:
+                case State.Null:
+                    EventManager.Instance.TriggerEvent(NetManager.Event_Connect, new NetworkEventPackage()
+                    {
+                        NetName = mNetName,
+                        ConnectResult = false,
+                        ConnectMessage = msg
+                    });
+                    break;
+                case State.Connected:
+                    EventManager.Instance.TriggerEvent(NetManager.Event_Connect, new NetworkEventPackage()
+                    {
+                        NetName = mNetName,
+                        ConnectResult = true,
+                        ConnectMessage = msg
+                    });
+                    break;
+                default:
+                    break;
+            }
         }
 
     }

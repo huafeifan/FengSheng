@@ -21,6 +21,7 @@ namespace FengSheng
         public TextAsset luaScript;
 
         private Action luaStart;
+        private Action luaOnEnable;
         private Action luaUpdate;
         private Action luaOnDestroy;
 
@@ -54,6 +55,7 @@ namespace FengSheng
             // 从 Lua 脚本域中获取定义的函数
             Action luaAwake = scriptScopeTable.Get<Action>("awake");
             scriptScopeTable.Get("start", out luaStart);
+            scriptScopeTable.Get("onenable", out luaOnEnable);
             scriptScopeTable.Get("update", out luaUpdate);
             scriptScopeTable.Get("ondestroy", out luaOnDestroy);
 
@@ -69,6 +71,14 @@ namespace FengSheng
             if (luaStart != null)
             {
                 luaStart();
+            }
+        }
+
+        void OnEnable()
+        {
+            if (luaOnEnable != null)
+            {
+                luaOnEnable();
             }
         }
 

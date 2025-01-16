@@ -1,0 +1,7 @@
+LoginPrefab = "prefab/login/Login"
+LoginPrefab_Layer = SceneUI_Level1
+LoginPrefab_LayerSiblingIndex = 0
+
+NetworkWaitingPrefab = "prefab/tips/NetworkWaiting"
+NetworkWaitingPrefab_Layer = TopUI_Level1
+NNetworkWaitingPrefab_LayerSiblingIndex = 0

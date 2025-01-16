@@ -1,1 +1,2 @@
+PreloadConfig.LoginPreload()
 UIManager:OpenUI(LoginPrefab)

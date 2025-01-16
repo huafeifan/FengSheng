@@ -1,0 +1,15 @@
+GlobalConfig = {}
+GlobalConfig.LoginNetwork = "loginNetwork"
+GlobalConfig.LoginServerIP = "127.0.0.1"
+GlobalConfig.LoginServerPort = 8000
+
+Debug = CS.UnityEngine.Debug
+Button = CS.UnityEngine.UI.Button
+
+LoopType = CS.DG.Tweening.LoopType
+Ease = CS.DG.Tweening.Ease
+
+UIManager = CS.FengSheng.UIManager.Instance
+NetManager = CS.FengSheng.NetManager.Instance
+EventManager = CS.FengSheng.EventManager.Instance
+

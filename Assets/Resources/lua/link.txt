@@ -1,4 +1,7 @@
-Resources/lua/global/prefabPath
-Resources/lua/global/simpleName
-Resources/lua/global/commonMethods
+Resources/lua/global/uiConfig
+Resources/lua/global/globalConfig
+Resources/lua/global/protoConfig
+Resources/lua/global/eventConfig
+Resources/lua/global/preloadConfig
+Resources/lua/global/globalMethods
 Resources/lua/main

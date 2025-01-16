@@ -1,7 +1,7 @@
 Library/
 Logs/
-obj/Packages/
 v17/
 Assets/XLua/Gen/
 *.vsidx
+Temp/
 

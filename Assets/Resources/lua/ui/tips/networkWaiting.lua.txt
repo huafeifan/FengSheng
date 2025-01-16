@@ -1,0 +1,11 @@
+local rotateItem = nil
+local tip = nil
+
+function start()
+	InitUI()
+end
+
+function InitUI()
+	rotateItem = self.transform:Find("Item")
+	tip = self.transform:Find("Text"):GetComponent(typeof(Text))
+end

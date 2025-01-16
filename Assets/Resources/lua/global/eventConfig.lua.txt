@@ -1,0 +1,2 @@
+EventConfig = {}
+EventConfig.Connect = "Event_Connect"

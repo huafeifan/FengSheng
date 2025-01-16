@@ -23,14 +23,27 @@ namespace FengSheng
         {
             mInstance = this;
 
-            Register<UIManager>();
-            Register<NetManager>();
-            Register<LuaManager>();
+            Init();
         }
 
         private void OnDestroy()
         {
-            mManagerList.Clear();
+            Close();
+        }
+
+        private void OnApplicationQuit()
+        {
+            Close();
+        }
+
+        private void Init()
+        {
+            Register<ProtosManager>();
+            Register<UIManager>();
+            Register<NetManager>();
+            Register<EventManager>();
+
+            Register<LuaManager>();
         }
 
         private void Register<T>() where T : Component, IManager
@@ -40,13 +53,22 @@ namespace FengSheng
             component.Register();
         }
 
-        public void Unregister(IManager manager)
+        private void Unregister(IManager manager)
         {
             if (mManagerList.Contains(manager))
             {
                 manager.Unregister();
                 mManagerList.Remove(manager);
             }
+        }
+
+        private void Close()
+        {
+            for (int i = 0; i < mManagerList.Count; i++)
+            {
+                mManagerList[i].Unregister();
+            }
+            mManagerList.Clear();
         }
 
     }
