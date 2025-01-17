@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace FengSheng
 {
-    public interface IManager
+    public class FengShengManager : MonoBehaviour
     {
         public virtual void Register() { }
         public virtual void Unregister() { }

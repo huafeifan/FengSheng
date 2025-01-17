@@ -5,21 +5,26 @@ using UnityEngine;
 
 namespace FengSheng
 {
+    [Serializable]
     public class NetSocket
     {
         /// <summary>
         /// 网络名称
         /// </summary>
+        [SerializeField]
         private string mNetName;
+        public string NetName { get { return mNetName; } }
 
         /// <summary>
         /// 服务器ip
         /// </summary>
+        [SerializeField]
         private string mServerIp;
 
         /// <summary>
         /// 服务器端口
         /// </summary>
+        [SerializeField]
         private int mServerPort;
 
         /// <summary>
@@ -180,25 +185,25 @@ namespace FengSheng
                     mClient.Close();
                     mClient.Dispose();
                     mClient = null;
-                    Debug.Log($"网络{mNetName}连接已关闭");
+                    Debug.Log($"网络{NetName}连接已关闭");
                 }
 
                 if (mHeartBeat != null)
                 {
                     mHeartBeat.Close();
-                    Debug.Log($"网络{mNetName}心跳处理器已关闭");
+                    Debug.Log($"网络{NetName}心跳处理器已关闭");
                 }
 
                 if (mSender != null)
                 {
                     mSender.Close();
-                    Debug.Log($"网络{mNetName}消息发送器已关闭");
+                    Debug.Log($"网络{NetName}消息发送器已关闭");
                 }
 
                 if (mReceiver != null)
                 {
                     mReceiver.Close();
-                    Debug.Log($"网络{mNetName}消息接受器已关闭");
+                    Debug.Log($"网络{NetName}消息接受器已关闭");
                 }
 
                 if (mThread != null)
@@ -224,29 +229,14 @@ namespace FengSheng
         /// <param name="msg"></param>
         public void TriggerConnectEvent(State state, string msg)
         {
-            switch (state)
+            EventManager.Instance.TriggerEvent(EventManager.Event_Connect, new NetworkEventPackage()
             {
-                case State.Busy:
-                case State.Error:
-                case State.Null:
-                    EventManager.Instance.TriggerEvent(NetManager.Event_Connect, new NetworkEventPackage()
-                    {
-                        NetName = mNetName,
-                        ConnectResult = false,
-                        ConnectMessage = msg
-                    });
-                    break;
-                case State.Connected:
-                    EventManager.Instance.TriggerEvent(NetManager.Event_Connect, new NetworkEventPackage()
-                    {
-                        NetName = mNetName,
-                        ConnectResult = true,
-                        ConnectMessage = msg
-                    });
-                    break;
-                default:
-                    break;
-            }
+                NetName = NetName,
+                IsConnecting = state == State.Busy,
+                ConnectResult = state == State.Connected,
+                ConnectMessage = msg
+            });
+
         }
 
     }

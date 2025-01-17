@@ -1,11 +1,42 @@
+local content = nil
 local rotateItem = nil
 local tip = nil
 
 function start()
 	InitUI()
+	AddListener()
+end
+
+function ondestroy()
+	RemoveListener()
 end
 
 function InitUI()
-	rotateItem = self.transform:Find("Item")
-	tip = self.transform:Find("Text"):GetComponent(typeof(Text))
+	content = self.transform:Find("Content")
+
+	tip = self.transform:Find("Content/Text"):GetComponent(typeof(Text))
+
+	rotateItem = self.transform:Find("Content/Item")
+	rotateItem:DORotate(Vector3.forward * 360, 1, RotateMode.FastBeyond360):SetLoops(-1):SetEase(Ease.Linear)
+	content.gameObject:SetActive(false)
 end
+
+function AddListener()
+	EventManager:AddListener(EventConfig.Connect, OnConnect, "Lua.networkWaiting.OnConnect")
+end
+
+function RemoveListener()
+	EventManager:RemoveListener(EventConfig.Connect, OnConnect)
+end
+
+function OnConnect(netWorkEventPackage)
+	if netWorkEventPackage.NetName == GlobalConfig.LoginNetwork then
+		if netWorkEventPackage.IsConnecting == true then
+			content.gameObject:SetActive(true)
+			tip.text = "正在连接到服务器..."
+		--else
+			--content.gameObject:SetActive(false)
+		end
+	end
+end
+

@@ -1,2 +1,3 @@
 EventConfig = {}
 EventConfig.Connect = "Event_Connect"
+EventConfig.Exit = "Event_Exit"

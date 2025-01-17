@@ -1,25 +1,36 @@
+using System;
 using UnityEngine;
 
 namespace FengSheng
 {
+    [Serializable]
     public class UICache
     {
-        public UICache(float startTime, GameObject gameObject)
+        public UICache(string path, float startTime, GameObject gameObject)
         {
-            this.startTime = startTime;
+            mPath = path;
+            mStartTime = startTime;
             this.gameObject = gameObject;
             this.transform = gameObject.transform;
         }
 
         /// <summary>
+        /// 资源路径
+        /// </summary>
+        [SerializeField]
+        private string mPath;
+        public string Path { get { return mPath; } }
+
+        /// <summary>
         /// 开始存活时间
         /// </summary>
-        private float startTime;
+        [SerializeField]
+        private float mStartTime;
 
         /// <summary>
         /// 结束存活时间
         /// </summary>
-        private float endTime { get { return startTime + 60; } }
+        private float mEndTime { get { return mStartTime + 60; } }
 
         public GameObject gameObject { get; set; }
 
@@ -30,7 +41,7 @@ namespace FengSheng
         /// </summary>
         public void FlashTime(float startTime)
         {
-            this.startTime = startTime;
+            mStartTime = startTime;
         }
 
         /// <summary>
@@ -39,7 +50,7 @@ namespace FengSheng
         /// <returns></returns>
         public bool IsOverTime()
         {
-            return Time.time > endTime;
+            return Time.time > mEndTime;
         }
 
         public void Destory()

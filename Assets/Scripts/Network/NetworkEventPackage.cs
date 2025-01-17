@@ -22,6 +22,11 @@ namespace FengSheng
         /// </summary>
         public string ConnectMessage { get; set; }
 
+        /// <summary>
+        /// 是否在连接中
+        /// </summary>
+        public bool IsConnecting {  get; set; }
+
 
     }
 }

@@ -4,8 +4,11 @@ using UnityEngine;
 
 namespace FengSheng
 {
-    public class EventManager : MonoBehaviour, IManager
+    public class EventManager : FengShengManager
     {
+        public const string Event_Connect = "Event_Connect";
+        public const string Event_Exit = "Event_Exit";
+
         private static EventManager mInstance;
         public static EventManager Instance
         {
@@ -15,49 +18,70 @@ namespace FengSheng
             }
         }
 
-        private Dictionary<string, Action<System.Object>> mListeners = new Dictionary<string, Action<System.Object>>();
+        [SerializeField]
+        private List<EventPackage> mListeners = new List<EventPackage>();
 
-        public void Register()
+        public override void Register()
         {
             mInstance = this;
         }
 
-        public void Unregister()
+        public override void Unregister()
         {
             mListeners.Clear();
         }
 
+        public EventPackage GetEventPackage(string eventName)
+        {
+            for (int i = 0; i < mListeners.Count; i++)
+            {
+                if (mListeners[i].Name == eventName)
+                {
+                    return mListeners[i];
+                }
+            }
+            return null;
+        }
+
         public void AddListener(string eventName, Action<System.Object> callBack)
         {
-            if (mListeners.ContainsKey(eventName))
+            EventPackage eventPackage = GetEventPackage(eventName);
+            if (eventPackage == null)
             {
-                mListeners[eventName] += callBack;
+                eventPackage = new EventPackage(eventName);
+                mListeners.Add(eventPackage);
             }
-            else
+            eventPackage.AddEvent(callBack);
+        }
+
+        public void AddListener(string eventName, Action<System.Object> callBack, string actionName)
+        {
+            EventPackage eventPackage = GetEventPackage(eventName);
+            if (eventPackage == null)
             {
-                mListeners.Add(eventName, callBack);
+                eventPackage = new EventPackage(eventName);
+                mListeners.Add(eventPackage);
             }
+            eventPackage.AddEvent(callBack, actionName);
         }
 
         public void RemoveListener(string eventName, Action<System.Object> callBack)
         {
-            if (mListeners.ContainsKey(eventName))
+            EventPackage eventPackage = GetEventPackage(eventName);
+            if (eventPackage != null)
             {
-                mListeners[eventName] -= callBack;
-                if (mListeners[eventName] == null)
-                {
-                    mListeners.Remove(eventName);
-                }
+                eventPackage.RemoveEvent(callBack);
             }
         }
 
         public void TriggerEvent(string eventName, object arg)
         {
-            if (mListeners.ContainsKey(eventName))
+            EventPackage eventPackage = GetEventPackage(eventName);
+            if (eventPackage != null)
             {
-                Action<System.Object> callBack = mListeners[eventName];
-                callBack.Invoke(arg);
+                eventPackage.TriggerEvent(arg);
             }
         }
+
     }
 }

@@ -1,6 +1,5 @@
 PreloadConfig = {}
 
 function PreloadConfig.LoginPreload()
-	UIManager:LoadUI(NetworkWaitingPrefab)
-	
+	UIManager:LoadUI(NetworkWaitingPrefab, true)
 end

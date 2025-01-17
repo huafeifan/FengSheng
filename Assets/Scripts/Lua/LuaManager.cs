@@ -1,16 +1,13 @@
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using XLua;
-using XLua.LuaDLL;
 
 namespace FengSheng
 {
-    public class LuaManager : MonoBehaviour, IManager
+    public class LuaManager : FengShengManager
     {
         private static LuaManager mInstance;
         public static LuaManager Instance
@@ -24,33 +21,37 @@ namespace FengSheng
         /// <summary>
         /// 定义一个Lua虚拟机，建议全局唯一
         /// </summary>
-        public static LuaEnv luaEnv;
-        public static float lastGCTime = 0;
-        public const float GCInterval = 1;//1s
+        public LuaEnv luaEnv;
+        private float lastGCTime = 0;
+        private const float GCInterval = 1;//1s
 
-        public static LinkedList<LuaBehaviour> mLuaList = new LinkedList<LuaBehaviour>();
+        [SerializeField]
+        private List<LuaBehaviour> mLuaBehaviourList = new List<LuaBehaviour>();
 
-        public void Register()
+        public override void Register()
         {
             mInstance = this;
             LuaEnvInit();
         }
 
-        public void Unregister()
+        public override void Unregister()
         {
+            for (int i = 0; i < mLuaBehaviourList.Count; i++)
+            {
+                mLuaBehaviourList[i]?.Clear();
+            }
+            mLuaBehaviourList.Clear();
+
             if (luaEnv != null)
             {
-                while (mLuaList.Count > 0)
-                {
-                    mLuaList.First.Value.Clear();
-                    mLuaList.RemoveFirst();
-                }
                 //luaEnv.DoString(@"
                 //                local util = require 'XLua/Resources/xlua/util'
                 //                util.print_func_ref_by_csharp()");
 
                 luaEnv.Dispose();
+                luaEnv = null;
             }
+
         }
 
         private void Update()
@@ -96,20 +97,21 @@ namespace FengSheng
 
         private void LuaDoString(string[] filePaths)
         {
+            //luaEnv.DoString($@"require 'Resources/lua/main'");
             for (int i = 0; i < filePaths.Length; i++)
             {
                 luaEnv.DoString($@"require '{filePaths[i]}'");
             }
         }
 
-        public void PushLuaBehaviour(LuaBehaviour lua)
+        public void AddLuaBehaviour(LuaBehaviour luaBehaviour)
         {
-            mLuaList.AddLast(lua);
+            mLuaBehaviourList.Add(luaBehaviour);
         }
 
-        public void PopLuaBehaviour(LuaBehaviour lua) 
+        public void RemoveLuaBehaviour(LuaBehaviour luaBehaviour)
         {
-            mLuaList.Remove(lua);
+            mLuaBehaviourList.Remove(luaBehaviour);
         }
 
     }

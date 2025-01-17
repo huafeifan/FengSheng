@@ -1,3 +1,4 @@
+using System;
 using System.Net.Sockets;
 using System.Timers;
 using UnityEngine;
@@ -22,12 +23,12 @@ namespace FengSheng
         private byte[] defaultData = new byte[0];
 
         private MessageSender mSender;
-        private Timer mTimer;
+        private System.Timers.Timer mTimer;
         private TcpClient mTcpClient;
 
         public HeartBeat()
         {
-            mTimer = new Timer();
+            mTimer = new System.Timers.Timer();
         }
 
         /// <summary>

@@ -2,11 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DG.Tweening;
+using DG.Tweening.Plugins.Core.PathCore;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace FengSheng
 {
-    public class UIManager : MonoBehaviour, IManager
+    public class UIManager : FengShengManager
     {
         private static UIManager mInstance;
         public static UIManager Instance
@@ -35,14 +39,20 @@ namespace FengSheng
         /// <summary>
         /// UICache存储
         /// </summary>
-        private Dictionary<string, UICache> mUICache = new Dictionary<string, UICache>();
+        [SerializeField]
+        private List<UICache> mUICache = new List<UICache>();
 
         /// <summary>
         /// UICache存在数量下限
         /// </summary>
         private int mUICacheCountLower;
 
-        public void Register()
+        /// <summary>
+        /// UI生命周期刷新间隔
+        /// </summary>
+        private float mUIFlashInterval;
+
+        public override void Register()
         {
             mInstance = this;
             mUICacheCountLower = 10;
@@ -66,11 +76,11 @@ namespace FengSheng
             GetUILayerConfig(Application.dataPath + "/Resources/lua/global/uiConfig.lua.txt");
         }
 
-        public void Unregister()
+        public override void Unregister()
         {
             foreach(var cache in mUICache)
             {
-                cache.Value.Destory();
+                cache.Destory();
             }
             mUICache.Clear();
             mUILayerRootConfig.Clear();
@@ -101,25 +111,22 @@ namespace FengSheng
 
         private void FixedUpdate()
         {
-            if (mUICache.Count > mUICacheCountLower)
+            mUIFlashInterval += Time.deltaTime;
+            if (mUIFlashInterval >= 1)
             {
-                List<string> list = null;
-                foreach (var cache in mUICache)
+                for (int i = mUICache.Count - 1; i >= 0; i--)
                 {
-                    if (cache.Value.IsOverTime())
+                    if (mUICache[i].gameObject.activeSelf)
                     {
-                        if (list == null) list = new List<string>();
-                        list.Add(cache.Key);
+                        mUICache[i].FlashTime(Time.time);
+                    }
+                    else if (mUICache.Count > mUICacheCountLower && mUICache[i].IsOverTime())
+                    {
+                        mUICache[i].Destory();
+                        mUICache.RemoveAt(i);
                     }
                 }
-                if (list != null)
-                {
-                    for (int i = 0; i < list.Count; i++)
-                    {
-                        mUICache[list[i]].Destory();
-                        mUICache.Remove(list[i]);
-                    }
-                }
+                mUIFlashInterval = 0;
             }
 
         }
@@ -131,19 +138,13 @@ namespace FengSheng
         /// <returns></returns>
         public GameObject OpenUI(string path)
         {
-            GameObject gameObject = null;
-
-            if (mUICache != null && mUICache.ContainsKey(path))
+            UICache uiCache = GetUICache(path);
+            if (uiCache != null)
             {
-                gameObject = mUICache[path].gameObject;
-                mUICache[path].FlashTime(Time.time);
-                if (gameObject != null) 
-                { 
-                    gameObject.SetActive(true);
-                    return gameObject;
-                }
+                uiCache.FlashTime(Time.time);
+                uiCache.gameObject.SetActive(true);
+                return uiCache.gameObject;
             }
-
             return LoadUI(path, true);
         }
 
@@ -155,25 +156,38 @@ namespace FengSheng
         /// <returns></returns>
         public GameObject LoadUI(string path, bool isActive = false)
         {
-            UICache uICache = null;
-            if (mUICache != null && mUICache.ContainsKey(path))
-            {
-                uICache = mUICache[path];
-            }
-            else
+            UICache uiCache = GetUICache(path);
+            if (uiCache == null)
             {
                 UnityEngine.Object obj = Resources.Load(path);
                 if (obj == null) return null;
                 GameObject gameObject = (GameObject)GameObject.Instantiate(obj, UIRoot);
-                uICache = new UICache(Time.time, gameObject);
-                mUICache.Add(path, uICache);
+                uiCache = new UICache(path, Time.time, gameObject);
+                mUICache.Add(uiCache);
             }
 
             SetUILayer(path);
-            uICache.gameObject.SetActive(isActive);
-            uICache.FlashTime(Time.time);
+            uiCache.gameObject.SetActive(isActive);
+            uiCache.FlashTime(Time.time);
 
-            return uICache.gameObject;
+            return uiCache.gameObject;
+        }
+
+        /// <summary>
+        /// 获取已创建的UICache
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public UICache GetUICache(string path) 
+        {
+            for (int i = 0; i < mUICache.Count; i++)
+            {
+                if (mUICache[i].Path == path)
+                {
+                    return mUICache[i];
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -182,10 +196,12 @@ namespace FengSheng
         /// <param name="path"></param>
         public void SetUILayer(string path)
         {
-            if (mUICache != null && mUICache.ContainsKey(path))
+            UICache uiCache = GetUICache(path);
+            if (uiCache != null)
             {
                 UILayer layer = UILayer.NormalUI_Level1;
                 int siblingIndex = 0;
+
                 if (mUILayerConfig.ContainsKey(path))
                 {
                     layer = mUILayerConfig[path].UILayer;
@@ -195,10 +211,9 @@ namespace FengSheng
                 if (mUILayerRootConfig.ContainsKey(layer))
                 {
                     Transform root = mUILayerRootConfig[layer];
-                    mUICache[path].transform.SetParent(root);
-                    mUICache[path].transform.SetSiblingIndex(siblingIndex);
+                    uiCache.transform.SetParent(root);
+                    uiCache.transform.SetSiblingIndex(siblingIndex);
                 }
-
             }
             
         }

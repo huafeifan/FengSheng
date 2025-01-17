@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace FengSheng {
 
-    public class ProtosManager : MonoBehaviour, IManager
+    public class ProtosManager : FengShengManager
     {
         private static ProtosManager mInstance;
         public static ProtosManager Instance
@@ -14,12 +14,12 @@ namespace FengSheng {
             }
         }
 
-        public void Register()
+        public override void Register()
         {
             mInstance = this;
         }
 
-        public void Unregister()
+        public override void Unregister()
         {
             
         }

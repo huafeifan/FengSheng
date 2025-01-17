@@ -1,4 +1,5 @@
 local startBtn = nil
+local exitBtn = nil
 
 function start()
 	InitUI()
@@ -12,19 +13,34 @@ function ondestroy()
 end
 
 function InitUI()
+	local bg = self.transform:Find("Bg"):GetComponent(typeof(Image))
 	startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
+	exitBtn = self.transform:Find("ExitBtn"):GetComponent(typeof(CS.UnityEngine.UI.Button))
+
+	startBtn.gameObject:SetActive(false)
+	exitBtn.gameObject:SetActive(false)
+
+	bg.color = Color(1, 1, 1, 0)
+
+	bg:DOFade(1, 3):SetEase(Ease.InCubic):OnComplete(
+		function()
+			startBtn.gameObject:SetActive(true)
+			exitBtn.gameObject:SetActive(true)
+		end)
 end
 
 function AddBtnEvent()
 	startBtn.onClick:AddListener(OnBtnStart)
+	exitBtn.onClick:AddListener(OnBtnExit)
 end
 
 function RemoveBtnEvent()
 	startBtn.onClick:RemoveAllListeners()
+	exitBtn.onClick:RemoveAllListeners()
 end
 
 function AddListener()
-	EventManager:AddListener(EventConfig.Connect, OnConnect)
+	EventManager:AddListener(EventConfig.Connect, OnConnect, "Lua.login.OnConnect")
 end
 
 function RemoveListener()
@@ -34,6 +50,11 @@ end
 function OnBtnStart()
 	GlobalMethods.PlayBtnAnimation(startBtn)
 	NetManager:Connect(GlobalConfig.LoginNetwork, GlobalConfig.LoginServerIP, GlobalConfig.LoginServerPort)
+end
+
+function OnBtnExit()
+	GlobalMethods.PlayBtnAnimation(exitBtn)
+	EventManager:TriggerEvent("Event_Exit", nil)
 end
 
 function OnConnect(netWorkEventPackage)

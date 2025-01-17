@@ -7,12 +7,8 @@
 */
 
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 using XLua;
 using System;
-using UnityEngine.UI;
-using DG.Tweening;
 
 namespace FengSheng
 {
@@ -30,12 +26,12 @@ namespace FengSheng
         void Awake()
         {
             // 为每个脚本设置一个独立的脚本域，可一定程度上防止脚本间全局变量、函数冲突
-            scriptScopeTable = LuaManager.luaEnv.NewTable();
+            scriptScopeTable = LuaManager.Instance.luaEnv.NewTable();
 
             // 设置其元表的 __index, 使其能够访问全局变量
-            using (LuaTable meta = LuaManager.luaEnv.NewTable())
+            using (LuaTable meta = LuaManager.Instance.luaEnv.NewTable())
             {
-                meta.Set("__index", LuaManager.luaEnv.Global);
+                meta.Set("__index", LuaManager.Instance.luaEnv.Global);
                 scriptScopeTable.SetMetaTable(meta);
             }
 
@@ -44,13 +40,12 @@ namespace FengSheng
 
             // 如果你希望在脚本内能够设置全局变量, 也可以直接将全局脚本域注入到当前脚本的脚本域中
             // 这样, 你就可以在 Lua 脚本中通过 Global.XXX 来访问全局变量
-            scriptScopeTable.Set("Global", LuaManager.luaEnv.Global);
-
-            //加入LuaManager管理
-            LuaManager.Instance.PushLuaBehaviour(this);
+            //scriptScopeTable.Set("Global", LuaManager.luaEnv.Global);
 
             // 执行脚本
-            LuaManager.luaEnv.DoString(luaScript.text, luaScript.name, scriptScopeTable);
+            LuaManager.Instance.luaEnv.DoString(luaScript.text, luaScript.name, scriptScopeTable);
+
+            LuaManager.Instance.AddLuaBehaviour(this);
 
             // 从 Lua 脚本域中获取定义的函数
             Action luaAwake = scriptScopeTable.Get<Action>("awake");
@@ -93,20 +88,22 @@ namespace FengSheng
 
         void OnDestroy()
         {
-            Clear();
-            LuaManager.Instance.PopLuaBehaviour(this);
-        }
-
-        public void Clear()
-        {
             if (luaOnDestroy != null)
             {
                 luaOnDestroy();
             }
+            LuaManager.Instance.RemoveLuaBehaviour(this);
+            Clear();
+        }
+
+        public void Clear()
+        {
             scriptScopeTable.Dispose();
             luaOnDestroy = null;
             luaUpdate = null;
             luaStart = null;
         }
+
+
     }
 }

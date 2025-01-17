@@ -5,9 +5,14 @@ GlobalConfig.LoginServerPort = 8000
 
 Debug = CS.UnityEngine.Debug
 Button = CS.UnityEngine.UI.Button
+Image = CS.UnityEngine.UI.Image
+Text = CS.UnityEngine.UI.Text
+Color = CS.UnityEngine.Color
+Vector3 = CS.UnityEngine.Vector3
 
 LoopType = CS.DG.Tweening.LoopType
 Ease = CS.DG.Tweening.Ease
+RotateMode = CS.DG.Tweening.RotateMode
 
 UIManager = CS.FengSheng.UIManager.Instance
 NetManager = CS.FengSheng.NetManager.Instance

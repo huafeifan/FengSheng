@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace FengSheng
 {
-    public class NetManager : MonoBehaviour, IManager
+    public class NetManager : FengShengManager
     {
-        public const string Event_Connect = "Event_Connect";
-
         private static NetManager mInstance;
         public static NetManager Instance
         {
@@ -20,17 +18,18 @@ namespace FengSheng
         /// <summary>
         /// 网络列表
         /// </summary>
-        private Dictionary<string, NetSocket> mNetDict = new Dictionary<string, NetSocket>();
+        [SerializeField]
+        private List<NetSocket> mNetList = new List<NetSocket>();
 
-        public void Register()
+        public override void Register()
         {
             mInstance = this;
         }
 
-        public void Unregister()
+        public override void Unregister()
         {
             CloseAll();
-            mNetDict.Clear();
+            mNetList.Clear();
         }
 
         /// <summary>
@@ -41,15 +40,11 @@ namespace FengSheng
         /// <param name="port">服务器端口</param>
         public void Connect(string name, string ip, int port)
         {
-            NetSocket netSocket = null;
-            if (mNetDict.ContainsKey(name))
-            {
-                netSocket = mNetDict[name];
-            }
-            else
+            NetSocket netSocket = GetNetSocket(name);
+            if (netSocket == null)
             {
                 netSocket = new NetSocket(name, ip, port);
-                mNetDict.Add(name, netSocket);
+                mNetList.Add(netSocket);
             }
 
             netSocket.Connect();
@@ -61,21 +56,30 @@ namespace FengSheng
         /// <param name="name"></param>
         public void Close(string name)
         {
-            if (mNetDict.ContainsKey(name))
-            {
-                mNetDict[name].Close();
-            }
+            GetNetSocket(name)?.Close();
         }
 
         public void CloseAll()
         {
-            if (mNetDict.Count > 0)
+            if (mNetList.Count > 0)
             {
-                foreach (var net in mNetDict)
+                for (int i = 0; i < mNetList.Count; i++)
                 {
-                    Close(net.Key);
+                    mNetList[i].Close();
                 }
             }
+        }
+
+        public NetSocket GetNetSocket(string netName)
+        {
+            for (int i = 0; i < mNetList.Count; i++)
+            {
+                if (mNetList[i].NetName == netName)
+                {
+                    return mNetList[i];
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -86,9 +90,10 @@ namespace FengSheng
         /// <param name="data">数据</param>
         public void Send(string netName, uint cmd, byte[] data)
         {
-            if (mNetDict.ContainsKey(netName))
+            NetSocket socket = GetNetSocket(netName);
+            if (socket != null)
             {
-                mNetDict[netName].Sender.SendMessage(cmd, data);
+                socket.Sender.SendMessage(cmd, data);
             }
         }
 
