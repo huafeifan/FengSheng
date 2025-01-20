@@ -36,6 +36,7 @@ namespace FengSheng
         /// 心跳处理器
         /// </summary>
         private HeartBeat mHeartBeat;
+        public HeartBeat HeartBeat { get { return mHeartBeat; } }
 
         /// <summary>
         /// 消息发送器
@@ -123,6 +124,7 @@ namespace FengSheng
                         mSender.SetTcpClient(mClient);
 
                         //消息接收器初始化
+                        mReceiver.SetNetSocket(this);
                         mReceiver.SetTcpClient(mClient);
 
                         //心跳处理器初始化

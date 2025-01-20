@@ -21,6 +21,9 @@ namespace FengSheng
         [SerializeField]
         private List<EventPackage> mListeners = new List<EventPackage>();
 
+        [SerializeField]
+        private Queue<EventTriggerCache> mCache = new Queue<EventTriggerCache>();
+
         public override void Register()
         {
             mInstance = this;
@@ -29,6 +32,19 @@ namespace FengSheng
         public override void Unregister()
         {
             mListeners.Clear();
+        }
+
+        private void Update()
+        {
+            if (mCache.Count > 0)
+            {
+                EventTriggerCache cache = mCache.Dequeue();
+                EventPackage eventPackage = GetEventPackage(cache.EventName);
+                if (eventPackage != null)
+                {
+                    eventPackage.TriggerEvent(cache.EventPackage);
+                }
+            }
         }
 
         public EventPackage GetEventPackage(string eventName)
@@ -76,11 +92,11 @@ namespace FengSheng
 
         public void TriggerEvent(string eventName, object arg)
         {
-            EventPackage eventPackage = GetEventPackage(eventName);
-            if (eventPackage != null)
+            mCache.Enqueue(new EventTriggerCache() 
             {
-                eventPackage.TriggerEvent(arg);
-            }
+                EventName = eventName,
+                EventPackage = arg
+            });
         }
 
     }

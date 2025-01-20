@@ -1,2 +1,6 @@
-PreloadConfig.LoginPreload()
-UIManager:OpenUI(LoginPrefab)
+require "Resources/lua/link"
+
+--预加载
+UIManager:LoadUI(Global.NetworkWaitingPrefab_Path, true)
+
+UIManager:OpenUI(Global.LoginPrefab_Path)

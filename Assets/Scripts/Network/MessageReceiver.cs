@@ -1,7 +1,6 @@
 using System.IO;
 using System;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -10,6 +9,7 @@ namespace FengSheng
 {
     public class MessageReceiver
     {
+        private NetSocket mNetSocket;
         private TcpClient mTcpClient;
         private Stream mStream;
         private CancellationTokenSource mCts;
@@ -27,6 +27,15 @@ namespace FengSheng
         {
             mTcpClient = tcpClient;
             mStream = tcpClient.GetStream();
+        }
+
+        /// <summary>
+        /// 传入网络对象
+        /// </summary>
+        /// <param name="netSocket"></param>
+        public void SetNetSocket(NetSocket netSocket)
+        {
+            mNetSocket = netSocket;
         }
 
         public void Start()
@@ -54,13 +63,21 @@ namespace FengSheng
                     {
                         uint length = (uint)(buffer[0] << 8) + (uint)buffer[1];
                         uint cmd = (uint)(buffer[2] << 8) + (uint)buffer[3];
-                        Debug.Log($"<color=green> Receive 0x{cmd:x4}, Length {length} </color>");
+                        if (cmd != mNetSocket.HeartBeat.Cmd)
+                        {
+                            Debug.Log($"<color=green> Receive 0x{cmd:x4}, Length {length} </color>");
+                        }
+                    }
+                    else
+                    {
+                        mNetSocket.Close();
                     }
                 }
                 catch (IOException ex)
                 {
                     // 处理连接断开等IO异常
                     Debug.Log("接收数据时发生IOException：" + ex.Message);
+                    mNetSocket.Close();
                     break;
                 }
                 catch (OperationCanceledException)

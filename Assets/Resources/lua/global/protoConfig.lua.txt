@@ -1,0 +1,3 @@
+require "Resources/lua/link"
+
+Global.Cmd_HeatBeat = 0x0000

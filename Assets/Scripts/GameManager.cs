@@ -20,22 +20,11 @@ namespace FengSheng
         [SerializeField]
         private List<FengShengManager> mManagerList = new List<FengShengManager>();
 
-        private bool mGameCloseFlag = false;
-        private int mGameCloseCount = 0;
-
         private void Awake()
         {
             mInstance = this;
 
             Register();
-        }
-
-        private void Update()
-        {
-            if (mGameCloseFlag)
-            {
-                TryClose();
-            }
         }
 
         private void OnDestroy()
@@ -87,31 +76,19 @@ namespace FengSheng
             return null;
         }
 
-        private void TryClose()
-        {
-            mGameCloseCount++;
-            if (mGameCloseCount >= 10)
-            {
-                Unresgister();
-            }
-        }
-
         public void Unresgister()
         {
-            Register<ProtosManager>();
-            Register<UIManager>();
-            Register<NetManager>();
-            Register<EventManager>();
+            Unregister<ProtosManager>();
+            Unregister<UIManager>();
+            Unregister<NetManager>();
+            Unregister<EventManager>();
 
-            Register<LuaManager>();
-
-            mGameCloseCount = 0;
-            mGameCloseFlag = false;
+            Unregister<LuaManager>();
         }
 
         private void OnExit(object obj)
         {
-            mGameCloseFlag = true;
+            Unresgister();
         }
 
     }

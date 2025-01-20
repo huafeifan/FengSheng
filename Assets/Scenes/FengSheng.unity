@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIRoot: {fileID: 1382561516}
+  mUICache: []
 --- !u!1 &79733512
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,6 +481,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e23040d5678cbad4c9c124a824f0e277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mManagerList: []
 --- !u!4 &1042307049
 Transform:
   m_ObjectHideFlags: 0
@@ -544,6 +546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e4080e2f1c45e4783dbab9ba9c4d34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mListeners: []
 --- !u!1 &1069715280
 GameObject:
   m_ObjectHideFlags: 0
@@ -1337,6 +1340,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f24481ebd34d754c9de3d1bae5ee023, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mNetList: []
 --- !u!1 &1697824685
 GameObject:
   m_ObjectHideFlags: 0
@@ -1533,6 +1537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d687dbddbd6594894e7e8cf56a2fa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mLuaBehaviourList: []
 --- !u!1 &1849071946
 GameObject:
   m_ObjectHideFlags: 0

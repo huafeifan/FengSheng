@@ -1,67 +1,107 @@
-local startBtn = nil
-local exitBtn = nil
+local ui = {}
+local inputName = nil
+
+local InitUI = function()
+	ui.bg = self.transform:Find("Bg"):GetComponent(typeof(Image))
+	ui.startBtn = self.transform:Find("BtnList/StartBtn"):GetComponent(typeof(Button))
+	ui.exitBtn = self.transform:Find("BtnList/ExitBtn"):GetComponent(typeof(Button))
+	ui.loginBtn = self.transform:Find("BtnList/LoginBtn"):GetComponent(typeof(Button))
+	ui.inputName = self.transform:Find("InputName"):GetComponent(typeof(InputField))
+	
+	ui.startBtn.gameObject:SetActive(false)
+	ui.exitBtn.gameObject:SetActive(false)
+	ui.loginBtn.gameObject:SetActive(false)
+	ui.inputName.gameObject:SetActive(false)
+
+	ui.bg.color = Color(1, 1, 1, 0)
+
+	ui.bg:DOFade(1, 3):SetEase(Ease.InCubic):OnComplete(
+		function()
+			ui.startBtn.gameObject:SetActive(true)
+			ui.exitBtn.gameObject:SetActive(true)
+		end)
+end
+
+
+
+local OnBtnStart = function()
+	Global.Methods_PlayBtnAnimation(ui.startBtn)
+	NetManager:Connect(Global.LoginNetwork, Global.LoginServerIP, Global.LoginServerPort)
+end
+
+local OnBtnExit = function()
+	Global.Methods_PlayBtnAnimation(ui.exitBtn)
+	EventManager:TriggerEvent("Event_Exit", nil)
+end
+
+local CheckInputName = function(s)
+	if s == nil or string.len(s) <= 0 then
+		Debug.Log("请输入名称")
+		return false
+	end
+	
+	return true
+end
+
+local OnBtnLogin = function()
+	Global.Methods_PlayBtnAnimation(ui.loginBtn)
+	if CheckInputName(inputName) == true then
+		ProtosManager:Send_Login(Global.LoginNetwork, inputName)
+	end
+end
+
+local OnInputNameChanged = function(s)
+	if CheckInputName(s) == true then
+		inputName = s
+	end
+end
+
+local AddUIEvent = function()
+	ui.startBtn.onClick:AddListener(OnBtnStart)
+	ui.exitBtn.onClick:AddListener(OnBtnExit)
+	ui.loginBtn.onClick:AddListener(OnBtnLogin)
+	ui.inputName.onValueChanged:AddListener(OnInputNameChanged)
+end
+
+local RemoveUIEvent = function()
+	ui.startBtn.onClick:RemoveAllListeners()
+	ui.exitBtn.onClick:RemoveAllListeners()
+	ui.loginBtn.onClick:RemoveAllListeners()
+	ui.inputName.onValueChanged:RemoveAllListeners()
+end
+
+
+
+local OnConnect = function(netWorkEventPackage)
+	if netWorkEventPackage.NetName == Global.LoginNetwork then
+		if netWorkEventPackage.ConnectResult == true then
+			Debug.Log("网络连接成功")
+			--登录相关 
+			ui.startBtn.gameObject:SetActive(false)
+			ui.loginBtn.gameObject:SetActive(true)
+			ui.inputName.gameObject:SetActive(true)
+		end
+	end
+end
+
+local AddListener = function()
+	EventManager:AddListener(Global.Event_Connect, OnConnect, "Lua.login.OnConnect")
+end
+
+local RemoveListener = function()
+	EventManager:RemoveListener(Global.Event_Connect, OnConnect)
+end
+
+
 
 function start()
 	InitUI()
-	AddBtnEvent()
+	AddUIEvent()
 	AddListener()
 end
 
 function ondestroy()
-	RemoveBtnEvent()
+	RemoveUIEvent()
 	RemoveListener()
-end
-
-function InitUI()
-	local bg = self.transform:Find("Bg"):GetComponent(typeof(Image))
-	startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
-	exitBtn = self.transform:Find("ExitBtn"):GetComponent(typeof(CS.UnityEngine.UI.Button))
-
-	startBtn.gameObject:SetActive(false)
-	exitBtn.gameObject:SetActive(false)
-
-	bg.color = Color(1, 1, 1, 0)
-
-	bg:DOFade(1, 3):SetEase(Ease.InCubic):OnComplete(
-		function()
-			startBtn.gameObject:SetActive(true)
-			exitBtn.gameObject:SetActive(true)
-		end)
-end
-
-function AddBtnEvent()
-	startBtn.onClick:AddListener(OnBtnStart)
-	exitBtn.onClick:AddListener(OnBtnExit)
-end
-
-function RemoveBtnEvent()
-	startBtn.onClick:RemoveAllListeners()
-	exitBtn.onClick:RemoveAllListeners()
-end
-
-function AddListener()
-	EventManager:AddListener(EventConfig.Connect, OnConnect, "Lua.login.OnConnect")
-end
-
-function RemoveListener()
-	EventManager:RemoveListener(EventConfig.Connect, OnConnect)
-end
-
-function OnBtnStart()
-	GlobalMethods.PlayBtnAnimation(startBtn)
-	NetManager:Connect(GlobalConfig.LoginNetwork, GlobalConfig.LoginServerIP, GlobalConfig.LoginServerPort)
-end
-
-function OnBtnExit()
-	GlobalMethods.PlayBtnAnimation(exitBtn)
-	EventManager:TriggerEvent("Event_Exit", nil)
-end
-
-function OnConnect(netWorkEventPackage)
-	if netWorkEventPackage.NetName == GlobalConfig.LoginNetwork then
-		if netWorkEventPackage.ConnectResult == true then
-			Debug.Log("网络连接成功")
-		end
-	end
 end
 

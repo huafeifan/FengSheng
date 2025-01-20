@@ -2,11 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DG.Tweening;
-using DG.Tweening.Plugins.Core.PathCore;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace FengSheng
 {
@@ -34,7 +30,8 @@ namespace FengSheng
         /// <summary>
         /// UI≤„º∂≈‰÷√
         /// </summary>
-        private Dictionary<string, UILayerConfigData> mUILayerConfig = new Dictionary<string, UILayerConfigData>();
+        [SerializeField]
+        private List<UILayerConfigData> mUILayerConfig = new List<UILayerConfigData>();
 
         /// <summary>
         /// UICache¥Ê¥¢
@@ -78,7 +75,7 @@ namespace FengSheng
 
         public override void Unregister()
         {
-            foreach(var cache in mUICache)
+            foreach (var cache in mUICache)
             {
                 cache.Destory();
             }
@@ -97,12 +94,13 @@ namespace FengSheng
             string[] items = data.Split(new[] { Environment.NewLine, "=" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
             for (int i = 0; i < items.Length; i++)
             {
-                if (!string.IsNullOrEmpty(items[i]) && items[i].Contains("_Layer") && !items[i].Contains("_LayerSiblingIndex"))
+                if (!string.IsNullOrEmpty(items[i]) && items[i].Contains("_Path"))
                 {
-                    mUILayerConfig.Add(items[i - 1].Trim().Replace("\"", string.Empty), new UILayerConfigData()
+                    mUILayerConfig.Add(new UILayerConfigData()
                     {
-                        UILayer = (UILayer)Enum.Parse(typeof(UILayer), items[i + 1].Trim()),
-                        SiblingIndex = int.Parse(items[i + 3].Trim())
+                        Path = items[i + 1].Trim().Replace("\"", string.Empty),
+                        UILayer = (UILayer)Enum.Parse(typeof(UILayer), items[i + 3].Trim()),
+                        SiblingIndex = int.Parse(items[i + 5].Trim())
                     });
                 }
             }
@@ -178,7 +176,7 @@ namespace FengSheng
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public UICache GetUICache(string path) 
+        public UICache GetUICache(string path)
         {
             for (int i = 0; i < mUICache.Count; i++)
             {
@@ -202,10 +200,11 @@ namespace FengSheng
                 UILayer layer = UILayer.NormalUI_Level1;
                 int siblingIndex = 0;
 
-                if (mUILayerConfig.ContainsKey(path))
+                UILayerConfigData data = GetUILayerConfigData(path);
+                if (data != null)
                 {
-                    layer = mUILayerConfig[path].UILayer;
-                    siblingIndex = mUILayerConfig[path].SiblingIndex;
+                    layer = data.UILayer;
+                    siblingIndex = data.SiblingIndex;
                 }
 
                 if (mUILayerRootConfig.ContainsKey(layer))
@@ -215,7 +214,19 @@ namespace FengSheng
                     uiCache.transform.SetSiblingIndex(siblingIndex);
                 }
             }
-            
+
+        }
+
+        public UILayerConfigData GetUILayerConfigData(string path)
+        {
+            for (int i = 0; i < mUILayerConfig.Count; i++)
+            {
+                if (mUILayerConfig[i].Path == path)
+                {
+                    return mUILayerConfig[i];
+                }
+            }
+            return null;
         }
 
     }

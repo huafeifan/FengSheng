@@ -7,10 +7,22 @@ namespace FengSheng
 {
     public class HeartBeat
     {
+        private bool isGetCmd = false;
+        private uint mCmd;
         /// <summary>
         /// 协议号
         /// </summary>
-        public const uint Cmd = 0x0000;
+        public uint Cmd
+        {
+            get
+            {
+                if (isGetCmd == false)
+                {
+                    mCmd = LuaManager.Instance.luaEnv.Global.Get<uint>("Cmd_HeatBeat");
+                }
+                return mCmd;
+            }
+        }
 
         /// <summary>
         /// 心跳间隔
@@ -64,7 +76,7 @@ namespace FengSheng
         {
             if (mTcpClient.Connected)
             {
-                mSender.SendMessage(Cmd, defaultData, true);
+                mSender.SendMessage(Cmd, defaultData, false);
             }
             else
             {

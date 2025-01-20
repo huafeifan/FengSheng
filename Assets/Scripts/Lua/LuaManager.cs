@@ -24,6 +24,8 @@ namespace FengSheng
         public LuaEnv luaEnv;
         private float lastGCTime = 0;
         private const float GCInterval = 1;//1s
+        private float luaEnvDisposeDelay;
+        private bool luaEnvDisposeFlag;
 
         [SerializeField]
         private List<LuaBehaviour> mLuaBehaviourList = new List<LuaBehaviour>();
@@ -42,15 +44,7 @@ namespace FengSheng
             }
             mLuaBehaviourList.Clear();
 
-            if (luaEnv != null)
-            {
-                //luaEnv.DoString(@"
-                //                local util = require 'XLua/Resources/xlua/util'
-                //                util.print_func_ref_by_csharp()");
-
-                luaEnv.Dispose();
-                luaEnv = null;
-            }
+            luaEnvDisposeFlag = true;
 
         }
 
@@ -63,10 +57,30 @@ namespace FengSheng
                 luaEnv.Tick();
                 lastGCTime = Time.time;
             }
+
+            if (!luaEnvDisposeFlag) return;
+            luaEnvDisposeDelay += Time.deltaTime;
+            if (luaEnvDisposeDelay >= 0.2f)
+            {
+                if (luaEnv != null)
+                {
+                    //luaEnv.DoString(@"
+                    //            local util = require 'XLua/Resources/xlua/util'
+                    //            util.print_func_ref_by_csharp()");
+
+                    luaEnv.Dispose();
+                    luaEnv = null;
+                }
+                luaEnvDisposeDelay = 0;
+                luaEnvDisposeFlag = false;
+            }
         }
 
         public void LuaEnvInit()
         {
+            luaEnvDisposeDelay = 0;
+            luaEnvDisposeFlag = false;
+
             //读取link文件数据
             string[] filePaths = GetLinkData(Application.dataPath + "/Resources/lua/link.txt");
 
@@ -78,6 +92,7 @@ namespace FengSheng
 
             //执行lua全局文件,包括 main（lua脚本的主入口）
             LuaDoString(filePaths);
+
         }
 
         private string[] GetLinkData(string filePath)

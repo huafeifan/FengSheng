@@ -1,6 +1,38 @@
-local content = nil
-local rotateItem = nil
-local tip = nil
+local ui = {}
+
+local InitUI = function()
+	ui.content = self.transform:Find("Content")
+	ui.tip = self.transform:Find("Content/Text"):GetComponent(typeof(Text))
+	ui.rotateItem = self.transform:Find("Content/Item")
+	
+	ui.rotateItem:DORotate(Vector3.forward * 360, 1, RotateMode.FastBeyond360):SetLoops(-1):SetEase(Ease.Linear)
+	ui.content.gameObject:SetActive(false)
+end
+
+
+
+local OnConnect = function(netWorkEventPackage)
+	if netWorkEventPackage.NetName == Global.LoginNetwork then
+		if netWorkEventPackage.IsConnecting == true then
+			ui.content.gameObject:SetActive(true)
+			ui.tip.text = "正在连接到服务器..."
+		else
+			ui.content.gameObject:SetActive(false)
+		end
+	end
+end
+
+
+
+local AddListener = function()
+	EventManager:AddListener(Global.Event_Connect, OnConnect, "Lua.networkWaiting.OnConnect")
+end
+
+local RemoveListener = function()
+	EventManager:RemoveListener(Global.Event_Connect, OnConnect)
+end
+
+
 
 function start()
 	InitUI()
@@ -10,33 +42,3 @@ end
 function ondestroy()
 	RemoveListener()
 end
-
-function InitUI()
-	content = self.transform:Find("Content")
-
-	tip = self.transform:Find("Content/Text"):GetComponent(typeof(Text))
-
-	rotateItem = self.transform:Find("Content/Item")
-	rotateItem:DORotate(Vector3.forward * 360, 1, RotateMode.FastBeyond360):SetLoops(-1):SetEase(Ease.Linear)
-	content.gameObject:SetActive(false)
-end
-
-function AddListener()
-	EventManager:AddListener(EventConfig.Connect, OnConnect, "Lua.networkWaiting.OnConnect")
-end
-
-function RemoveListener()
-	EventManager:RemoveListener(EventConfig.Connect, OnConnect)
-end
-
-function OnConnect(netWorkEventPackage)
-	if netWorkEventPackage.NetName == GlobalConfig.LoginNetwork then
-		if netWorkEventPackage.IsConnecting == true then
-			content.gameObject:SetActive(true)
-			tip.text = "正在连接到服务器..."
-		--else
-			--content.gameObject:SetActive(false)
-		end
-	end
-end
-

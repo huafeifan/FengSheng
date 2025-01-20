@@ -1,5 +1,5 @@
-GlobalMethods = {}
+require "Resources/lua/link"
 
-function GlobalMethods.PlayBtnAnimation(btn)
+Global.Methods_PlayBtnAnimation = function(btn)
 	btn.transform:DOScale(1.1, 0.1):SetLoops(2, LoopType.Yoyo)
 end

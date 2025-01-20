@@ -9,6 +9,7 @@
 using UnityEngine;
 using XLua;
 using System;
+using System.Collections.Generic;
 
 namespace FengSheng
 {
@@ -22,6 +23,8 @@ namespace FengSheng
         private Action luaOnDestroy;
 
         private LuaTable scriptScopeTable;
+
+        private bool isDispose;
 
         void Awake()
         {
@@ -40,12 +43,13 @@ namespace FengSheng
 
             // 如果你希望在脚本内能够设置全局变量, 也可以直接将全局脚本域注入到当前脚本的脚本域中
             // 这样, 你就可以在 Lua 脚本中通过 Global.XXX 来访问全局变量
-            //scriptScopeTable.Set("Global", LuaManager.luaEnv.Global);
+            scriptScopeTable.Set("Global", LuaManager.Instance.luaEnv.Global);
 
             // 执行脚本
             LuaManager.Instance.luaEnv.DoString(luaScript.text, luaScript.name, scriptScopeTable);
 
             LuaManager.Instance.AddLuaBehaviour(this);
+            isDispose = false;
 
             // 从 Lua 脚本域中获取定义的函数
             Action luaAwake = scriptScopeTable.Get<Action>("awake");
@@ -88,22 +92,25 @@ namespace FengSheng
 
         void OnDestroy()
         {
-            if (luaOnDestroy != null)
-            {
-                luaOnDestroy();
-            }
-            LuaManager.Instance.RemoveLuaBehaviour(this);
             Clear();
         }
 
         public void Clear()
         {
+            if (isDispose) return;
+            isDispose = true;
+
+            if (luaOnDestroy != null)
+            {
+                luaOnDestroy();
+            }
+            LuaManager.Instance.RemoveLuaBehaviour(this);
             scriptScopeTable.Dispose();
             luaOnDestroy = null;
+            luaOnEnable = null;
             luaUpdate = null;
             luaStart = null;
         }
-
 
     }
 }

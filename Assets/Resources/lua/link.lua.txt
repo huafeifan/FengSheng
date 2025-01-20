@@ -1,0 +1,1 @@
+Global = CS.FengSheng.LuaManager.Instance.luaEnv.Global

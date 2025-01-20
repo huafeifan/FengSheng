@@ -1,3 +1,4 @@
-EventConfig = {}
-EventConfig.Connect = "Event_Connect"
-EventConfig.Exit = "Event_Exit"
+require "Resources/lua/link"
+
+Global.Event_Connect = "Event_Connect"
+Global.Event_Exit = "Event_Exit"

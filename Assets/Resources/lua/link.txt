@@ -2,6 +2,5 @@ Resources/lua/global/uiConfig
 Resources/lua/global/globalConfig
 Resources/lua/global/protoConfig
 Resources/lua/global/eventConfig
-Resources/lua/global/preloadConfig
 Resources/lua/global/globalMethods
 Resources/lua/main

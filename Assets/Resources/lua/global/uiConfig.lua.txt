@@ -1,7 +1,9 @@
-LoginPrefab = "prefab/login/Login"
-LoginPrefab_Layer = SceneUI_Level1
-LoginPrefab_LayerSiblingIndex = 0
+require "Resources/lua/link"
 
-NetworkWaitingPrefab = "prefab/tips/NetworkWaiting"
-NetworkWaitingPrefab_Layer = TopUI_Level1
-NetworkWaitingPrefab_LayerSiblingIndex = 0
+Global.LoginPrefab_Path = "prefab/login/Login"
+Global.LoginPrefab_Layer = SceneUI_Level1
+Global.LoginPrefab_Layer_SiblingIndex = 0
+
+Global.NetworkWaitingPrefab_Path = "prefab/tips/NetworkWaiting"
+Global.NetworkWaitingPrefab_Layer = TopUI_Level1
+Global.NetworkWaitingPrefab_Layer_SiblingIndex = 0
