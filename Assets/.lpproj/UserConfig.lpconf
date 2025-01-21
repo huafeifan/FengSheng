@@ -2,9 +2,9 @@
 <BreakpointList/>
 <WatchList/>
 <ProjectUI>
-  <TreeState BaseX = "0" BaseY = "0" AlternativeItem = "LuaFolders#Assets#Resources#lua#global#eventConfig.lua.txt">
+  <TreeState BaseX = "0" BaseY = "0" AlternativeItem = "LuaFolders#Assets#Resources#lua#ui#tips">
     <SelectedList>
-      <Selected Path = "LuaFolders#Assets#Resources#lua#global"/>
+      <Selected Path = "LuaFolders#Assets#Resources#lua#ui#login#login.lua.txt"/>
     </SelectedList>
     <ExpandedList>
       <Expanded Path = "LuaFolders"/>
@@ -20,23 +20,23 @@
   </TreeState>
 </ProjectUI>
 <FindAnReplaceUI
-  Pattern = "EventConfig"
+  Pattern = "LoginPrefab"
   MatchCase = "false"
   MatchWholeWord = "false"
   UseRegEx = "false"
   Target = "<CurrentProject>"
   Replace = ""/>
 <MainWindow
-  X = "333"
-  Y = "212"
+  X = "349"
+  Y = "244"
   Width = "1497"
-  Height = "720"
-  Maximized = "false"
-  LastCodeFilename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/protoConfig.lua.txt">
+  Height = "796"
+  Maximized = "true"
+  LastCodeFilename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/login/login.lua.txt">
   <DockingControl>
     <DockingNode DockingDirection = "Horizontal">
       <DockingNode DockingDirection = "None">
-        <DockingBlock Width = "306" Height = "603" DocumentStyle = "false">
+        <DockingBlock Width = "389" Height = "923" DocumentStyle = "false">
           <DockingCard
             Text = "Project"
             Tag = ""
@@ -51,58 +51,49 @@
       </DockingNode>
       <DockingNode DockingDirection = "Vertical">
         <DockingNode DockingDirection = "None">
-          <DockingBlock Width = "1172" Height = "372" DocumentStyle = "true">
+          <DockingBlock Width = "1512" Height = "613" DocumentStyle = "true">
             <DockingCard
-              Text = "uiConfig.lua.txt"
-              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/uiConfig.lua.txt"
-              ActivePage = "false"
-              ActivateTime = "10693212"
-              CaretLineIndex = "6"
-              CaretCodeCharIndex = "12"
+              Text = "login.lua.txt"
+              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/login/login.lua.txt"
+              ActivePage = "true"
+              ActivateTime = "82513000"
+              CaretLineIndex = "53"
+              CaretCodeCharIndex = "34"
               BaseX = "0"
-              BaseY = "0"/>
+              BaseY = "-513"/>
             <DockingCard
-              Text = "eventConfig.lua.txt"
-              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/eventConfig.lua.txt"
+              Text = "protoConfig.lua.txt"
+              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/protoConfig.lua.txt"
               ActivePage = "false"
-              ActivateTime = "10694232"
-              CaretLineIndex = "0"
-              CaretCodeCharIndex = "0"
+              ActivateTime = "14118770"
+              CaretLineIndex = "2"
+              CaretCodeCharIndex = "19"
               BaseX = "0"
               BaseY = "0"/>
             <DockingCard
               Text = "globalConfig.lua.txt"
               Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/globalConfig.lua.txt"
               ActivePage = "false"
-              ActivateTime = "10697574"
-              CaretLineIndex = "13"
-              CaretCodeCharIndex = "34"
-              BaseX = "0"
-              BaseY = "-57"/>
-            <DockingCard
-              Text = "protoConfig.lua.txt"
-              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/protoConfig.lua.txt"
-              ActivePage = "true"
-              ActivateTime = "10712596"
-              CaretLineIndex = "2"
-              CaretCodeCharIndex = "13"
+              ActivateTime = "14138296"
+              CaretLineIndex = "3"
+              CaretCodeCharIndex = "20"
               BaseX = "0"
               BaseY = "0"/>
             <DockingCard
-              Text = "login.lua.txt"
-              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/login/login.lua.txt"
+              Text = "link.txt"
+              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/link.txt"
               ActivePage = "false"
-              ActivateTime = "10673118"
-              CaretLineIndex = "103"
-              CaretCodeCharIndex = "0"
+              ActivateTime = "13455271"
+              CaretLineIndex = "3"
+              CaretCodeCharIndex = "32"
               BaseX = "0"
-              BaseY = "-1824"/>
+              BaseY = "0"/>
             <DockingCard
-              Text = "networkWaiting.lua.txt"
-              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/tips/networkWaiting.lua.txt"
+              Text = "uiConfig.lua.txt"
+              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/uiConfig.lua.txt"
               ActivePage = "false"
-              ActivateTime = "7043760"
-              CaretLineIndex = "26"
+              ActivateTime = "13781622"
+              CaretLineIndex = "0"
               CaretCodeCharIndex = "0"
               BaseX = "0"
               BaseY = "0"/>
@@ -110,42 +101,42 @@
               Text = "main.lua.txt"
               Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/main.lua.txt"
               ActivePage = "false"
-              ActivateTime = "9933872"
+              ActivateTime = "13122471"
+              CaretLineIndex = "3"
+              CaretCodeCharIndex = "56"
+              BaseX = "0"
+              BaseY = "0"/>
+            <DockingCard
+              Text = "networkWaiting.lua.txt"
+              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/tips/networkWaiting.lua.txt"
+              ActivePage = "false"
+              ActivateTime = "13456277"
+              CaretLineIndex = "7"
+              CaretCodeCharIndex = "75"
+              BaseX = "0"
+              BaseY = "-342"/>
+            <DockingCard
+              Text = "eventConfig.lua.txt"
+              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/eventConfig.lua.txt"
+              ActivePage = "false"
+              ActivateTime = "13459612"
               CaretLineIndex = "0"
-              CaretCodeCharIndex = "0"
+              CaretCodeCharIndex = "8"
               BaseX = "0"
               BaseY = "0"/>
             <DockingCard
               Text = "globalMethods.lua.txt"
               Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/globalMethods.lua.txt"
               ActivePage = "false"
-              ActivateTime = "7036817"
-              CaretLineIndex = "0"
-              CaretCodeCharIndex = "0"
-              BaseX = "0"
-              BaseY = "0"/>
-            <DockingCard
-              Text = "preloadConfig.lua.txt"
-              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/preloadConfig.lua.txt"
-              ActivePage = "false"
-              ActivateTime = "84489167"
-              CaretLineIndex = "4"
-              CaretCodeCharIndex = "3"
-              BaseX = "0"
-              BaseY = "0"/>
-            <DockingCard
-              Text = "link.txt"
-              Tag = "E:/FengSheng/FengSheng/Assets/Resources/lua/link.txt"
-              ActivePage = "false"
-              ActivateTime = "148320916"
+              ActivateTime = "12615137"
               CaretLineIndex = "5"
-              CaretCodeCharIndex = "34"
+              CaretCodeCharIndex = "0"
               BaseX = "0"
               BaseY = "0"/>
           </DockingBlock>
         </DockingNode>
         <DockingNode DockingDirection = "None">
-          <DockingBlock Width = "1172" Height = "224" DocumentStyle = "false">
+          <DockingBlock Width = "1512" Height = "303" DocumentStyle = "false">
             <DockingCard
               Text = "Output"
               Tag = ""

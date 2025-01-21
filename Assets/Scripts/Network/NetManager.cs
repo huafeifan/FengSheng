@@ -90,11 +90,18 @@ namespace FengSheng
         /// <param name="data">Êý¾Ý</param>
         public void Send(string netName, uint cmd, byte[] data)
         {
+            if (cmd == 1)
+            {
+                var dat = LoginServer.Login.Login_C2S.Parser.ParseFrom(data);
+                Debug.Log(dat.Name);
+            }
+
             NetSocket socket = GetNetSocket(netName);
             if (socket != null)
             {
                 socket.Sender.SendMessage(cmd, data);
             }
+
         }
 
     }

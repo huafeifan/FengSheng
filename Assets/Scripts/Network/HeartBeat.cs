@@ -18,7 +18,7 @@ namespace FengSheng
             {
                 if (isGetCmd == false)
                 {
-                    mCmd = LuaManager.Instance.luaEnv.Global.Get<uint>("Cmd_HeatBeat");
+                    mCmd = LuaManager.Instance.luaEnv.Global.Get<uint>("ProtosCmd_HeatBeat");
                 }
                 return mCmd;
             }

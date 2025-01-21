@@ -81,14 +81,20 @@ namespace FengSheng
             luaEnvDisposeDelay = 0;
             luaEnvDisposeFlag = false;
 
-            //读取link文件数据
-            string[] filePaths = GetLinkData(Application.dataPath + "/Resources/lua/link.txt");
-
+            
             //创建lua虚拟机
             luaEnv = new LuaEnv();
+            luaEnv.AddLoader((ref string fileName) =>
+            {
+                string filePath = Application.dataPath + "/" + fileName + ".lua.txt";
+                return System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(filePath));
+            });
 
-            //添加lua全局文件加载路径
-            AddLoader();
+            //lua-protobuf
+            luaEnv.AddBuildin("pb", XLua.LuaDLL.Lua.LoadPb);
+
+            //读取link文件数据
+            string[] filePaths = GetLinkData(Application.dataPath + "/Resources/lua/link.txt");
 
             //执行lua全局文件,包括 main（lua脚本的主入口）
             LuaDoString(filePaths);
@@ -99,15 +105,6 @@ namespace FengSheng
         {
             string link = File.ReadAllText(filePath);
             return link.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToArray();
-        }
-
-        private void AddLoader()
-        {
-            luaEnv.AddLoader((ref string fileName) =>
-            {
-                string filePath = Application.dataPath + "/" + fileName + ".lua.txt";
-                return System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(filePath));
-            });
         }
 
         private void LuaDoString(string[] filePaths)

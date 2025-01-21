@@ -20,6 +20,7 @@ local InitUI = function()
 			ui.startBtn.gameObject:SetActive(true)
 			ui.exitBtn.gameObject:SetActive(true)
 		end)
+	
 end
 
 
@@ -46,7 +47,10 @@ end
 local OnBtnLogin = function()
 	Global.Methods_PlayBtnAnimation(ui.loginBtn)
 	if CheckInputName(inputName) == true then
-		ProtosManager:Send_Login(Global.LoginNetwork, inputName)
+		local data = {}
+		data.name = inputName
+		local dataBytes = Global.Methods_Proto_Lua2Bytes(Global.ProtosFileName_Login, Global.ProtosClass_C2S_Login, data)
+		NetManager:Send(Global.LoginNetwork, Global.ProtosCmd_C2S_Login, dataBytes)
 	end
 end
 

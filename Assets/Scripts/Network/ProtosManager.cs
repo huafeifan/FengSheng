@@ -1,4 +1,5 @@
-using Google.Protobuf;
+using System.Text;
+using UnityEditor;
 using UnityEngine;
 
 namespace FengSheng {
@@ -25,17 +26,25 @@ namespace FengSheng {
         }
 
         /// <summary>
-        /// 0x0001 登录
+        /// 根据路径加载协议bytes文件
         /// </summary>
-        /// <param name="name"></param>
-        public void Send_Login(string netName, string name)
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public byte[] LoadProtoFile(string path)
         {
-            LoginServer.Login.C2S.Login login = new LoginServer.Login.C2S.Login()
+            var proto = AssetDatabase.LoadAssetAtPath<TextAsset>(path);
+            if (proto != null)
             {
-                Name = name,
-            };
-            NetManager.Instance.Send(netName, 0x0001, login.ToByteArray());
+                byte[] bytes = proto.bytes;
+                if (bytes == null)
+                {
+                    bytes = Encoding.UTF8.GetBytes(proto.text);
+                }
+                return bytes;
+            }
+            return null;
         }
+
     }
 
 }

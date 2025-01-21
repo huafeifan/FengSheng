@@ -1,4 +1,4 @@
-require "Resources/lua/link"
+require "Resources/lua/globalSet"
 
 --预加载
 UIManager:LoadUI(Global.NetworkWaitingPrefab_Path, true)

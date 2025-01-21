@@ -1,4 +1,4 @@
-require "Resources/lua/link"
+require "Resources/lua/globalSet"
 
 Global.LoginNetwork = "loginNetwork"
 Global.LoginServerIP = "127.0.0.1"

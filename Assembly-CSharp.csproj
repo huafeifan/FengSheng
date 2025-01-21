@@ -124,12 +124,13 @@
     <Compile Include="Assets\XLua\Tutorial\LuaCallCSharp\LuaCallCs.cs" />
     <Compile Include="Assets\XLua\Src\ObjectTranslatorPool.cs" />
     <Compile Include="Assets\XLua\Src\ObjectTranslator.cs" />
+    <Compile Include="Assets\Scripts\Lua\LuaEnv.Protobuf.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\XLua\Tutorial\LoadLuaScript\ByFile\Resources\byfile.lua.txt" />
     <None Include="Assets\Resources\lua\global\globalMethods.lua.txt" />
     <None Include="Assets\Resources\lua\ui\login\login.lua.txt" />
-    <None Include="Assets\Resources\lua\link.lua.txt" />
+    <None Include="Assets\Resources\lua\globalSet.lua.txt" />
     <None Include="Assets\XLua\Resources\xlua\util.lua.txt" />
     <None Include="Assets\DOTween\DOTween.XML" />
     <None Include="Assets\Resources\lua\global\uiConfig.lua.txt" />

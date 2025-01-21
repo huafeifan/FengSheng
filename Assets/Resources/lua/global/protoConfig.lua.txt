@@ -1,3 +1,7 @@
-require "Resources/lua/link"
+require "Resources/lua/globalSet"
 
-Global.Cmd_HeatBeat = 0x0000
+Global.ProtosCmd_HeatBeat = 0x0000
+Global.ProtosCmd_C2S_Login = 0x0001
+
+Global.ProtosFileName_Login = "loginServer.login.c2s"
+Global.ProtosClass_C2S_Login = "loginServer.login.Login_C2S"

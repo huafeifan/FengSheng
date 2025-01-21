@@ -1,4 +1,4 @@
-require "Resources/lua/link"
+require "Resources/lua/globalSet"
 
 Global.Event_Connect = "Event_Connect"
 Global.Event_Exit = "Event_Exit"

@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace LoginServer.Login.C2S {
+namespace LoginServer.Login {
 
   /// <summary>Holder for reflection information generated from Protos/loginServer.login.c2s.proto</summary>
   public static partial class LoginServerLoginC2SReflection {
@@ -24,12 +24,12 @@ namespace LoginServer.Login.C2S {
     static LoginServerLoginC2SReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CiJQcm90b3MvbG9naW5TZXJ2ZXIubG9naW4uYzJzLnByb3RvEhVsb2dpblNl",
-            "cnZlci5sb2dpbi5jMnMiFQoFTG9naW4SDAoEbmFtZRgBIAEoCWIGcHJvdG8z"));
+            "CiJQcm90b3MvbG9naW5TZXJ2ZXIubG9naW4uYzJzLnByb3RvEhFsb2dpblNl",
+            "cnZlci5sb2dpbiIZCglMb2dpbl9DMlMSDAoEbmFtZRgBIAEoCWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::LoginServer.Login.C2S.Login), global::LoginServer.Login.C2S.Login.Parser, new[]{ "Name" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::LoginServer.Login.Login_C2S), global::LoginServer.Login.Login_C2S.Parser, new[]{ "Name" }, null, null, null, null)
           }));
     }
     #endregion
@@ -40,21 +40,21 @@ namespace LoginServer.Login.C2S {
   ///0x0001
   /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
-  public sealed partial class Login : pb::IMessage<Login>
+  public sealed partial class Login_C2S : pb::IMessage<Login_C2S>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<Login> _parser = new pb::MessageParser<Login>(() => new Login());
+    private static readonly pb::MessageParser<Login_C2S> _parser = new pb::MessageParser<Login_C2S>(() => new Login_C2S());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<Login> Parser { get { return _parser; } }
+    public static pb::MessageParser<Login_C2S> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::LoginServer.Login.C2S.LoginServerLoginC2SReflection.Descriptor.MessageTypes[0]; }
+      get { return global::LoginServer.Login.LoginServerLoginC2SReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -65,7 +65,7 @@ namespace LoginServer.Login.C2S {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Login() {
+    public Login_C2S() {
       OnConstruction();
     }
 
@@ -73,15 +73,15 @@ namespace LoginServer.Login.C2S {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Login(Login other) : this() {
+    public Login_C2S(Login_C2S other) : this() {
       name_ = other.name_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public Login Clone() {
-      return new Login(this);
+    public Login_C2S Clone() {
+      return new Login_C2S(this);
     }
 
     /// <summary>Field number for the "name" field.</summary>
@@ -99,12 +99,12 @@ namespace LoginServer.Login.C2S {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as Login);
+      return Equals(other as Login_C2S);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(Login other) {
+    public bool Equals(Login_C2S other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -177,7 +177,7 @@ namespace LoginServer.Login.C2S {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(Login other) {
+    public void MergeFrom(Login_C2S other) {
       if (other == null) {
         return;
       }

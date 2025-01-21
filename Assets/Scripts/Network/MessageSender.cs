@@ -59,7 +59,7 @@ namespace FengSheng
             }
             else
             {
-                Debug.Log($"连接已断开,消息<color=red>{cmd:x4}发送失败</color>");
+                Debug.Log($"连接已断开,消息<color=red>0x{cmd:x4}发送失败</color>");
             }
 
         }

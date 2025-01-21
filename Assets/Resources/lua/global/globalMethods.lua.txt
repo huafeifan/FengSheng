@@ -1,4 +1,21 @@
-require "Resources/lua/link"
+require "Resources/lua/globalSet"
+local pb = require "pb"
+
+Global.Methods_Proto_Lua2Bytes = function(protoName, protoClass, protoData)
+	local protoBytes = ProtosManager:LoadProtoFile("Assets/Resources/lua/protos/" .. protoName .. ".bytes")
+	pb.load(protoBytes)
+	local encodeData = pb.encode(protoClass, protoData)
+	local dataBytes = assert(encodeData)
+	return dataBytes
+end
+
+Global.Methods_Proto_Bytes2Lua = function(protoName, protoClass, dataBytes)
+	local protoBytes = ProtosManager:LoadProtoFile("Assets/Resources/lua/protos/" .. protoName .. ".bytes")
+	pb.load(protoBytes)
+	local decodeData = pb.decode(protoClass, dataBytes)
+	local protoData = assert(decodeData)
+	return protoData
+end
 
 Global.Methods_PlayBtnAnimation = function(btn)
 	btn.transform:DOScale(1.1, 0.1):SetLoops(2, LoopType.Yoyo)
