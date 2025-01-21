@@ -1,7 +1,17 @@
 require "Resources/lua/globalSet"
 
 Global.ProtosCmd_HeatBeat = 0x0000
-Global.ProtosCmd_C2S_Login = 0x0001
 
-Global.ProtosFileName_Login = "loginServer.login.c2s"
+--login c2s
+Global.ProtosFileName_C2S_Login = "loginServer.login.c2s"
+
+Global.ProtosCmd_C2S_Login = 0x0001
 Global.ProtosClass_C2S_Login = "loginServer.login.Login_C2S"
+--login c2s end
+
+--login s2c
+Global.ProtosFileName_S2C_Login = "loginServer.login.s2c"
+
+Global.ProtosCmd_S2C_Login = 0x0001
+Global.ProtosClass_S2C_Login = "loginServer.login.Login_S2C"
+--login s2c end

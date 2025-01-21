@@ -32,6 +32,7 @@ namespace FengSheng
         public override void Unregister()
         {
             mListeners.Clear();
+            mCache.Clear();
         }
 
         private void Update()
@@ -57,17 +58,6 @@ namespace FengSheng
                 }
             }
             return null;
-        }
-
-        public void AddListener(string eventName, Action<System.Object> callBack)
-        {
-            EventPackage eventPackage = GetEventPackage(eventName);
-            if (eventPackage == null)
-            {
-                eventPackage = new EventPackage(eventName);
-                mListeners.Add(eventPackage);
-            }
-            eventPackage.AddEvent(callBack);
         }
 
         public void AddListener(string eventName, Action<System.Object> callBack, string actionName)

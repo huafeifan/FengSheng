@@ -5,20 +5,20 @@ using UnityEngine;
 namespace FengSheng
 {
     [Serializable]
-    public class EventPackage
+    public class ProtosPackage
     {
         /// <summary>
-        /// 事件名称
+        /// 协议号
         /// </summary>
         [SerializeField]
-        private string mName;
+        private uint mCmd;
 
-        public string Name {  get { return mName; } }
+        public uint Cmd {  get { return mCmd; } }
 
         /// <summary>
         /// 事件回调
         /// </summary>
-        private List<Action<System.Object>> mCallBack = new List<Action<object>>();
+        private List<Action<byte[]>> mCallBack = new List<Action<byte[]>>();
 
         /// <summary>
         /// 已注册的事件列表
@@ -26,18 +26,18 @@ namespace FengSheng
         [SerializeField]
         private List<string> mCallBackNameList = new List<string>();
         
-        public EventPackage(string name) 
+        public ProtosPackage(uint cmd) 
         {
-            mName = name;
+            mCmd = cmd;
         }
 
-        public void AddEvent(Action<System.Object> action, string actionName)
+        public void AddEvent(Action<byte[]> action, string actionName)
         {
             mCallBack.Add(action);
             mCallBackNameList.Add(actionName);
         }
 
-        public void RemoveEvent(Action<System.Object> action)
+        public void RemoveEvent(Action<byte[]> action)
         {
             for (int i = 0; i < mCallBack.Count; i++) 
             {
@@ -49,9 +49,9 @@ namespace FengSheng
             }
         }
 
-        public void TriggerEvent(object arg)
+        public void TriggerEvent(byte[] arg)
         {
-            Action<object>[] action = mCallBack.ToArray();
+            Action<byte[]>[] action = mCallBack.ToArray();
             for (int i = 0; i < action.Length; i++) 
             {
                 action[i].Invoke(arg);

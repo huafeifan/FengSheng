@@ -10,7 +10,6 @@ namespace FengSheng
     public class MessageReceiver
     {
         private NetSocket mNetSocket;
-        private TcpClient mTcpClient;
         private Stream mStream;
         private CancellationTokenSource mCts;
 
@@ -25,7 +24,6 @@ namespace FengSheng
         /// <param name="tcpClient"></param>
         public void SetTcpClient(TcpClient tcpClient)
         {
-            mTcpClient = tcpClient;
             mStream = tcpClient.GetStream();
         }
 
@@ -66,6 +64,15 @@ namespace FengSheng
                         if (cmd != mNetSocket.HeartBeat.Cmd)
                         {
                             Debug.Log($"<color=green> Receive 0x{cmd:x4}, Length {length} </color>");
+
+                            uint len = length - 4;
+                            byte[] data = new byte[len];
+                            for (int i = 0, j = 4; i < len; i++, j++)
+                            {
+                                data[i] = buffer[j];
+                            }
+
+                            ProtosManager.Instance.TriggerEvent(cmd, data);
                         }
                     }
                     else

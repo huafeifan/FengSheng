@@ -49,7 +49,7 @@ local OnBtnLogin = function()
 	if CheckInputName(inputName) == true then
 		local data = {}
 		data.name = inputName
-		local dataBytes = Global.Methods_Proto_Lua2Bytes(Global.ProtosFileName_Login, Global.ProtosClass_C2S_Login, data)
+		local dataBytes = Global.Methods_Proto_Lua2Bytes(Global.ProtosFileName_C2S_Login, Global.ProtosClass_C2S_Login, data)
 		NetManager:Send(Global.LoginNetwork, Global.ProtosCmd_C2S_Login, dataBytes)
 	end
 end
@@ -88,12 +88,21 @@ local OnConnect = function(netWorkEventPackage)
 	end
 end
 
+local OnLogin = function(bytes)
+	local data = Global.Methods_Proto_Bytes2Lua(Global.ProtosFileName_S2C_Login, Global.ProtosClass_S2C_Login, bytes)
+	Debug.Log(data.name)
+	--Debug.Log(data.code.tostring())
+end
+
 local AddListener = function()
 	EventManager:AddListener(Global.Event_Connect, OnConnect, "Lua.login.OnConnect")
+	ProtosManager:AddListener(Global.ProtosCmd_S2C_Login, OnLogin, "Lua.login.OnLogin")
+	
 end
 
 local RemoveListener = function()
 	EventManager:RemoveListener(Global.Event_Connect, OnConnect)
+	ProtosManager:RemoveListener(Global.ProtosCmd_S2C_Login, OnLogin)
 end
 
 

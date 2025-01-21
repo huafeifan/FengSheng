@@ -60,14 +60,14 @@
     <Analyzer Include="E:\Unity\2022.3.51f1c1\2022.3.51f1c1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Protos\LoginServerLoginC2S.cs" />
     <Compile Include="Assets\XLua\Src\DelegateBridge.cs" />
     <Compile Include="Assets\XLua\Src\TemplateEngine\TemplateEngine.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager\UICache.cs" />
+    <Compile Include="Assets\Scripts\Protos\ProtosPackage.cs" />
     <Compile Include="Assets\DOTween\Modules\DOTweenModuleAudio.cs" />
+    <Compile Include="Assets\Scripts\Protos\ProtosTriggerCache.cs" />
     <Compile Include="Assets\XLua\Src\ObjectCasters.cs" />
     <Compile Include="Assets\XLua\Hotfix\StatefullTest.cs" />
-    <Compile Include="Assets\Scripts\Network\ProtosManager.cs" />
     <Compile Include="Assets\XLua\Src\LuaEnv.cs" />
     <Compile Include="Assets\Scripts\Network\NetworkEventPackage.cs" />
     <Compile Include="Assets\XLua\Tutorial\CSharpCallLua\CSCallLua.cs" />
@@ -89,6 +89,7 @@
     <Compile Include="Assets\XLua\Src\TypeExtensions.cs" />
     <Compile Include="Assets\Scripts\Network\HeartBeat.cs" />
     <Compile Include="Assets\XLua\Src\GenAttributes.cs" />
+    <Compile Include="Assets\Scripts\Protos\ProtosManager.cs" />
     <Compile Include="Assets\Scripts\Inspector\NetManagerEditor.cs" />
     <Compile Include="Assets\XLua\Hotfix\HotfixTest2.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaManager.cs" />
