@@ -1,3 +1,4 @@
+Resources/lua/tools/dump
 Resources/lua/global/uiConfig
 Resources/lua/global/globalConfig
 Resources/lua/global/protoConfig

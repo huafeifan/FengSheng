@@ -144,6 +144,7 @@
     <None Include="Assets\Resources\lua\main.lua.txt" />
     <None Include="Assets\DOTween\readme.txt" />
     <None Include="Assets\Resources\lua\ui\tips\networkWaiting.lua.txt" />
+    <None Include="Assets\Resources\lua\tools\dump.lua.txt" />
     <None Include="Assets\XLua\Resources\tdr\tdr.lua.txt" />
     <None Include="Assets\Resources\lua\global\globalConfig.lua.txt" />
     <None Include="Assets\XLua\CHANGELOG.txt" />
