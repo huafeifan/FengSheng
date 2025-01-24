@@ -3,5 +3,10 @@ Logs/
 v17/
 Assets/XLua/Gen/
 *.vsidx
+*.dwlt
+*.cache
 Temp/
+obj/Debug/
+UserSettings/Layouts/
+Assets/.lpproj/
 
