@@ -19,6 +19,7 @@ namespace FengSheng
 
         private Action luaStart;
         private Action luaOnEnable;
+        private Action luaOnDisable;
         private Action luaUpdate;
         private Action luaOnDestroy;
 
@@ -55,6 +56,7 @@ namespace FengSheng
             Action luaAwake = scriptScopeTable.Get<Action>("awake");
             scriptScopeTable.Get("start", out luaStart);
             scriptScopeTable.Get("onenable", out luaOnEnable);
+            scriptScopeTable.Get("ondisable", out luaOnDisable);
             scriptScopeTable.Get("update", out luaUpdate);
             scriptScopeTable.Get("ondestroy", out luaOnDestroy);
 
@@ -90,6 +92,14 @@ namespace FengSheng
             }
         }
 
+        void OnDisable()
+        {
+            if (luaOnDisable != null)
+            {
+                luaOnDisable();
+            }
+        }
+
         void OnDestroy()
         {
             Clear();
@@ -108,6 +118,7 @@ namespace FengSheng
             scriptScopeTable.Dispose();
             luaOnDestroy = null;
             luaOnEnable = null;
+            luaOnDisable = null;
             luaUpdate = null;
             luaStart = null;
         }

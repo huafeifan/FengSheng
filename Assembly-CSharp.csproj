@@ -95,6 +95,7 @@
     <Compile Include="Assets\Scripts\Lua\LuaManager.cs" />
     <Compile Include="Assets\XLua\Src\MethodWarpsCache.cs" />
     <Compile Include="Assets\XLua\Src\ObjectPool.cs" />
+    <Compile Include="Assets\Scripts\Lua\LuaTable.Extension.cs" />
     <Compile Include="Assets\XLua\Src\RawObject.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Network\MessageSender.cs" />

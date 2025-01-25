@@ -210,7 +210,7 @@ namespace FengSheng
 
                 if (mThread != null)
                 {
-                    mThread.Join();
+                    mThread.Abort();
                 }
             }
             catch (Exception ex)

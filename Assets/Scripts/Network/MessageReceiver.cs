@@ -15,7 +15,7 @@ namespace FengSheng
 
         public MessageReceiver()
         {
-            mCts = new CancellationTokenSource();
+            
         }
 
         /// <summary>
@@ -38,6 +38,7 @@ namespace FengSheng
 
         public void Start()
         {
+            mCts = new CancellationTokenSource();
             _ = Task.Run(() => ReceiveDataAsync(mCts.Token));
             Debug.Log("消息接受器已开启");
         }

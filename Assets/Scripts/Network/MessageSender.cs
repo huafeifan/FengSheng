@@ -11,7 +11,7 @@ namespace FengSheng
 
         public MessageSender()
         {
-            
+
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace FengSheng
         {
             if (mTcpClient != null && mTcpClient.Connected)
             {
-                int len = data.Length + 4;
+                int len = (data == null ? 0 : data.Length) + 4;
                 byte b1 = (byte)((uint)len >> 8 & 0xFFu);
                 byte b2 = (byte)((uint)len & 0xFFu);
                 byte b3 = (byte)(cmd >> 8 & 0xFFu);
@@ -50,7 +50,8 @@ namespace FengSheng
                 bytes[1] = b2;
                 bytes[2] = b3;
                 bytes[3] = b4;
-                data.CopyTo(bytes, 4);
+                if (data != null)
+                    data.CopyTo(bytes, 4);
 
                 mStream.Write(bytes, 0, bytes.Length);
 
