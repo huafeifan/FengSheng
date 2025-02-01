@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIRoot: {fileID: 1382561516}
+  mUILayerConfig: []
   mUICache: []
 --- !u!1 &79733512
 GameObject:
@@ -1142,6 +1143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51a0eff06af5e5940a6a3b5a0e7b2139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mListeners: []
 --- !u!1 &1475054725
 GameObject:
   m_ObjectHideFlags: 0

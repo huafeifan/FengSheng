@@ -1,8 +1,9 @@
 require "Resources/lua/globalSet"
 
-Global.LoginNetwork = "loginNetwork"
-Global.LoginServerIP = "127.0.0.1"
-Global.LoginServerPort = 8000
+Global.Login = {}
+Global.Login.Network = "loginNetwork"
+Global.Login.ServerIP = "127.0.0.1"
+Global.Login.ServerPort = 8000
 
 Debug = CS.UnityEngine.Debug
 Button = CS.UnityEngine.UI.Button
@@ -11,6 +12,7 @@ Text = CS.UnityEngine.UI.Text
 Color = CS.UnityEngine.Color
 Vector3 = CS.UnityEngine.Vector3
 InputField = CS.UnityEngine.UI.InputField
+Toggle = CS.UnityEngine.UI.Toggle
 
 LoopType = CS.DG.Tweening.LoopType
 Ease = CS.DG.Tweening.Ease
@@ -20,4 +22,5 @@ UIManager = CS.FengSheng.UIManager.Instance
 NetManager = CS.FengSheng.NetManager.Instance
 EventManager = CS.FengSheng.EventManager.Instance
 ProtosManager = CS.FengSheng.ProtosManager.Instance
+GameObjectPool = CS.FengSheng.GameObjectPool
 

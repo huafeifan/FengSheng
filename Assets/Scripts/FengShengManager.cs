@@ -5,7 +5,21 @@ namespace FengSheng
 {
     public class FengShengManager : MonoBehaviour
     {
-        public virtual void Register() { }
-        public virtual void Unregister() { }
+        public bool IsDisposing = false;
+
+        public virtual void Register() 
+        {
+            
+        }
+
+        public virtual void Unregister() 
+        {
+            
+        }
+
+        public virtual void OnDisposeComplete()
+        {
+            
+        }
     }
 }

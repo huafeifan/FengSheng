@@ -221,7 +221,7 @@ namespace FengSheng
             mState = State.Null;
             TriggerConnectEvent(State.Null, "客户端已关闭");
             Debug.Log("客户端已关闭");
-
+            EventManager.Instance.TriggerEvent(EventManager.Event_Restart, null);
         }
 
         /// <summary>

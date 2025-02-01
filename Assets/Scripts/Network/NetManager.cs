@@ -23,13 +23,18 @@ namespace FengSheng
 
         public override void Register()
         {
+            IsDisposing = false;
             mInstance = this;
         }
 
         public override void Unregister()
         {
+            IsDisposing = true;
+
             CloseAll();
             mNetList.Clear();
+
+            IsDisposing = false;
         }
 
         /// <summary>

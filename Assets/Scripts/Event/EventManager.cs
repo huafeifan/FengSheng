@@ -8,6 +8,7 @@ namespace FengSheng
     {
         public const string Event_Connect = "Event_Connect";
         public const string Event_Exit = "Event_Exit";
+        public const string Event_Restart = "Event_Restart";
 
         private static EventManager mInstance;
         public static EventManager Instance
@@ -27,12 +28,17 @@ namespace FengSheng
         public override void Register()
         {
             mInstance = this;
+            IsDisposing = false;
         }
 
         public override void Unregister()
         {
+            IsDisposing = true;
+
             mListeners.Clear();
             mCache.Clear();
+
+            IsDisposing = false;
         }
 
         private void Update()

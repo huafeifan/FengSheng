@@ -1,0 +1,35 @@
+-- 定义一个队列类
+Queue = {}
+Queue.__index = Queue
+
+-- 创建一个新的队列实例
+function Queue:new()
+	local newQueue = {
+		items = {} -- 存储队列元素的表
+	}
+	setmetatable(newQueue, Queue)
+	return newQueue
+end
+
+-- 向队列中添加一个元素
+function Queue:enqueue(item)
+	table.insert(self.items, item)
+end
+
+-- 从队列中移除并返回第一个元素
+function Queue:dequeue()
+	if self:isEmpty() then
+		error("Queue is empty!")
+	end
+	return table.remove(self.items, 1)
+end
+
+-- 检查队列是否为空
+function Queue:isEmpty()
+	return #self.items == 0
+end
+
+-- 获取队列的长度
+function Queue:length()
+	return #self.items
+end

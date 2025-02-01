@@ -1,17 +1,55 @@
 require "Resources/lua/globalSet"
 
-Global.ProtosCmd_HeatBeat = 0x0000
+Global.Protos = {}
+Global.Protos.Cmd = {}
+Global.Protos.FileName = {}
+Global.Protos.Class = {}
 
---login c2s
-Global.ProtosFileName_C2S_Login = "loginServer.login.c2s"
+Global.Protos.Cmd.HeartBeat = 0x0000
 
-Global.ProtosCmd_C2S_Login = 0x0001
-Global.ProtosClass_C2S_Login = "loginServer.login.Login_C2S"
---login c2s end
+--login
+Global.Protos.FileName.Login = "loginServer.login"
 
---login s2c
-Global.ProtosFileName_S2C_Login = "loginServer.login.s2c"
+Global.Protos.Cmd.Login_C2S = 0x0001
+Global.Protos.Class.Login_C2S = "loginServer.login.Login_C2S"
 
-Global.ProtosCmd_S2C_Login = 0x0001
-Global.ProtosClass_S2C_Login = "loginServer.login.Login_S2C"
---login s2c end
+Global.Protos.Cmd.Login_S2C = 0x0001
+Global.Protos.Class.Login_S2C = "loginServer.login.Login_S2C"
+--login end
+
+--room
+Global.Protos.FileName.Room = "loginServer.room"
+
+Global.Protos.Cmd.RoomList_C2S = 0x0100
+Global.Protos.Class.RoomList_C2S = "loginServer.room.RoomList_C2S"
+
+Global.Protos.Cmd.RoomList_S2C = 0x0100
+Global.Protos.Class.RoomList_S2C = "loginServer.room.RoomList_S2C"
+
+Global.Protos.Cmd.CreateRoom_C2S = 0x0101
+Global.Protos.Class.CreateRoom_C2S = "loginServer.room.CreateRoom_C2S"
+
+Global.Protos.Cmd.CreateRoom_S2C = 0x0101
+Global.Protos.Class.CreateRoom_S2C = "loginServer.room.CreateRoom_S2C"
+
+Global.Protos.Cmd.EnterRoom_C2S = 0x0102
+Global.Protos.Class.EnterRoom_C2S = "loginServer.room.EnterRoom_C2S"
+
+Global.Protos.Cmd.EnterRoom_S2C = 0x0102
+Global.Protos.Class.EnterRoom_S2C = "loginServer.room.EnterRoom_S2C"
+
+Global.Protos.Cmd.ExitRoom_C2S = 0x0103
+Global.Protos.Class.ExitRoom_C2S = "loginServer.room.ExitRoom_C2S"
+
+Global.Protos.Cmd.ExitRoom_S2C = 0x0103
+Global.Protos.Class.ExitRoom_S2C = "loginServer.room.ExitRoom_S2C"
+
+Global.Protos.Cmd.RoomInfoChange_S2C = 0x0104
+Global.Protos.Class.RoomInfoChange_S2C = "loginServer.room.RoomInfoChange_S2C"
+
+Global.Protos.Cmd.RequestRoomInfo_C2S = 0x0105
+Global.Protos.Class.RequestRoomInfo_C2S = "loginServer.room.RequestRoomInfo_C2S"
+
+Global.Protos.Cmd.RequestRoomInfo_S2C = 0x0105
+Global.Protos.Class.RequestRoomInfo_S2C = "loginServer.room.RequestRoomInfo_S2C"
+--room end

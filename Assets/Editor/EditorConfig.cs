@@ -78,43 +78,13 @@ public class EditorConfig : Editor
             case NewLuaText.None:
                 return string.Empty;
             case NewLuaText.Scene:
-                return 
+                return
 @"local ui = {}
                         
-local InitUI = function()
+local InitUIReference = function()
 
 end
 
-local AddUIEvent = function()
-
-end
-
-local RemoveUIEvent = function()
-
-end
-
-local AddListener = function()
-
-end
-
-local RemoveListener = function()
-
-end
-
-function start()
-    InitUI()
-    AddUIEvent()
-    AddListener()
-end
-
-function ondestroy()
-    RemoveUIEvent()
-    RemoveListener()
-end";
-            case NewLuaText.Layer:
-            return 
-@"local ui = {}
-                        
 local InitUI = function()
 
 end
@@ -136,10 +106,58 @@ local RemoveListener = function()
 end
 
 function awake()
-	InitUI()
+	InitUIReference()
 end
 
 function onenable()
+    InitUI()
+	AddUIEvent()
+	AddListener()
+end
+
+function ondisable()
+	RemoveUIEvent()
+	RemoveListener()
+end
+
+function ondestroy()
+	RemoveUIEvent()
+	RemoveListener()
+end";
+            case NewLuaText.Layer:
+            return
+@"local ui = {}
+                        
+local InitUIReference = function()
+
+end
+
+local InitUI = function()
+
+end
+
+local AddUIEvent = function()
+
+end
+
+local RemoveUIEvent = function()
+
+end
+
+local AddListener = function()
+
+end
+
+local RemoveListener = function()
+
+end
+
+function awake()
+	InitUIReference()
+end
+
+function onenable()
+    InitUI()
 	AddUIEvent()
 	AddListener()
 end

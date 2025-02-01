@@ -1,0 +1,215 @@
+require "Resources/lua/ui/game/chair"
+
+local ui = {}
+local chairs = {}
+                        
+local InitUIReference = function()
+	ui.startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
+	ui.exitBtn = self.transform:Find("ExitBtn"):GetComponent(typeof(Button))
+	ui.readyBtn = self.transform:Find("ReadyBtn"):GetComponent(typeof(Button))
+	
+	ui.chairList = {}
+	ui.chairList.top1 = Chair:New(self.transform:Find("ChairList/TopChairs/Chair1").gameObject)
+	ui.chairList.top1:InitUIReference()
+	
+	ui.chairList.top2 = Chair:New(self.transform:Find("ChairList/TopChairs/Chair2").gameObject)
+	ui.chairList.top2:InitUIReference()
+	
+	ui.chairList.top3 = Chair:New(self.transform:Find("ChairList/TopChairs/Chair3").gameObject)
+	ui.chairList.top3:InitUIReference()
+	
+	ui.chairList.left = Chair:New(self.transform:Find("ChairList/LeftChairs/Chair").gameObject)
+	ui.chairList.left:InitUIReference()
+	
+	ui.chairList.right = Chair:New(self.transform:Find("ChairList/RightChairs/Chair").gameObject)
+	ui.chairList.right:InitUIReference()
+	
+	ui.chairList.bottom = Chair:New(self.transform:Find("ChairList/BottomChairs/Chair").gameObject)
+	ui.chairList.bottom:InitUIReference()
+		
+end
+	
+local InitUI = function()
+	chairs = {}
+	
+	--自己
+	chairs[1] = ui.chairList.bottom
+	chairs[1]:InitUI()
+	
+	--左1
+	chairs[2] = ui.chairList.left
+	chairs[2]:InitUI()
+	
+	--上1
+	chairs[3] = ui.chairList.top1
+	chairs[3]:InitUI()
+	
+	if Global.Data.RoomInfo.ChairCount == 6 then
+		chairs[4] = ui.chairList.top2
+		chairs[4]:InitUI()
+		
+		chairs[5] = ui.chairList.top3
+		chairs[5]:InitUI()
+		
+		chairs[6] = ui.chairList.right
+		chairs[6]:InitUI()
+	elseif Global.Data.RoomInfo.ChairCount == 5 then
+		chairs[4] = ui.chairList.top2
+		chairs[4]:InitUI()
+		
+		chairs[5] = ui.chairList.right
+		chairs[5]:InitUI()
+		
+		ui.chairList.top3.gameObject:SetActive(false)
+	else
+		chairs[4] = ui.chairList.right
+		chairs[4]:InitUI()
+		
+		ui.chairList.top2.gameObject:SetActive(false)
+		ui.chairList.top3.gameObject:SetActive(false)
+	end
+	
+	ui.startBtn.gameObject:SetActive(false)
+	ui.exitBtn.gameObject:SetActive(true)
+	ui.readyBtn.gameObject:SetActive(false)
+
+end
+
+local RefreshRoomInfo = function()
+	--服务端传来的座位信息
+	local chairsInfo = Global.Data.RoomInfo.ChairsInfo
+	--座位信息数量
+	local chairInfoCount = #chairsInfo
+	--座位数量
+	local chairCount = #chairs
+	
+	--房主是1号座椅,找出自己是几号座椅
+	local index = 1
+	for i = 1, chairInfoCount do
+		if chairsInfo[i].isNull == false and chairsInfo[i].userData.name == Global.Data.User.UserName then
+			break
+		end
+		index = index + 1
+	end
+	
+	--开始排座,从自己开始排
+	for j = 1, chairCount do
+		if index > chairInfoCount then
+			index = 1
+		end
+		chairs[j]:SetChairInfo(chairsInfo[index])
+		index = index + 1
+	end
+	
+	if chairs[1]:IsOwner() == true then
+		ui.startBtn.gameObject:SetActive(true)
+		ui.readyBtn.gameObject:SetActive(false)
+	else
+		ui.startBtn.gameObject:SetActive(false)
+		ui.readyBtn.gameObject:SetActive(chairs[1]:IsReady() == true)
+	end
+
+end
+
+local OnBtnStart = function()
+	
+end
+
+local OnBtnExit = function()
+	local data = {}
+	data.roomNub = Global.Data.RoomInfo.RoomNub
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.ExitRoom_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.ExitRoom_C2S, dataBytes)
+end
+
+local OnBtnReady = function()
+	
+end
+
+local AddUIEvent = function()
+	ui.startBtn.onClick:AddListener(OnBtnStart)
+	ui.exitBtn.onClick:AddListener(OnBtnExit)
+	ui.readyBtn.onClick:AddListener(OnBtnReady)
+end
+
+local RemoveUIEvent = function()
+	ui.startBtn.onClick:RemoveAllListeners()
+	ui.exitBtn.onClick:RemoveAllListeners()
+	ui.readyBtn.onClick:RemoveAllListeners()
+end
+
+local OnReceiveRoomInfoChange = function(bytes)
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.RoomInfoChange_S2C, bytes)
+	Global.Data.RoomInfo.SetRoomInfo(data.roomInfo)
+	Global.Data.RoomInfo.SetChairsInfo(data.chairInfoList)
+	RefreshRoomInfo()
+end
+
+local OnReceiveExitRoom = function(bytes)
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.ExitRoom_S2C, bytes)
+	if data.code == "Success" then
+		Global.Data.RoomInfo.Clear()
+		UIManager:CloseUI(Global.GamePrefab_Path)
+		UIManager:OpenUI(Global.LoginPrefab_Path)
+	else
+		Global.Methods.ShowTips(data.msg)
+	end
+end
+
+local OnReceiveRequestRoomInfo = function(bytes)
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.RequestRoomInfo_S2C, bytes)
+	if data.code == "Success" then
+		Global.Data.RoomInfo.SetRoomInfo(data.roomInfo)
+		Global.Data.RoomInfo.SetChairsInfo(data.chairInfoList)
+		RefreshRoomInfo()
+	else
+		Global.Methods.ShowTips(data.msg)
+	end
+end
+
+local AddListener = function()
+	ProtosManager:AddListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom, "Lua.game.OnReceiveExitRoom")
+	ProtosManager:AddListener(Global.Protos.Cmd.RoomInfoChange_S2C, OnReceiveRoomInfoChange, "Lua.game.OnReceiveRoomInfoChange")
+	ProtosManager:AddListener(Global.Protos.Cmd.RequestRoomInfo_S2C, OnReceiveRequestRoomInfo, "Lua.game.OnReceiveRequestRoomInfo")
+end
+
+local RemoveListener = function()
+	ProtosManager:RemoveListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.RoomInfoChange_S2C, OnReceiveRoomInfoChange)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.RequestRoomInfo_S2C, OnReceiveRequestRoomInfo)
+end
+
+local RequestRoomInfo = function()
+	local data = {}
+	data.roomNub = Global.Data.RoomInfo.RoomNub
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.RequestRoomInfo_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.RequestRoomInfo_C2S, dataBytes)
+end
+
+local Dispose = function()
+	
+end
+
+function awake()
+	InitUIReference()
+end
+
+function onenable()
+	InitUI()
+	AddUIEvent()
+	AddListener()
+	
+	RequestRoomInfo()
+end
+
+function ondisable()
+	RemoveUIEvent()
+	RemoveListener()
+	
+end
+
+function ondestroy()
+	RemoveUIEvent()
+	RemoveListener()
+end

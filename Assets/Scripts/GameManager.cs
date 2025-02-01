@@ -20,20 +20,45 @@ namespace FengSheng
         [SerializeField]
         private List<FengShengManager> mManagerList = new List<FengShengManager>();
 
+        private bool mIsRestart = false;
+
         private void Awake()
         {
+
             mInstance = this;
 
             Register();
         }
 
-        private void OnDestroy()
+        private void Update()
         {
-            Unresgister();
+            if (IsDisposing)
+            {
+                for (int i = mManagerList.Count - 1; i > 0; i--)
+                {
+                    if (mManagerList[i].IsDisposing == false)
+                    {
+                        mManagerList.RemoveAt(i);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                IsDisposing = false;
+
+                if (mIsRestart)
+                {
+                    Register();
+                }
+            }
         }
 
         public override void Register()
         {
+            IsDisposing = false;
+            mIsRestart = false;
+
             Register<ProtosManager>();
             Register<UIManager>();
             Register<NetManager>();
@@ -41,7 +66,21 @@ namespace FengSheng
 
             Register<LuaManager>();
 
-            EventManager.Instance.AddListener(EventManager.Event_Exit, OnExit, "CSharp.GameManager.OnExit");
+            AddListener();
+        }
+
+        public override void Unregister()
+        {
+            RemoveListener();
+
+            Unregister<ProtosManager>();
+            Unregister<UIManager>();
+            Unregister<NetManager>();
+            Unregister<EventManager>();
+
+            Unregister<LuaManager>();
+
+            IsDisposing = true;
         }
 
         private void Register<T>() where T : FengShengManager
@@ -58,7 +97,6 @@ namespace FengSheng
                 if (mManagerList[i] is T)
                 {
                     mManagerList[i].Unregister();
-                    mManagerList.RemoveAt(i);
                     break;
                 }
             }
@@ -76,20 +114,35 @@ namespace FengSheng
             return null;
         }
 
-        public void Unresgister()
+        private void AddListener()
         {
-            Unregister<ProtosManager>();
-            Unregister<UIManager>();
-            Unregister<NetManager>();
-            Unregister<EventManager>();
+            EventManager.Instance.AddListener(EventManager.Event_Exit, OnExit, "CSharp.GameManager.OnExit");
+            EventManager.Instance.AddListener(EventManager.Event_Restart, OnRestart, "CSharp.GameManager.OnRestart");
+        }
 
-            Unregister<LuaManager>();
+        private void RemoveListener()
+        {
+            EventManager.Instance.RemoveListener(EventManager.Event_Exit, OnExit);
+            EventManager.Instance.RemoveListener(EventManager.Event_Restart, OnRestart);
+        }
+
+        private void OnDestroy()
+        {
+            Unregister();
         }
 
         private void OnExit(object obj)
         {
-            Unresgister();
+            Unregister();
         }
+
+        private void OnRestart(object obj)
+        {
+            Unregister();
+
+            mIsRestart = true;
+        }
+
 
     }
 }

@@ -1,43 +1,66 @@
+require "Resources/lua/ui/login/userHead"
+
 local ui = {}
 local inputName = nil
 
-local InitUI = function()
+local InitUIReference = function()
 	ui.bg = self.transform:Find("Bg"):GetComponent(typeof(Image))
 	ui.startBtn = self.transform:Find("BtnList/StartBtn"):GetComponent(typeof(Button))
 	ui.exitBtn = self.transform:Find("BtnList/ExitBtn"):GetComponent(typeof(Button))
 	ui.loginBtn = self.transform:Find("BtnList/LoginBtn"):GetComponent(typeof(Button))
+	ui.createRoomBtn = self.transform:Find("BtnList/CreateRoomBtn"):GetComponent(typeof(Button))
+	ui.checkRoomBtn = self.transform:Find("BtnList/CheckRoomBtn"):GetComponent(typeof(Button))
+	ui.restartBtn = self.transform:Find("BtnList/RestartBtn"):GetComponent(typeof(Button))
 	ui.inputName = self.transform:Find("InputName"):GetComponent(typeof(InputField))
 	
-	ui.startBtn.gameObject:SetActive(false)
-	ui.exitBtn.gameObject:SetActive(false)
-	ui.loginBtn.gameObject:SetActive(false)
-	ui.inputName.gameObject:SetActive(false)
-
-	ui.bg.color = Color(1, 1, 1, 0)
-
-	ui.bg:DOFade(1, 3):SetEase(Ease.InCubic):OnComplete(
-		function()
-			ui.startBtn.gameObject:SetActive(true)
-			ui.exitBtn.gameObject:SetActive(true)
-		end)
-	
+	ui.head = UserHead:New(self.transform:Find("User").gameObject)
+	ui.head:InitUIReference()
 end
 
-
+local InitUI = function()
+	if Global.Data.User.UserName ~= nil then
+		ui.startBtn.gameObject:SetActive(false)
+		ui.exitBtn.gameObject:SetActive(true)
+		ui.loginBtn.gameObject:SetActive(false)
+		ui.createRoomBtn.gameObject:SetActive(true)
+		ui.checkRoomBtn.gameObject:SetActive(true)
+		ui.restartBtn.gameObject:SetActive(true)
+		ui.head:SetActive(true)
+		ui.head:SetData(Global.Data.User.UserName)
+	else
+		ui.startBtn.gameObject:SetActive(false)
+		ui.exitBtn.gameObject:SetActive(false)
+		ui.loginBtn.gameObject:SetActive(false)
+		ui.createRoomBtn.gameObject:SetActive(false)
+		ui.checkRoomBtn.gameObject:SetActive(false)
+		ui.restartBtn.gameObject:SetActive(false)
+		ui.inputName.gameObject:SetActive(false)
+		ui.head:SetActive(false)
+	
+		ui.bg.color = Color(1, 1, 1, 0)
+	
+		ui.bg:DOFade(1, 3):SetEase(Ease.InCubic):OnComplete(
+			function()
+				ui.startBtn.gameObject:SetActive(true)
+				ui.exitBtn.gameObject:SetActive(true)
+				ui.restartBtn.gameObject:SetActive(true)
+			end)
+	end
+end
 
 local OnBtnStart = function()
-	Global.Methods_PlayBtnAnimation(ui.startBtn)
-	NetManager:Connect(Global.LoginNetwork, Global.LoginServerIP, Global.LoginServerPort)
+	Global.Methods.PlayBtnAnimation(ui.startBtn)
+	NetManager:Connect(Global.Login.Network, Global.Login.ServerIP, Global.Login.ServerPort)
 end
 
 local OnBtnExit = function()
-	Global.Methods_PlayBtnAnimation(ui.exitBtn)
-	EventManager:TriggerEvent("Event_Exit", nil)
+	Global.Methods.PlayBtnAnimation(ui.exitBtn)
+	EventManager:TriggerEvent(Global.Event.Exit, nil)
 end
 
 local CheckInputName = function(s)
 	if s == nil or string.len(s) <= 0 then
-		Debug.Log("请输入名称")
+		Global.Methods.ShowTips("请输入名称")
 		return false
 	end
 	
@@ -45,39 +68,57 @@ local CheckInputName = function(s)
 end
 
 local OnBtnLogin = function()
-	Global.Methods_PlayBtnAnimation(ui.loginBtn)
+	Global.Methods.PlayBtnAnimation(ui.loginBtn)
 	if CheckInputName(inputName) == true then
 		local data = {}
 		data.name = inputName
-		local dataBytes = Global.Methods_Proto_Lua2Bytes(Global.ProtosFileName_C2S_Login, Global.ProtosClass_C2S_Login, data)
-		NetManager:Send(Global.LoginNetwork, Global.ProtosCmd_C2S_Login, dataBytes)
+		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Login, Global.Protos.Class.Login_C2S, data)
+		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.Login_C2S, dataBytes)
 	end
 end
 
 local OnInputNameChanged = function(s)
-	if CheckInputName(s) == true then
-		inputName = s
-	end
+	inputName = s
+end
+
+local OnBtnCreateRoom = function()
+	Global.Methods.PlayBtnAnimation(ui.createRoomBtn)
+	UIManager:OpenUI(Global.CreateRoomPrefab_Path)
+end
+
+local OnBtnCheckRoom = function()
+	Global.Methods.PlayBtnAnimation(ui.checkRoomBtn)
+	UIManager:OpenUI(Global.RoomListPrefab_Path)
+end
+
+local OnBtnRestart = function()
+	EventManager:TriggerEvent(Global.Event.Restart, nil)
 end
 
 local AddUIEvent = function()
 	ui.startBtn.onClick:AddListener(OnBtnStart)
 	ui.exitBtn.onClick:AddListener(OnBtnExit)
 	ui.loginBtn.onClick:AddListener(OnBtnLogin)
+	ui.createRoomBtn.onClick:AddListener(OnBtnCreateRoom)
+	ui.checkRoomBtn.onClick:AddListener(OnBtnCheckRoom)
 	ui.inputName.onValueChanged:AddListener(OnInputNameChanged)
+	ui.restartBtn.onClick:AddListener(OnBtnRestart)
+	ui.head:AddUIEvent()
 end
 
 local RemoveUIEvent = function()
 	ui.startBtn.onClick:RemoveAllListeners()
 	ui.exitBtn.onClick:RemoveAllListeners()
 	ui.loginBtn.onClick:RemoveAllListeners()
+	ui.createRoomBtn.onClick:RemoveAllListeners()
+	ui.checkRoomBtn.onClick:RemoveAllListeners()
 	ui.inputName.onValueChanged:RemoveAllListeners()
+	ui.restartBtn.onClick:RemoveAllListeners()
+	ui.head:RemoveUIEvent()
 end
 
-
-
 local OnConnect = function(netWorkEventPackage)
-	if netWorkEventPackage.NetName == Global.LoginNetwork then
+	if netWorkEventPackage.NetName == Global.Login.Network then
 		if netWorkEventPackage.ConnectResult == true then
 			Debug.Log("网络连接成功")
 			--登录相关 
@@ -89,32 +130,76 @@ local OnConnect = function(netWorkEventPackage)
 end
 
 local OnLogin = function(bytes)
-	local data = Global.Methods_Proto_Bytes2Lua(Global.ProtosFileName_S2C_Login, Global.ProtosClass_S2C_Login, bytes)
-	Debug.Log(data.name)
-	--Debug.Log(data.code.tostring())
-end
-
-local AddListener = function()
-	EventManager:AddListener(Global.Event_Connect, OnConnect, "Lua.login.OnConnect")
-	ProtosManager:AddListener(Global.ProtosCmd_S2C_Login, OnLogin, "Lua.login.OnLogin")
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Login, Global.Protos.Class.Login_S2C, bytes)
+	
+	Global.Methods.ShowTips(data.msg)
+	
+	if data.code == "Success" then
+		ui.loginBtn.gameObject:SetActive(false)
+		ui.inputName.gameObject:SetActive(false)
+		ui.createRoomBtn.gameObject:SetActive(true)
+		ui.checkRoomBtn.gameObject:SetActive(true)
+		
+		ui.head:SetActive(true)
+		ui.head:SetData(data.user.name)
+		
+		Global.Data.User.SetData(data.user)
+	end
 	
 end
 
-local RemoveListener = function()
-	EventManager:RemoveListener(Global.Event_Connect, OnConnect)
-	ProtosManager:RemoveListener(Global.ProtosCmd_S2C_Login, OnLogin)
+local OnReceiveEnterRoom = function(bytes)
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.EnterRoom_S2C, bytes)
+	
+	if data.code == "Success" then
+		Global.Data.RoomInfo.SetRoomInfo(data.roomInfo)
+		UIManager:OpenUI(Global.GamePrefab_Path)
+		UIManager:CloseUI(Global.LoginPrefab_Path)
+		UIManager:CloseUI(Global.RoomListPrefab_Path)
+	else
+		Global.Methods.ShowTips(data.msg)
+	end
 end
 
+local AddListener = function()
+	EventManager:AddListener(Global.Event.Connect, OnConnect, "Lua.login.OnConnect")
+	ProtosManager:AddListener(Global.Protos.Cmd.Login_S2C, OnLogin, "Lua.login.OnLogin")
+	ProtosManager:AddListener(Global.Protos.Cmd.EnterRoom_S2C, OnReceiveEnterRoom, "Lua.login.OnReceiveEnterRoom")
+	ui.head:AddListener()
+end
 
+local RemoveListener = function()
+	EventManager:RemoveListener(Global.Event.Connect, OnConnect)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.Login_S2C, OnLogin)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.EnterRoom_S2C, OnReceiveEnterRoom)
+	ui.head:RemoveListener()
+end
 
-function start()
+local Dispose = function()
+	if ui.head ~= nil then
+		ui.head:Dispose()
+	end
+end
+
+function awake()
+	InitUIReference()
+end
+
+function onenable()
 	InitUI()
 	AddUIEvent()
 	AddListener()
 end
 
+function ondisable()
+	RemoveUIEvent()
+	RemoveListener()
+	Dispose()
+end
+
 function ondestroy()
 	RemoveUIEvent()
 	RemoveListener()
+	Dispose()
 end
 

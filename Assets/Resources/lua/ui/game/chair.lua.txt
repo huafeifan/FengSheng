@@ -1,0 +1,103 @@
+require "Resources/lua/ui/login/userHead"
+
+Chair = {}
+Chair.__index = Chair
+
+function Chair:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, Chair)
+	return item
+end
+
+function Chair:InitUIReference()
+	self.ui.ready = self.transform:Find("Ready")
+	self.ui.owener = self.transform:Find("Owener")
+	
+	self.ui.head = UserHead:New(self.transform:Find("User").gameObject)
+	self.ui.head:InitUIReference()
+end
+
+function Chair:InitUI()
+	self.gameObject:SetActive(true)
+	self.ui.ready.gameObject:SetActive(false)
+	self.ui.owener.gameObject:SetActive(false)
+	
+	self.ui.head:SetActive(true)
+	self.ui.head:SetData("")
+end
+
+function Chair:SetChairInfo(chairInfo)
+	self.chairInfo = chairInfo
+	
+	if chairInfo.isNull == false then
+		self.ui.owener.gameObject:SetActive(chairInfo.chairNub == 1)
+		self.ui.ready.gameObject:SetActive(chairInfo.chairNub ~= 1 and chairInfo.isReady == true)
+		if chairInfo.userData == nil then
+			self.ui.head:SetData("")
+		else
+			self.ui.head:SetData(chairInfo.userData.name)
+		end
+		
+	else
+		self:InitUI()
+	end
+	
+end
+
+function Chair:IsOwner()
+	if self.chairInfo == nil then
+		return false
+	end
+	
+	if self.chairInfo.isNull == true then
+		return false
+	end
+	
+	return self.chairInfo.chairNub == 1
+end
+
+function Chair:IsReady()
+	if self.chairInfo == nil then
+		return false
+	end
+
+	if self.chairInfo.isNull == true then
+		return false
+	end
+	
+	return self.chairInfo.isReady
+end
+
+function Chair:Ready()
+	self.ui.ready.gameObject:SetActive(true)
+end
+
+function Chair:Unready()
+	self.ui.ready.gameObject:SetActive(false)
+end
+
+function Chair:AddUIEvent()
+	self.ui.head:AddUIEvent()
+end
+
+function Chair:RemoveUIEvent()
+	self.ui.head:RemoveUIEvent()
+end
+
+function Chair:AddListener()
+	self.ui.head:AddListener()
+end
+
+function Chair:RemoveListener()
+	self.ui.head:RemoveListener()
+end
+
+function Chair:Dispose()
+	if self.ui.head ~= nil then
+		self.ui.head:Dispose()
+	end
+end

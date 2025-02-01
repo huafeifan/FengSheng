@@ -1,18 +1,18 @@
 local ui = {}
 
-local InitUI = function()
+local InitUIReference = function()
 	ui.content = self.transform:Find("Content")
 	ui.tip = self.transform:Find("Content/Text"):GetComponent(typeof(Text))
 	ui.rotateItem = self.transform:Find("Content/Item")
-	
+end
+
+local InitUI = function()
 	ui.rotateItem:DORotate(Vector3.forward * 360, 1, RotateMode.FastBeyond360):SetLoops(-1):SetEase(Ease.Linear)
 	ui.content.gameObject:SetActive(false)
 end
 
-
-
 local OnConnect = function(netWorkEventPackage)
-	if netWorkEventPackage.NetName == Global.LoginNetwork then
+	if netWorkEventPackage.NetName == Global.Login.Network then
 		if netWorkEventPackage.IsConnecting == true then
 			ui.content.gameObject:SetActive(true)
 			ui.tip.text = "正在连接到服务器..."
@@ -22,21 +22,25 @@ local OnConnect = function(netWorkEventPackage)
 	end
 end
 
-
-
 local AddListener = function()
-	EventManager:AddListener(Global.Event_Connect, OnConnect, "Lua.networkWaiting.OnConnect")
+	EventManager:AddListener(Global.Event.Connect, OnConnect, "Lua.networkWaiting.OnConnect")
 end
 
 local RemoveListener = function()
-	EventManager:RemoveListener(Global.Event_Connect, OnConnect)
+	EventManager:RemoveListener(Global.Event.Connect, OnConnect)
 end
 
-
-
-function start()
+function awake()
+	InitUIReference()
 	InitUI()
+end
+
+function onenable()
 	AddListener()
+end
+
+function ondisable()
+	RemoveListener()
 end
 
 function ondestroy()

@@ -1,0 +1,49 @@
+UserHead = {}
+UserHead.__index = UserHead
+
+function UserHead:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, UserHead)
+	return item
+end
+
+function UserHead:InitUIReference()
+	self.ui.userHead = self.transform:Find("Head"):GetComponent(typeof(Image))
+	self.ui.userName = self.transform:Find("NameBg/Name"):GetComponent(typeof(Text))
+end
+
+--function UserHead:InitUI()
+	
+--end
+
+function UserHead:SetActive(b)
+	self.gameObject:SetActive(b)
+end
+
+function UserHead:SetData(name)
+	self.ui.userName.text = name
+end
+
+function UserHead:AddUIEvent()
+
+end
+
+function UserHead:RemoveUIEvent()
+
+end
+
+function UserHead:AddListener()
+
+end
+
+function UserHead:RemoveListener()
+
+end
+
+function UserHead:Dispose()
+	
+end

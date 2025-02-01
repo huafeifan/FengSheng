@@ -1,6 +1,16 @@
 require "Resources/lua/globalSet"
 
 --预加载
-UIManager:LoadUI(Global.NetworkWaitingPrefab_Path, true)
+local Preload = function()
+	UIManager:LoadUI(Global.NormalTipPrefab_Path, true)
+	UIManager:LoadUI(Global.NetworkWaitingPrefab_Path, true)
+end
 
-UIManager:OpenUI(Global.LoginPrefab_Path)
+--开始
+local Start = function()
+	UIManager:OpenUI(Global.LoginPrefab_Path)
+end
+
+
+Preload()
+Start()

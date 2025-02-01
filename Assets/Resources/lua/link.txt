@@ -1,7 +1,10 @@
 Resources/lua/tools/dump
+Resources/lua/tools/queue
 Resources/lua/global/uiConfig
 Resources/lua/global/globalConfig
 Resources/lua/global/protoConfig
+Resources/lua/global/protoMethods
 Resources/lua/global/eventConfig
 Resources/lua/global/globalMethods
+Resources/lua/global/globalData
 Resources/lua/main

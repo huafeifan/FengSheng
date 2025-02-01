@@ -5,8 +5,15 @@ Assets/XLua/Gen/
 *.vsidx
 *.dwlt
 *.cache
+*.lppdb
+*.lpxml
+*.lpconf
 Temp/
-obj/Debug/
-UserSettings/Layouts/
-Assets/.lpproj/
 
+UserSettings/Layouts/CurrentMaximizeLayout.dwlt
+/UserSettings/Layouts
+/obj/Debug
+/Assets/.lpproj
+Assets/.lpproj/CheckedCodeList.lpxml
+Assets/.lpproj/PDB.lppdb
+Assets/.lpproj/UserConfig.lpconf

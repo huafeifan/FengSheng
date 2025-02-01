@@ -24,6 +24,7 @@ namespace FengSheng
         public LuaEnv luaEnv;
         private float lastGCTime = 0;
         private const float GCInterval = 1;//1s
+
         private float luaEnvDisposeDelay;
         private bool luaEnvDisposeFlag;
 
@@ -32,19 +33,21 @@ namespace FengSheng
 
         public override void Register()
         {
+            IsDisposing = false;
             mInstance = this;
             LuaEnvInit();
         }
 
         public override void Unregister()
         {
+            IsDisposing = true;
+            luaEnvDisposeFlag = true;
+
             for (int i = 0; i < mLuaBehaviourList.Count; i++)
             {
                 mLuaBehaviourList[i]?.Clear();
             }
             mLuaBehaviourList.Clear();
-
-            luaEnvDisposeFlag = true;
 
         }
 
@@ -58,8 +61,11 @@ namespace FengSheng
                 lastGCTime = Time.time;
             }
 
-            if (!luaEnvDisposeFlag) return;
-            luaEnvDisposeDelay += Time.deltaTime;
+            if (luaEnvDisposeFlag)
+            {
+                luaEnvDisposeDelay += Time.deltaTime;
+            }
+            
             if (luaEnvDisposeDelay >= 0.2f)
             {
                 if (luaEnv != null)
@@ -73,6 +79,7 @@ namespace FengSheng
                 }
                 luaEnvDisposeDelay = 0;
                 luaEnvDisposeFlag = false;
+                IsDisposing = false;
             }
         }
 
@@ -80,7 +87,6 @@ namespace FengSheng
         {
             luaEnvDisposeDelay = 0;
             luaEnvDisposeFlag = false;
-
             
             //´´½¨luaÐéÄâ»ú
             luaEnv = new LuaEnv();

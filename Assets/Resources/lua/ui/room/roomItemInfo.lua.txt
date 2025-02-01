@@ -1,0 +1,53 @@
+RoomInfoItem = {}
+RoomInfoItem.__index = RoomInfoItem
+
+function RoomInfoItem:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+	
+	setmetatable(item, RoomInfoItem)
+	return item
+end
+
+function RoomInfoItem:Dispose(itemPool)
+	if itemPool ~= nil then
+		itemPool:Dispose(self.gameObject)
+	end
+	self.roomInfo = nil
+end
+
+function RoomInfoItem:InitUIReference()
+	self.ui.roomNub = self.transform:Find("RoomID"):GetComponent(typeof(Text))
+	self.ui.roomName = self.transform:Find("RoomName"):GetComponent(typeof(Text))
+	self.ui.playerCount = self.transform:Find("PlayerCount"):GetComponent(typeof(Text))
+	self.ui.robotCount = self.transform:Find("RobotCount"):GetComponent(typeof(Text))
+	self.ui.enterBtn = self.transform:Find("EnterBtn"):GetComponent(typeof(Button))
+end
+
+function RoomInfoItem:SetRoomInfo(roomInfo)
+	self.roomInfo = roomInfo
+	self.ui.roomNub.text = tostring(roomInfo.roomNub)
+	self.ui.roomName.text = roomInfo.roomName
+	self.ui.playerCount.text = string.format("%d/%d", roomInfo.userCount, roomInfo.chairCount)
+	self.ui.robotCount.text = tostring(roomInfo.robotCount)
+end
+
+function RoomInfoItem:OnBtnEnter()
+	Global.Methods.PlayBtnAnimation(self.ui.enterBtn)
+	
+	local enterRoomData = {}
+	enterRoomData.roomNub = self.roomInfo.roomNub
+	enterRoomData.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.EnterRoom_C2S, enterRoomData)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.EnterRoom_C2S, dataBytes)
+end
+
+function RoomInfoItem:AddUIEvent()
+	self.ui.enterBtn.onClick:AddListener(function()	self:OnBtnEnter() end)
+end
+
+function RoomInfoItem:RemoveUIEvent()
+	self.ui.enterBtn.onClick:RemoveAllListeners()
+end

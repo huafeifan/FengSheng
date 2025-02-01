@@ -1,0 +1,119 @@
+local ui = {}
+local roomData = {}
+
+local InitUIReference = function()
+	ui.closeBtn = self.transform:Find("CloseBtn"):GetComponent(typeof(Button))
+	ui.createRoomBtn = self.transform:Find("CreateBtn"):GetComponent(typeof(Button))
+	ui.inputRoomName = self.transform:Find("RoomName/InputBg"):GetComponent(typeof(InputField))
+	ui.chair4 = self.transform:Find("ChairCount/Item4/Toggle"):GetComponent(typeof(Toggle))
+	ui.chair5 = self.transform:Find("ChairCount/Item5/Toggle"):GetComponent(typeof(Toggle))
+	ui.chair6 = self.transform:Find("ChairCount/Item6/Toggle"):GetComponent(typeof(Toggle))
+end
+
+local InitUI = function()
+	local defaultRoomName = "哦嗨哟,快来一起玩吧"
+	ui.chair4.isOn = true
+	ui.inputRoomName.text = defaultRoomName
+	roomData.chairCount = 4
+	roomData.roomName = defaultRoomName
+end
+
+local OnBtnClose = function()
+	Global.Methods.PlayBtnAnimation(ui.closeBtn)
+	UIManager:CloseUI(Global.CreateRoomPrefab_Path)
+end
+
+local CheckInputRoomName = function(s)
+	if s == nil or string.len(s) <= 0 then
+		Global.Methods.ShowTips("请输入房間名称")
+		return false
+	end
+
+	return true
+end
+
+local OnBtnCreate = function()
+	Global.Methods.PlayBtnAnimation(ui.createRoomBtn)
+	if CheckInputRoomName(roomData.roomName) == true then
+		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.CreateRoom_C2S, roomData)
+		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.CreateRoom_C2S, dataBytes)
+	end
+end
+
+local OnInputRoomNameChanged = function(s)
+	roomData.roomName = s
+end
+	
+local OnChair4ToggleChanged = function(b)
+	if b == true then
+		roomData.chairCount = 4
+	end
+end
+
+local OnChair5ToggleChanged = function(b)
+	if b == true then
+		roomData.chairCount = 5
+	end
+end
+
+local OnChair6ToggleChanged = function(b)
+	if b == true then
+		roomData.chairCount = 6
+	end
+end
+
+local AddUIEvent = function()
+	ui.closeBtn.onClick:AddListener(OnBtnClose)
+	ui.createRoomBtn.onClick:AddListener(OnBtnCreate)
+	ui.inputRoomName.onValueChanged:AddListener(OnInputRoomNameChanged)
+	ui.chair4.onValueChanged:AddListener(OnChair4ToggleChanged)
+	ui.chair5.onValueChanged:AddListener(OnChair5ToggleChanged)
+	ui.chair6.onValueChanged:AddListener(OnChair6ToggleChanged)
+end
+
+local RemoveUIEvent = function()
+	ui.closeBtn.onClick:RemoveAllListeners()
+	ui.createRoomBtn.onClick:RemoveAllListeners()
+	ui.inputRoomName.onValueChanged:RemoveAllListeners()
+	ui.chair4.onValueChanged:RemoveAllListeners()
+	ui.chair5.onValueChanged:RemoveAllListeners()
+	ui.chair6.onValueChanged:RemoveAllListeners()
+end
+
+local OnReceiveCreateRoom = function(bytes)
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.CreateRoom_S2C, bytes)
+
+	if data.code == "Success" then
+		UIManager:CloseUI(Global.CreateRoomPrefab_Path)
+	else
+		Global.Methods.ShowTips(data.msg)
+	end
+end
+
+local AddListener = function()
+	ProtosManager:AddListener(Global.Protos.Cmd.CreateRoom_S2C, OnReceiveCreateRoom, "Lua.createRoom.OnReceiveCreateRoom")
+end
+
+local RemoveListener = function()
+	ProtosManager:RemoveListener(Global.Protos.Cmd.CreateRoom_S2C, OnReceiveCreateRoom)
+end
+
+function awake()
+	InitUIReference()
+end
+
+function onenable()
+	InitUI()
+	AddUIEvent()
+	AddListener()
+end
+
+function ondisable()
+	RemoveUIEvent()
+	RemoveListener()
+end
+
+function ondestroy()
+	RemoveUIEvent()
+	RemoveListener()
+end

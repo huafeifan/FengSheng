@@ -1,0 +1,47 @@
+Global.Data = {}
+
+--用户数据
+Global.Data.User = {}
+
+--房间数据
+Global.Data.RoomInfo = {}
+
+
+
+Global.Data.User.SetData = function(user)
+	Global.Data.User.UserName = user.name
+end
+
+Global.Data.User.Clear = function()
+	Global.Data.User.UserName = nil
+end
+
+Global.Data.RoomInfo.SetRoomInfo = function(roomInfo)
+	if roomInfo == nil then
+		return
+	end
+	
+	Global.Data.RoomInfo.RoomNub = roomInfo.roomNub
+	Global.Data.RoomInfo.RoomName = roomInfo.roomName
+	Global.Data.RoomInfo.ChairCount = roomInfo.chairCount
+	Global.Data.RoomInfo.UserCount = roomInfo.userCount
+	Global.Data.RoomInfo.RobotCount = roomInfo.robotCount
+end
+
+Global.Data.RoomInfo.SetChairsInfo = function(chairsInfo)
+	Global.Data.RoomInfo.ChairsInfo = chairsInfo
+end
+
+Global.Data.RoomInfo.Clear = function()
+	Global.Data.RoomInfo.RoomNub = nil
+	Global.Data.RoomInfo.RoomName = nil
+	Global.Data.RoomInfo.ChairCount = nil
+	Global.Data.RoomInfo.UserCount = nil
+	Global.Data.RoomInfo.RobotCount = nil
+	Global.Data.RoomInfo.ChairsInfo = nil
+end
+
+
+Global.Data.User.Clear()
+
+Global.Data.RoomInfo.Clear()

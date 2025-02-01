@@ -1,4 +1,7 @@
 require "Resources/lua/globalSet"
 
-Global.Event_Connect = "Event_Connect"
-Global.Event_Exit = "Event_Exit"
+Global.Event = {}
+Global.Event.Connect = "Event_Connect"
+Global.Event.Exit = "Event_Exit"
+Global.Event.Restart = "Event_Restart"
+Global.Event.ShowTips = "Event_ShowTips"

@@ -1,0 +1,79 @@
+local ui = {}
+local eventQueue = Queue:new()
+local tipsFlag = false
+
+local InitUIReference = function()
+	ui.content = self.transform:Find("Content")
+	ui.item = self.transform:Find("Content/Item")
+	ui.tip = self.transform:Find("Content/Item/Text"):GetComponent(typeof(Text))
+	ui.closeBtn = self.transform:Find("Content/Item/CloseBtn"):GetComponent(typeof(Button))
+end
+
+local InitUI = function()
+	ui.content.gameObject:SetActive(false)
+	ui.closeBtn.gameObject:SetActive(false)
+end
+
+local TryShowTips = function()
+	if tipsFlag == false and eventQueue:isEmpty() == false then 
+		tipsFlag = true
+		
+		local tip = eventQueue:dequeue()
+		ui.tip.text = tip.content
+		ui.item.localScale = Vector3.zero
+		ui.content.gameObject:SetActive(true)
+		ui.item:DOScale(1, 0.15):OnComplete(
+			function()
+				ui.closeBtn.gameObject:SetActive(true)
+			end)
+	end
+	
+end
+
+local OnBtnClose = function()
+	ui.content.gameObject:SetActive(false)
+	ui.closeBtn.gameObject:SetActive(false)
+	tipsFlag = false
+	TryShowTips()
+end
+
+local OnEvent_ShowTips = function(tip)
+	eventQueue:enqueue(tip)
+	TryShowTips()
+end
+
+local AddUIEvent = function()
+	ui.closeBtn.onClick:AddListener(OnBtnClose)
+end
+
+local RemoveUIEvent = function()
+	ui.closeBtn.onClick:RemoveAllListeners()
+end
+
+local AddListener = function()
+	EventManager:AddListener(Global.Event.ShowTips, OnEvent_ShowTips, "Lua.normalTip.OnEvent_ShowTips")
+end
+
+local RemoveListener = function()
+	EventManager:RemoveListener(Global.Event.Connect, OnEvent_ShowTips)
+end
+
+function awake()
+	InitUIReference()
+end
+
+function onenable()
+	InitUI()
+	AddUIEvent()
+	AddListener()
+end
+
+function ondisable()
+	RemoveUIEvent()
+	RemoveListener()
+end
+
+function ondestroy()
+	RemoveUIEvent()
+	RemoveListener()
+end

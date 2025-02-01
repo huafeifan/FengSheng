@@ -1,0 +1,127 @@
+require "Resources/lua/ui/room/roomItemInfo"
+
+local ui = {}
+local roomInfoItemScriptsList = {}
+
+local InitUIReference = function()
+	ui.closeBtn = self.transform:Find("CloseBtn"):GetComponent(typeof(Button))
+	ui.flashBtn = self.transform:Find("FlashBtn"):GetComponent(typeof(Button))
+	ui.itemPool = self.transform:Find("Content/RoomList/ListContent/Content"):GetComponent(typeof(GameObjectPool))
+end
+
+local InitUI = function()
+	
+end
+
+local OnBtnClose = function()
+	Global.Methods.PlayBtnAnimation(ui.closeBtn)
+	UIManager:CloseUI(Global.RoomListPrefab_Path)
+end
+
+local OnBtnFlash = function()
+	Global.Methods.PlayBtnAnimation(ui.flashBtn)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.RoomList_C2S, nil)
+end
+
+local GetRoomInfoItemScript = function(index)
+	local len = #roomInfoItemScriptsList
+	if len < index then
+		local itemObj = ui.itemPool:Get(true)
+		local itemScript = RoomInfoItem:New(itemObj)
+		itemScript:InitUIReference()
+		itemScript:AddUIEvent()
+		table.insert(roomInfoItemScriptsList, itemScript)
+	end
+	return roomInfoItemScriptsList[index]
+end
+
+local OnReceiveRoomList = function(bytes)
+	--roomList
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.RoomList_S2C, bytes)
+	--Debug.Log(dump(data))
+	--roomList Length
+	local dataLength = #data.roomList
+	for i = 1, dataLength do
+		local itemScript = GetRoomInfoItemScript(i)
+		itemScript:SetRoomInfo(data.roomList[i])
+		itemScript.transform:SetAsLastSibling()
+	end
+	
+	--roomInfoItemScriptsList Length
+	local itemLength = #roomInfoItemScriptsList
+	if itemLength > dataLength then
+		for i = itemLength, dataLength + 1 do
+			local roomItemInfo = roomInfoItemScriptsList[i]
+			
+			ui.itemPool:Dispose(roomItemInfo.gameObject)
+			roomItemInfo:RemoveUIEvent()
+			roomItemInfo:Dispose()
+			
+			table.remove(roomInfoItemScriptsList)
+		end
+	end
+	
+end
+
+local AddUIEvent = function()
+	ui.closeBtn.onClick:AddListener(OnBtnClose)
+	ui.flashBtn.onClick:AddListener(OnBtnFlash)
+end
+
+local RemoveUIEvent = function()
+	ui.closeBtn.onClick:RemoveAllListeners()
+	ui.flashBtn.onClick:RemoveAllListeners()
+end
+
+local AddListener = function()
+	ProtosManager:AddListener(Global.Protos.Cmd.RoomList_S2C, OnReceiveRoomList, "Lua.roomList.OnReceiveRoomList")
+end
+
+local RemoveListener = function()
+	ProtosManager:RemoveListener(Global.Protos.Cmd.RoomList_S2C, OnReceiveRoomList)
+end
+
+local RequestRoomList = function()
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.RoomList_C2S, nil)
+end
+
+
+local Dispose = function()
+	local itemLength = #roomInfoItemScriptsList
+	if itemLength > 0 then
+		for i = 1, itemLength do
+			local roomItemInfo = roomInfoItemScriptsList[i]
+			
+			ui.itemPool:Dispose(roomItemInfo.gameObject)
+			roomItemInfo:RemoveUIEvent()
+			roomItemInfo:Dispose()
+			
+			roomInfoItemScriptsList[i] = nil
+		end
+		roomInfoItemScriptsList = {}
+	end
+
+end
+
+function awake()
+	InitUIReference()
+end
+
+function onenable()
+	InitUI()
+	AddUIEvent()
+	AddListener()
+	RequestRoomList()
+end
+
+function ondisable()
+	RemoveUIEvent()
+	RemoveListener()
+	Dispose()
+end
+
+function ondestroy()
+	RemoveUIEvent()
+	RemoveListener()
+	Dispose()
+end

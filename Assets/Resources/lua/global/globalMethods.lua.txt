@@ -1,19 +1,13 @@
 require "Resources/lua/globalSet"
-local pb = require "pb"
 
-Global.Methods_Proto_Lua2Bytes = function(protoName, protoClass, protoData)
-	local protoBytes = ProtosManager:LoadProtoFile("Assets/Resources/protos/" .. protoName .. ".bytes")
-	pb.load(protoBytes)
-	local data = pb.encode(protoClass, protoData)
-	return assert(data)
-end
+Global.Methods = {}
 
-Global.Methods_Proto_Bytes2Lua = function(protoName, protoClass, dataBytes)
-	local protoBytes = ProtosManager:LoadProtoFile("Assets/Resources/protos/" .. protoName .. ".bytes")
-	pb.load(protoBytes)
-	return pb.decode(protoClass, dataBytes)
-end
-
-Global.Methods_PlayBtnAnimation = function(btn)
+Global.Methods.PlayBtnAnimation = function(btn)
 	btn.transform:DOScale(1.1, 0.1):SetLoops(2, LoopType.Yoyo)
+end
+
+Global.Methods.ShowTips = function(msg)
+	local tip = {}
+	tip.content = msg
+	EventManager:TriggerEvent(Global.Event.ShowTips, tip)
 end

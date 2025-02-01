@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
+using UnityEngine.UI;
 
 namespace FengSheng
 {
@@ -51,9 +53,11 @@ namespace FengSheng
 
         public override void Register()
         {
+            IsDisposing = false;
+
             mInstance = this;
             mUICacheCountLower = 10;
-
+            
             mUILayerRootConfig.Add(UILayer.SceneUI_Level1, UIRoot.Find("Scene/SceneUI_Level1"));
             mUILayerRootConfig.Add(UILayer.SceneParticle_Level1, UIRoot.Find("Scene/SceneParticle_Level1"));
             mUILayerRootConfig.Add(UILayer.SceneTempLayer, UIRoot.Find("Scene/SceneTempLayer"));
@@ -75,6 +79,8 @@ namespace FengSheng
 
         public override void Unregister()
         {
+            IsDisposing = true;
+
             foreach (var cache in mUICache)
             {
                 cache.Destory();
@@ -82,6 +88,8 @@ namespace FengSheng
             mUICache.Clear();
             mUILayerRootConfig.Clear();
             mUILayerConfig.Clear();
+
+            IsDisposing = false;
         }
 
         /// <summary>
@@ -144,6 +152,19 @@ namespace FengSheng
                 return uiCache.gameObject;
             }
             return LoadUI(path, true);
+        }
+
+        /// <summary>
+        /// πÿ±’UIΩÁ√Ê
+        /// </summary>
+        /// <param name="path"></param>
+        public void CloseUI(string path)
+        {
+            UICache uiCache = GetUICache(path);
+            if (uiCache != null)
+            {
+                uiCache.gameObject.SetActive(false);
+            }
         }
 
         /// <summary>
