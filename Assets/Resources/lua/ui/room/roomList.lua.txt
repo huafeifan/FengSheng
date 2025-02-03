@@ -1,4 +1,4 @@
-require "Resources/lua/ui/room/roomItemInfo"
+require "ui/room/roomItemInfo"
 
 local ui = {}
 local roomInfoItemScriptsList = {}

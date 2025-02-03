@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ded60dd0de5504ab233613b377fb8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  luaScript: {fileID: 4900000, guid: e428c8ad547bc9045b97267b2fb580d5, type: 3}
+  LuaScripPath: lua/ui/tips/normalTip.lua.txt
 --- !u!1 &3689505820203848150
 GameObject:
   m_ObjectHideFlags: 0

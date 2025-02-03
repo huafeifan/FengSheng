@@ -1915,7 +1915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ded60dd0de5504ab233613b377fb8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  luaScript: {fileID: 4900000, guid: c04863a0d1bacc043b2fceffce9d9262, type: 3}
+  LuaScripPath: lua/ui/login/login.lua.txt
 --- !u!1 &8361135854346547783
 GameObject:
   m_ObjectHideFlags: 0

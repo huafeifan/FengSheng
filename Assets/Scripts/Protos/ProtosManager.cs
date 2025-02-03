@@ -11,7 +11,6 @@ namespace FengSheng {
         [SerializeField]
         private List<ProtosPackage> mListeners = new List<ProtosPackage>();
 
-        [SerializeField]
         private Queue<ProtosTriggerCache> mCache = new Queue<ProtosTriggerCache>();
 
         private static ProtosManager mInstance;
@@ -100,7 +99,7 @@ namespace FengSheng {
         /// <returns></returns>
         public byte[] LoadProtoFile(string path)
         {
-            var proto = AssetDatabase.LoadAssetAtPath<TextAsset>(path);
+            var proto = ResourcesManager.Instance.LoadProtos(path);
             if (proto != null)
             {
                 byte[] bytes = proto.bytes;

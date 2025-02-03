@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using DG.Tweening;
-using UnityEngine.UI;
 
 namespace FengSheng
 {
@@ -74,7 +72,7 @@ namespace FengSheng
             mUILayerRootConfig.Add(UILayer.TopParticle_Level1, UIRoot.Find("Top/TopParticle_Level1"));
             mUILayerRootConfig.Add(UILayer.TopTempLayer, UIRoot.Find("Top/TopTempLayer"));
 
-            GetUILayerConfig(Application.dataPath + "/Resources/lua/global/uiConfig.lua.txt");
+            GetUILayerConfig();
         }
 
         public override void Unregister()
@@ -96,9 +94,9 @@ namespace FengSheng
         /// ∂¡»°UI≤„º∂≈‰÷√
         /// </summary>
         /// <param name="filePath"></param>
-        private void GetUILayerConfig(string filePath)
+        private void GetUILayerConfig()
         {
-            string data = File.ReadAllText(filePath);
+            string data = ResourcesManager.Instance.LoadLuaScript("lua/global/uiConfig.lua.txt");
             string[] items = data.Split(new[] { Environment.NewLine, "=" }, StringSplitOptions.RemoveEmptyEntries).ToArray();
             for (int i = 0; i < items.Length; i++)
             {
@@ -178,9 +176,9 @@ namespace FengSheng
             UICache uiCache = GetUICache(path);
             if (uiCache == null)
             {
-                UnityEngine.Object obj = Resources.Load(path);
+                GameObject obj = ResourcesManager.Instance.LoadGameObject(path);
                 if (obj == null) return null;
-                GameObject gameObject = (GameObject)GameObject.Instantiate(obj, UIRoot);
+                GameObject gameObject = GameObject.Instantiate(obj, UIRoot);
                 uiCache = new UICache(path, Time.time, gameObject);
                 mUICache.Add(uiCache);
             }

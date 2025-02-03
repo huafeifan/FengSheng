@@ -1,4 +1,4 @@
-require "Resources/lua/ui/login/userHead"
+require "ui/login/userHead"
 
 Chair = {}
 Chair.__index = Chair

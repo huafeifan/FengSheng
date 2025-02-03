@@ -1,4 +1,4 @@
-require "Resources/lua/ui/game/chair"
+require "ui/game/chair"
 
 local ui = {}
 local chairs = {}

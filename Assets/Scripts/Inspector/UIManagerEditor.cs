@@ -21,7 +21,7 @@ namespace FengSheng
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            EditorGUILayout.PropertyField(UIRoot);
+            EditorGUILayout.PropertyField(UIRoot, new GUIContent("UI根节点"));
             EditorGUILayout.PropertyField(mUICache, new GUIContent("已创建Prefab列表"));
             serializedObject.ApplyModifiedProperties();
         }

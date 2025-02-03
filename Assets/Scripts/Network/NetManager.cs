@@ -21,6 +21,11 @@ namespace FengSheng
         [SerializeField]
         private List<NetSocket> mNetList = new List<NetSocket>();
 
+        private void Update()
+        {
+
+        }
+
         public override void Register()
         {
             IsDisposing = false;

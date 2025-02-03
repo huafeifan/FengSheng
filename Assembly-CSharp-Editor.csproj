@@ -69,6 +69,7 @@
     <Compile Include="Assets\XLua\Src\Editor\TemplateRef.cs" />
     <Compile Include="Assets\XLua\Src\Editor\Report.cs" />
     <Compile Include="Assets\XLua\Src\Editor\LinkXmlGen\LinkXmlGen.cs" />
+    <Compile Include="Assets\Editor\AssetBundleConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\XLua\Src\Editor\Template\LuaInterfaceBridge.tpl.txt" />

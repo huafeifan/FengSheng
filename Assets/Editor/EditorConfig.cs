@@ -1,8 +1,11 @@
+using System;
 using System.IO;
 using UnityEditor;
+using UnityEngine;
 
-public class EditorConfig : Editor
+public class EditorConfig : EditorWindow
 {
+    #region 创建lua文件
     [MenuItem("Assets/Create/New Lua/Scene", false, 1)]
     public static void CreateLua_Scene()
     {
@@ -190,5 +193,6 @@ end";
         }
     }
 
+    #endregion
 
 }

@@ -6,14 +6,15 @@ Global.Protos.Methods.Lua2Bytes = function(protoName, protoClass, protoData)
 		return nil
 	end
 
-	local protoBytes = ProtosManager:LoadProtoFile("Assets/Resources/protos/" .. protoName .. ".bytes")
+	local protoBytes = ProtosManager:LoadProtoFile("protos/" .. protoName .. ".bytes")
+	if protoBytes == nil then Debug.LogError(1) end
 	pb.load(protoBytes)
 	local data = pb.encode(protoClass, protoData)
 	return assert(data)
 end
 
 Global.Protos.Methods.Bytes2Lua = function(protoName, protoClass, dataBytes)
-	local protoBytes = ProtosManager:LoadProtoFile("Assets/Resources/protos/" .. protoName .. ".bytes")
+	local protoBytes = ProtosManager:LoadProtoFile("protos/" .. protoName .. ".bytes")
 	pb.load(protoBytes)
 	return pb.decode(protoClass, dataBytes)
 end

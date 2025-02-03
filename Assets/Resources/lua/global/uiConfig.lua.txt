@@ -1,5 +1,3 @@
-require "Resources/lua/globalSet"
-
 --scene
 Global.LoginPrefab_Path = "prefab/login/Login"
 Global.LoginPrefab_Layer = SceneUI_Level1

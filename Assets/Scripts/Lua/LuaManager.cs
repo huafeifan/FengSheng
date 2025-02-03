@@ -90,9 +90,19 @@ namespace FengSheng
             
             //创建lua虚拟机
             luaEnv = new LuaEnv();
+
             luaEnv.AddLoader((ref string fileName) =>
             {
-                string filePath = Application.dataPath + "/" + fileName + ".lua.txt";
+                string filePath = string.Empty;
+                if (GameManager.Instance.IsEditorMode) 
+                {
+                    filePath = Path.Combine(Application.dataPath, "Resources", "lua", fileName + ".lua.txt"); 
+                }
+                else
+                {
+                    filePath = Path.Combine(Utils.GetReleaseLuaPath(), fileName + ".lua.txt");
+                }
+
                 return System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(filePath));
             });
 
@@ -100,22 +110,22 @@ namespace FengSheng
             luaEnv.AddBuildin("pb", XLua.LuaDLL.Lua.LoadPb);
 
             //读取link文件数据
-            string[] filePaths = GetLinkData(Application.dataPath + "/Resources/lua/link.txt");
+            string[] filePaths = GetLinkData();
 
             //执行lua全局文件,包括 main（lua脚本的主入口）
             LuaDoString(filePaths);
 
         }
 
-        private string[] GetLinkData(string filePath)
+        private string[] GetLinkData()
         {
-            string link = File.ReadAllText(filePath);
+            string link = ResourcesManager.Instance.LoadLuaScript("lua/link.txt");
             return link.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToArray();
         }
 
         private void LuaDoString(string[] filePaths)
         {
-            //luaEnv.DoString($@"require 'Resources/lua/main'");
+            //luaEnv.DoString($@"require 'main'");
             for (int i = 0; i < filePaths.Length; i++)
             {
                 luaEnv.DoString($@"require '{filePaths[i]}'");

@@ -3549,7 +3549,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ded60dd0de5504ab233613b377fb8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  luaScript: {fileID: 4900000, guid: 49fbee974465fd3468bc0aae334b367e, type: 3}
+  LuaScripPath: lua/ui/game/game.lua.txt
 --- !u!1 &8181613633113850321
 GameObject:
   m_ObjectHideFlags: 0

@@ -11,9 +11,7 @@ namespace FengSheng
         /// 事件名称
         /// </summary>
         [SerializeField]
-        private string mName;
-
-        public string Name {  get { return mName; } }
+        public string Name;
 
         /// <summary>
         /// 事件回调
@@ -28,7 +26,7 @@ namespace FengSheng
         
         public EventPackage(string name) 
         {
-            mName = name;
+            Name = name;
         }
 
         public void AddEvent(Action<System.Object> action, string actionName)

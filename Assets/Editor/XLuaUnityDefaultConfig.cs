@@ -134,9 +134,10 @@ static class XLuaUnityDefaultConfig
                 }
             }
 
+            delegate_types.Add(typeof(UnityEngine.Events.UnityAction<bool>));
+
             var list = delegate_types.Where(t => t.BaseType == typeof(MulticastDelegate) && !hasGenericParameter(t) && !delegateHasEditorRef(t) && !deleteList.Contains(t)).Distinct().ToList();
 
-            list.Add(typeof(UnityEngine.Events.UnityAction<bool>));
             return list;
         }
     }

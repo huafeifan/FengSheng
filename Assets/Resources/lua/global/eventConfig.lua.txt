@@ -1,5 +1,3 @@
-require "Resources/lua/globalSet"
-
 Global.Event = {}
 Global.Event.Connect = "Event_Connect"
 Global.Event.Exit = "Event_Exit"

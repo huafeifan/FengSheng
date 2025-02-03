@@ -22,7 +22,6 @@ namespace FengSheng
         [SerializeField]
         private List<EventPackage> mListeners = new List<EventPackage>();
 
-        [SerializeField]
         private Queue<EventTriggerCache> mCache = new Queue<EventTriggerCache>();
 
         public override void Register()

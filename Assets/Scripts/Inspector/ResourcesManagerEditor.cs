@@ -6,20 +6,20 @@ using UnityEngine;
 namespace FengSheng
 {
 #if UNITY_EDITOR
-    [CustomEditor(typeof(LuaManager))]
-    public class LuaManagerEditor : Editor
+    [CustomEditor(typeof(ResourcesManager))]
+    public class ResourcesManagerEditor : Editor
     {
-        private SerializedProperty mLuaBehaviourList;
+        private SerializedProperty mResourcesPackageList;
 
         private void OnEnable()
         {
-            mLuaBehaviourList = serializedObject.FindProperty("mLuaBehaviourList");
+            mResourcesPackageList = serializedObject.FindProperty("mResourcesPackageList");
         }
 
         public override void OnInspectorGUI()
         {
             serializedObject.Update();
-            EditorGUILayout.PropertyField(mLuaBehaviourList, new GUIContent("LuaBehaviour列表"));
+            EditorGUILayout.PropertyField(mResourcesPackageList, new GUIContent("资源包映射表"));
             serializedObject.ApplyModifiedProperties();
         }
     }

@@ -1,4 +1,4 @@
-require "Resources/lua/globalSet"
+Global = CS.FengSheng.LuaManager.Instance.luaEnv.Global
 
 Global.Login = {}
 Global.Login.Network = "loginNetwork"
@@ -22,5 +22,6 @@ UIManager = CS.FengSheng.UIManager.Instance
 NetManager = CS.FengSheng.NetManager.Instance
 EventManager = CS.FengSheng.EventManager.Instance
 ProtosManager = CS.FengSheng.ProtosManager.Instance
+ResourcesManager = CS.FengSheng.ResourcesManager.Instance
 GameObjectPool = CS.FengSheng.GameObjectPool
 

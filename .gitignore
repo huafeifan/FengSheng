@@ -2,6 +2,7 @@ Library/
 Logs/
 v17/
 Assets/XLua/Gen/
+OutputABs/
 *.vsidx
 *.dwlt
 *.cache

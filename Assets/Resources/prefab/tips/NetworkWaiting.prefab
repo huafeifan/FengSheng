@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92ded60dd0de5504ab233613b377fb8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  luaScript: {fileID: 4900000, guid: 2d6157382cb3c2f4d9c194f2dbbbfe1e, type: 3}
+  LuaScripPath: lua/ui/tips/networkWaiting.lua.txt
 --- !u!1 &3489274140301878372
 GameObject:
   m_ObjectHideFlags: 0

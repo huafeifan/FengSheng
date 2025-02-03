@@ -7,6 +7,8 @@ namespace FengSheng
 {
     public class GameManager : FengShengManager
     {
+        public bool IsEditorMode = true;
+
         private static GameManager mInstance;
         public static GameManager Instance
         {
@@ -59,6 +61,7 @@ namespace FengSheng
             IsDisposing = false;
             mIsRestart = false;
 
+            Register<ResourcesManager>();
             Register<ProtosManager>();
             Register<UIManager>();
             Register<NetManager>();
@@ -73,6 +76,7 @@ namespace FengSheng
         {
             RemoveListener();
 
+            Unregister<ResourcesManager>();
             Unregister<ProtosManager>();
             Unregister<UIManager>();
             Unregister<NetManager>();

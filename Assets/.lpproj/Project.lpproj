@@ -1,1 +1,10 @@
-<Project ExecutableFilename = "" EngineType = "Unity" DebugParameters = ""/>
+<Project
+  ExecutableFilename = ""
+  EngineType = "Unity"
+  DebugParameters = ""
+  SkipSynchronizingLuaDebuggeeDll = "false"
+  SkipSynchronizingCSharpCode = "false">
+  <SourceDirectories>
+    <SourceDirectory Path = "Resources"/>
+  </SourceDirectories>
+</Project>

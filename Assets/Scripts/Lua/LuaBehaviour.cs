@@ -10,12 +10,13 @@ using UnityEngine;
 using XLua;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace FengSheng
 {
     public class LuaBehaviour : MonoBehaviour
     {
-        public TextAsset luaScript;
+        public string LuaScripPath;
 
         private Action luaStart;
         private Action luaOnEnable;
@@ -47,7 +48,9 @@ namespace FengSheng
             scriptScopeTable.Set("Global", LuaManager.Instance.luaEnv.Global);
 
             // 执行脚本
-            LuaManager.Instance.luaEnv.DoString(luaScript.text, luaScript.name, scriptScopeTable);
+            string luaScript = ResourcesManager.Instance.LoadLuaScript(LuaScripPath);
+            string luaName = Path.GetFileName(LuaScripPath).Replace(".txt", string.Empty);
+            LuaManager.Instance.luaEnv.DoString(luaScript, luaName, scriptScopeTable);
 
             LuaManager.Instance.AddLuaBehaviour(this);
             isDispose = false;
