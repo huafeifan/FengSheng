@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -34,28 +35,26 @@ namespace FengSheng
 
         }
 
-        public override void Register()
+        public override IEnumerator Register()
         {
-            IsDisposing = false;
-
             mInstance = this;
 
             if (GameManager.Instance.IsEditorMode == false)
             {
                 GetResourcesManifestConfig();
             }
+            yield return null;
         }
 
-        public override void Unregister()
+        public override IEnumerator Unregister()
         {
-            IsDisposing = true;
             mResourcesPackageList.Clear();
             mAssetBundleDict.Clear();
             if (GameManager.Instance.IsEditorMode == false)
             {
                 AssetBundle.UnloadAllAssetBundles(true);
             }
-            IsDisposing = false;
+            yield return null;
         }
 
         private void GetResourcesManifestConfig()

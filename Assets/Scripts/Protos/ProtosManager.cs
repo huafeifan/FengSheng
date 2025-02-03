@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEditor;
@@ -22,20 +23,17 @@ namespace FengSheng {
             }
         }
 
-        public override void Register()
+        public override IEnumerator Register()
         {
-            IsDisposing = false;
             mInstance = this;
+            yield return null;
         }
 
-        public override void Unregister()
+        public override IEnumerator Unregister()
         {
-            IsDisposing = true;
-
             mListeners.Clear();
             mCache.Clear();
-
-            IsDisposing = false;
+            yield return null;
         }
 
         private void Update()

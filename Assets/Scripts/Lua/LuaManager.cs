@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,30 +26,35 @@ namespace FengSheng
         private float lastGCTime = 0;
         private const float GCInterval = 1;//1s
 
-        private float luaEnvDisposeDelay;
-        private bool luaEnvDisposeFlag;
-
         [SerializeField]
         private List<LuaBehaviour> mLuaBehaviourList = new List<LuaBehaviour>();
 
-        public override void Register()
+        public override IEnumerator Register()
         {
-            IsDisposing = false;
             mInstance = this;
             LuaEnvInit();
+            yield return null;
         }
 
-        public override void Unregister()
+        public override IEnumerator Unregister()
         {
-            IsDisposing = true;
-            luaEnvDisposeFlag = true;
-
             for (int i = 0; i < mLuaBehaviourList.Count; i++)
             {
                 mLuaBehaviourList[i]?.Clear();
             }
             mLuaBehaviourList.Clear();
 
+            yield return new WaitForSeconds(0.2f);
+
+            if (luaEnv != null)
+            {
+                //luaEnv.DoString(@"
+                //            local util = require 'XLua/Resources/xlua/util'
+                //            util.print_func_ref_by_csharp()");
+
+                luaEnv.Dispose();
+                luaEnv = null;
+            }
         }
 
         private void Update()
@@ -60,43 +66,19 @@ namespace FengSheng
                 luaEnv.Tick();
                 lastGCTime = Time.time;
             }
-
-            if (luaEnvDisposeFlag)
-            {
-                luaEnvDisposeDelay += Time.deltaTime;
-            }
-            
-            if (luaEnvDisposeDelay >= 0.2f)
-            {
-                if (luaEnv != null)
-                {
-                    //luaEnv.DoString(@"
-                    //            local util = require 'XLua/Resources/xlua/util'
-                    //            util.print_func_ref_by_csharp()");
-
-                    luaEnv.Dispose();
-                    luaEnv = null;
-                }
-                luaEnvDisposeDelay = 0;
-                luaEnvDisposeFlag = false;
-                IsDisposing = false;
-            }
         }
 
         public void LuaEnvInit()
         {
-            luaEnvDisposeDelay = 0;
-            luaEnvDisposeFlag = false;
-            
             //´´½¨luaÐéÄâ»ú
             luaEnv = new LuaEnv();
 
             luaEnv.AddLoader((ref string fileName) =>
             {
                 string filePath = string.Empty;
-                if (GameManager.Instance.IsEditorMode) 
+                if (GameManager.Instance.IsEditorMode)
                 {
-                    filePath = Path.Combine(Application.dataPath, "Resources", "lua", fileName + ".lua.txt"); 
+                    filePath = Path.Combine(Application.dataPath, "Resources", "lua", fileName + ".lua.txt");
                 }
                 else
                 {

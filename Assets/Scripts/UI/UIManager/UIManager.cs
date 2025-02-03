@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,10 +50,8 @@ namespace FengSheng
         /// </summary>
         private float mUIFlashInterval;
 
-        public override void Register()
+        public override IEnumerator Register()
         {
-            IsDisposing = false;
-
             mInstance = this;
             mUICacheCountLower = 10;
             
@@ -73,12 +72,12 @@ namespace FengSheng
             mUILayerRootConfig.Add(UILayer.TopTempLayer, UIRoot.Find("Top/TopTempLayer"));
 
             GetUILayerConfig();
+
+            yield return null;
         }
 
-        public override void Unregister()
+        public override IEnumerator Unregister()
         {
-            IsDisposing = true;
-
             foreach (var cache in mUICache)
             {
                 cache.Destory();
@@ -86,8 +85,7 @@ namespace FengSheng
             mUICache.Clear();
             mUILayerRootConfig.Clear();
             mUILayerConfig.Clear();
-
-            IsDisposing = false;
+            yield return null;
         }
 
         /// <summary>

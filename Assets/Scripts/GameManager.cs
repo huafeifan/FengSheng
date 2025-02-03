@@ -7,7 +7,26 @@ namespace FengSheng
 {
     public class GameManager : FengShengManager
     {
+        public enum Status
+        {
+            /// <summary>
+            /// 运行中
+            /// </summary>
+            Run = 1,
+
+            /// <summary>
+            /// 正在注册中
+            /// </summary>
+            Registering = 2,
+
+            /// <summary>
+            /// 正在注销中
+            /// </summary>
+            Unregistering = 3,
+        }
+
         public bool IsEditorMode = true;
+        private Status mStatus;
 
         private static GameManager mInstance;
         public static GameManager Instance
@@ -22,88 +41,66 @@ namespace FengSheng
         [SerializeField]
         private List<FengShengManager> mManagerList = new List<FengShengManager>();
 
-        private bool mIsRestart = false;
-
         private void Awake()
         {
-
             mInstance = this;
-
-            Register();
+            mStatus = Status.Run;
+            StartCoroutine(Register());
         }
 
         private void Update()
         {
-            if (IsDisposing)
-            {
-                for (int i = mManagerList.Count - 1; i > 0; i--)
-                {
-                    if (mManagerList[i].IsDisposing == false)
-                    {
-                        mManagerList.RemoveAt(i);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                IsDisposing = false;
-
-                if (mIsRestart)
-                {
-                    Register();
-                }
-            }
+            
         }
 
-        public override void Register()
+        public override IEnumerator Register()
         {
-            IsDisposing = false;
-            mIsRestart = false;
+            if (mStatus != Status.Run) 
+                yield break;
 
-            Register<ResourcesManager>();
-            Register<ProtosManager>();
-            Register<UIManager>();
-            Register<NetManager>();
-            Register<EventManager>();
+            mStatus = Status.Registering;
+            yield return Register<HotfixManager>();
+            yield return Register<ResourcesManager>();
+            yield return Register<ProtosManager>();
+            yield return Register<UIManager>();
+            yield return Register<NetManager>();
+            yield return Register<EventManager>();
 
-            Register<LuaManager>();
+            yield return Register<LuaManager>();
 
             AddListener();
+            mStatus = Status.Run;
         }
 
-        public override void Unregister()
+        public override IEnumerator Unregister()
         {
+            mStatus = Status.Unregistering;
             RemoveListener();
 
-            Unregister<ResourcesManager>();
-            Unregister<ProtosManager>();
-            Unregister<UIManager>();
-            Unregister<NetManager>();
-            Unregister<EventManager>();
+            yield return Unregister<HotfixManager>();
+            yield return Unregister<ProtosManager>();
+            yield return Unregister<UIManager>();
+            yield return Unregister<NetManager>();
+            yield return Unregister<EventManager>();
 
-            Unregister<LuaManager>();
+            yield return Unregister<LuaManager>();
+            yield return Unregister<ResourcesManager>();
 
-            IsDisposing = true;
+            mStatus = Status.Run;
         }
 
-        private void Register<T>() where T : FengShengManager
+        private IEnumerator Register<T>() where T : FengShengManager
         {
             var component = transform.GetComponentInChildren<T>();
             mManagerList.Add(component);
-            component.Register();
+            yield return component.Register();
         }
 
-        private void Unregister<T>() where T : FengShengManager
+        private IEnumerator Unregister<T>() where T : FengShengManager
         {
-            for (int i = 0; i < mManagerList.Count; i++)
-            {
-                if (mManagerList[i] is T)
-                {
-                    mManagerList[i].Unregister();
-                    break;
-                }
-            }
+            var component = transform.GetComponentInChildren<T>();
+            mManagerList.Add(component);
+            yield return component.Unregister();
         }
 
         public FengShengManager GetManager<T>() where T : FengShengManager
@@ -132,19 +129,26 @@ namespace FengSheng
 
         private void OnDestroy()
         {
-            Unregister();
+            //Unregister();
         }
 
         private void OnExit(object obj)
         {
-            Unregister();
+            if (mStatus == Status.Run)
+                StartCoroutine(Unregister());
         }
 
         private void OnRestart(object obj)
         {
-            Unregister();
+            if (mStatus == Status.Run)
+                StartCoroutine(Restart());
+        }
 
-            mIsRestart = true;
+        private IEnumerator Restart()
+        {
+            yield return Unregister();
+
+            StartCoroutine(Register());
         }
 
 

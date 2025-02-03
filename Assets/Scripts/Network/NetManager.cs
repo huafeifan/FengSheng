@@ -26,20 +26,17 @@ namespace FengSheng
 
         }
 
-        public override void Register()
+        public override IEnumerator Register()
         {
-            IsDisposing = false;
             mInstance = this;
+            yield return null;
         }
 
-        public override void Unregister()
+        public override IEnumerator Unregister()
         {
-            IsDisposing = true;
-
             CloseAll();
             mNetList.Clear();
-
-            IsDisposing = false;
+            yield return null;
         }
 
         /// <summary>

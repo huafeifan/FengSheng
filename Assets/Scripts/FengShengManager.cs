@@ -1,25 +1,19 @@
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 namespace FengSheng
 {
     public class FengShengManager : MonoBehaviour
     {
-        public bool IsDisposing = false;
-
-        public virtual void Register() 
+        public virtual IEnumerator Register() 
         {
-            
+            yield return null;
         }
 
-        public virtual void Unregister() 
+        public virtual IEnumerator Unregister() 
         {
-            
+            yield return null;
         }
 
-        public virtual void OnDisposeComplete()
-        {
-            
-        }
     }
 }
