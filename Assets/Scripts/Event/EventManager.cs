@@ -11,6 +11,8 @@ namespace FengSheng
         public const string Event_Exit = "Event_Exit";
         public const string Event_Restart = "Event_Restart";
 
+        public const string Event_LoadingProgress = "Event_LoadingProgress";
+
         private static EventManager mInstance;
         public static EventManager Instance
         {

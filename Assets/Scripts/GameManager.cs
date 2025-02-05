@@ -41,10 +41,14 @@ namespace FengSheng
         [SerializeField]
         private List<FengShengManager> mManagerList = new List<FengShengManager>();
 
+        private Loading mLoading;
+
         private void Awake()
         {
             mInstance = this;
             mStatus = Status.Run;
+
+            mLoading = new Loading(GameObject.Find("UIRoot/Bg").transform);
             StartCoroutine(Register());
         }
 
@@ -52,19 +56,22 @@ namespace FengSheng
         {
             
         }
-
+        
         public override IEnumerator Register()
         {
             if (mStatus != Status.Run) 
                 yield break;
 
             mStatus = Status.Registering;
+
+            yield return Register<EventManager>();
+            mLoading.Start();
+
             yield return Register<HotfixManager>();
             yield return Register<ResourcesManager>();
             yield return Register<ProtosManager>();
             yield return Register<UIManager>();
             yield return Register<NetManager>();
-            yield return Register<EventManager>();
 
             yield return Register<LuaManager>();
 
@@ -86,6 +93,7 @@ namespace FengSheng
             yield return Unregister<LuaManager>();
             yield return Unregister<ResourcesManager>();
 
+            mLoading.Dispose();
             mStatus = Status.Run;
         }
 
@@ -99,7 +107,7 @@ namespace FengSheng
         private IEnumerator Unregister<T>() where T : FengShengManager
         {
             var component = transform.GetComponentInChildren<T>();
-            mManagerList.Add(component);
+            mManagerList.Remove(component);
             yield return component.Unregister();
         }
 
