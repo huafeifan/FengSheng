@@ -1,0 +1,224 @@
+local ui = {}
+local ruleConfig = { 
+	[1] = { 
+		["title"] = "游戏介绍",
+		["pages"] = { 
+			"ui/rule/rule_introduce1", 
+			"ui/rule/rule_introduce2", 
+			"ui/rule/rule_introduce3", 
+			"ui/rule/rule_introduce4" }},
+	[2] = {
+		["title"] = "基础牌功能说明",
+		["pages"] = {
+			"ui/rule/rule_base1",
+			"ui/rule/rule_base2",
+			"ui/rule/rule_base3",
+			"ui/rule/rule_base4" }},
+	[3] = {
+		["title"] = "角色牌技能说明",
+		["pages"] = {
+			"ui/rule/rule_role1",
+			"ui/rule/rule_role2",
+			"ui/rule/rule_role3",
+			"ui/rule/rule_role4",
+			"ui/rule/rule_role5",
+			"ui/rule/rule_role6",
+			"ui/rule/rule_role7",
+			"ui/rule/rule_role8",
+			"ui/rule/rule_role9" }}
+}
+local currentPageNub = 0
+local currentTitleNub = 0
+local startLocalPositionX = 0
+local defaultLocalPosition = nil
+
+local InitUIReference = function()
+	ui.closeBtn = self.transform:Find("CloseBtn"):GetComponent(typeof(Button))
+	ui.titlePool = self.transform:Find("Pool/LeftItemPool"):GetComponent(typeof(GameObjectPool))
+	ui.pagePool = self.transform:Find("Pool/RightItemPool"):GetComponent(typeof(GameObjectPool))
+	ui.leftBtn = self.transform:Find("Right/LeftBtn"):GetComponent(typeof(Button))
+	ui.rightBtn = self.transform:Find("Right/RightBtn"):GetComponent(typeof(Button))
+	ui.titleRoot = self.transform:Find("Left/Content")
+	ui.pageRoot = self.transform:Find("Right/Page/Content")
+	ui.titlePointer = self.transform:Find("Pool/LeftItemPool/Pointer")
+	
+	ui.titles = {}
+	for i = 1, #ruleConfig do
+		local item = ui.titlePool:Get(true)
+		ui.titles[i] = {}
+		ui.titles[i].gameObject = item
+		ui.titles[i].transform = item.transform
+		ui.titles[i].btn = item:GetComponent(typeof(Button))
+		ui.titles[i].text = item.transform:Find("Title"):GetComponent(typeof(Text))
+		ui.titles[i].pointerPos = item.transform:Find("PointerPos")
+	end
+	
+	defaultLocalPosition = ui.pageRoot.localPosition
+end
+
+local InitUI = function()
+	ui.leftBtn.gameObject:SetActive(false)
+	ui.rightBtn.gameObject:SetActive(false)
+	ui.titlePointer.gameObject:SetActive(false)
+	
+	for i = 1, #ruleConfig do
+		local data = ruleConfig[i]
+		local item = ui.titles[i]
+		item.gameObject:SetActive(true)
+		item.transform:SetParent(ui.titleRoot)
+		item.text.text = data["title"]
+	end
+end
+
+local SetPage = function(pageNub)
+	local currentData = ruleConfig[currentTitleNub]
+	local currentPageData = currentData["pages"]
+	if currentPageData == nil or #currentPageData == 0 then
+		ui.leftBtn.gameObject:SetActive(false)
+		ui.rightBtn.gameObject:SetActive(false)
+		return
+	end
+	
+	if currentPageNub == pageNub then
+		return 
+	end
+		
+	local maxPageIndex = #currentPageData
+	if pageNub < 1 then
+		pageNub = 1
+	elseif pageNub > maxPageIndex then
+		pageNub = maxPageIndex
+	end
+
+	ui.leftBtn.gameObject:SetActive(pageNub > 1)
+	ui.rightBtn.gameObject:SetActive(pageNub < maxPageIndex)
+	
+	local targetPositionX = startLocalPositionX + (-808 * (pageNub - 1))
+	ui.pageRoot:DOLocalMoveX(targetPositionX, 0.5)---285 * (pageNub - 1)
+
+	currentPageNub = pageNub
+end
+
+local OnBtnClose = function()
+	Global.Methods.PlayBtnAnimation(ui.closeBtn)
+	UIManager:CloseUI(Global.RulePrefab_Path)
+end
+
+local OnBtnLeft = function()
+	Global.Methods.PlayBtnAnimation(ui.leftBtn)
+	local index = currentPageNub - 1
+	SetPage(index)
+end
+
+local OnBtnRight = function()
+	Global.Methods.PlayBtnAnimation(ui.rightBtn)
+	local index = currentPageNub + 1
+	SetPage(index)
+end
+
+local LoadPage = function(index)
+	currentTitleNub = index
+	currentPageNub = 0
+	local pages = ruleConfig[currentTitleNub]["pages"]
+	
+	ui.pagePool:Dispose()
+	ui.pageRoot.localPosition = defaultLocalPosition
+	
+	if startLocalPositionX == nil then
+		startLocalPositionX = ui.pageRoot.localPosition.x
+	end
+	if pages == nil or #pages == 0 then return end
+	
+	for i = 1, #pages do
+		local item = ui.pagePool:Get(true)
+		item.transform:SetParent(ui.pageRoot)
+		item:GetComponent(typeof(Image)).sprite = ResourcesManager:LoadSprite(pages[i])
+	end
+	startLocalPositionX = ui.pageRoot.localPosition.x
+end
+
+local OnBtnTitleItem = function(index)
+	if currentTitleNub == index then
+		return
+	end
+
+	ui.titlePointer.gameObject:SetActive(true)
+	ui.titlePointer:SetParent(ui.titles[index].pointerPos, false)
+	LoadPage(index)
+	SetPage(1)
+end
+
+local AddUIEvent = function()
+	ui.closeBtn.onClick:AddListener(OnBtnClose)
+	ui.leftBtn.onClick:AddListener(OnBtnLeft)
+	ui.rightBtn.onClick:AddListener(OnBtnRight)
+	
+	for i = 1, #ui.titles do
+		local index = i
+		ui.titles[index].btn.onClick:AddListener(function()
+			OnBtnTitleItem(index)
+		end)
+	end
+end
+
+local RemoveUIEvent = function()
+	ui.closeBtn.onClick:RemoveAllListeners()
+	ui.leftBtn.onClick:RemoveAllListeners()
+	ui.rightBtn.onClick:RemoveAllListeners()
+	
+	for i = 1, #ui.titles do
+		ui.titles[i].btn.onClick:RemoveAllListeners()
+	end
+end
+
+local AddListener = function()
+	
+end
+
+local RemoveListener = function()
+	
+end
+
+
+local Dispose = function()
+	if ui.titlePool ~= nil then
+		ui.titlePool:Dispose()
+	end
+
+	if ui.pagePool ~= nil then
+		ui.pagePool:Dispose()
+	end
+	
+	currentPageNub = 0
+	currentTitleNub = 0
+	
+	if ui.pageRoot ~= nil then
+		local localPosition = ui.pageRoot.localPosition
+		localPosition.x = startLocalPositionX
+		ui.pageRoot.localPosition = localPosition
+	end
+end
+
+function awake()
+	InitUIReference()
+end
+
+function onenable()
+	InitUI()
+	AddUIEvent()
+	AddListener()
+	
+	OnBtnTitleItem(1)
+end
+
+function ondisable()
+	RemoveUIEvent()
+	RemoveListener()
+	Dispose()
+end
+
+function ondestroy()
+	RemoveUIEvent()
+	RemoveListener()
+	Dispose()
+end

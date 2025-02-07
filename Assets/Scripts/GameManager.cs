@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace FengSheng
@@ -65,15 +66,32 @@ namespace FengSheng
             mStatus = Status.Registering;
 
             yield return Register<EventManager>();
-            mLoading.Start();
+            mLoading.AddListener();
 
-            yield return Register<HotfixManager>();
+            EventManager.Instance.TriggerEvent(EventManager.Event_LoadingProgress, new LoadingEventPackage()
+            {
+                Name = string.Empty,
+                Progress = 0,
+                Tips = "start"
+            });
+
+            if (!IsEditorMode)
+            {
+                yield return Register<HotfixManager>();
+            }
             yield return Register<ResourcesManager>();
             yield return Register<ProtosManager>();
             yield return Register<UIManager>();
             yield return Register<NetManager>();
 
             yield return Register<LuaManager>();
+
+            EventManager.Instance.TriggerEvent(EventManager.Event_LoadingProgress, new LoadingEventPackage()
+            {
+                Name = string.Empty,
+                Progress = 100,
+                Tips = "success"
+            });
 
             AddListener();
             mStatus = Status.Run;
@@ -84,7 +102,10 @@ namespace FengSheng
             mStatus = Status.Unregistering;
             RemoveListener();
 
-            yield return Unregister<HotfixManager>();
+            if (!IsEditorMode)
+            {
+                yield return Unregister<HotfixManager>();
+            }
             yield return Unregister<ProtosManager>();
             yield return Unregister<UIManager>();
             yield return Unregister<NetManager>();

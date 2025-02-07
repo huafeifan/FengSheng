@@ -172,8 +172,6 @@ namespace FengSheng
             mCurrentVersion.ResourcesVersion = mTargetVersion.ResourcesVersion;
             mCurrentVersion.ProtosVersion = mTargetVersion.ProtosVersion;
             Utils.WriteFile(mCurrentVersion.GetWrite(), Utils.GetVersionInfoPath());
-
-            TriggerLoadingProgressChange(100, "success");
         }
 
         public override IEnumerator Unregister()

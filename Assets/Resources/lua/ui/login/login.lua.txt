@@ -11,6 +11,7 @@ local InitUIReference = function()
 	ui.createRoomBtn = self.transform:Find("BtnList/CreateRoomBtn"):GetComponent(typeof(Button))
 	ui.checkRoomBtn = self.transform:Find("BtnList/CheckRoomBtn"):GetComponent(typeof(Button))
 	ui.restartBtn = self.transform:Find("BtnList/RestartBtn"):GetComponent(typeof(Button))
+	ui.ruleBtn = self.transform:Find("BtnList/RuleBtn"):GetComponent(typeof(Button))
 	ui.inputName = self.transform:Find("InputName"):GetComponent(typeof(InputField))
 	
 	ui.head = UserHead:New(self.transform:Find("User").gameObject)
@@ -26,6 +27,7 @@ local InitUI = function()
 		ui.createRoomBtn.gameObject:SetActive(true)
 		ui.checkRoomBtn.gameObject:SetActive(true)
 		ui.restartBtn.gameObject:SetActive(true)
+		ui.ruleBtn.gameObject:SetActive(true)
 		ui.head:SetActive(true)
 		ui.head:SetData(Global.Data.User.UserName)
 	else
@@ -35,6 +37,7 @@ local InitUI = function()
 		ui.createRoomBtn.gameObject:SetActive(false)
 		ui.checkRoomBtn.gameObject:SetActive(false)
 		ui.restartBtn.gameObject:SetActive(false)
+		ui.ruleBtn.gameObject:SetActive(false)
 		ui.inputName.gameObject:SetActive(false)
 		ui.head:SetActive(false)
 	
@@ -45,6 +48,7 @@ local InitUI = function()
 				ui.startBtn.gameObject:SetActive(true)
 				ui.exitBtn.gameObject:SetActive(true)
 				ui.restartBtn.gameObject:SetActive(true)
+				ui.ruleBtn.gameObject:SetActive(true)
 			end)
 	end
 end
@@ -96,6 +100,11 @@ local OnBtnRestart = function()
 	EventManager:TriggerEvent(Global.Event.Restart, nil)
 end
 
+local OnBtnRule = function()
+	Global.Methods.PlayBtnAnimation(ui.ruleBtn)
+	UIManager:OpenUI(Global.RulePrefab_Path)
+end
+
 local AddUIEvent = function()
 	ui.startBtn.onClick:AddListener(OnBtnStart)
 	ui.exitBtn.onClick:AddListener(OnBtnExit)
@@ -104,6 +113,7 @@ local AddUIEvent = function()
 	ui.checkRoomBtn.onClick:AddListener(OnBtnCheckRoom)
 	ui.inputName.onValueChanged:AddListener(OnInputNameChanged)
 	ui.restartBtn.onClick:AddListener(OnBtnRestart)
+	ui.ruleBtn.onClick:AddListener(OnBtnRule)
 	ui.head:AddUIEvent()
 end
 
@@ -115,6 +125,7 @@ local RemoveUIEvent = function()
 	ui.checkRoomBtn.onClick:RemoveAllListeners()
 	ui.inputName.onValueChanged:RemoveAllListeners()
 	ui.restartBtn.onClick:RemoveAllListeners()
+	ui.ruleBtn.onClick:RemoveAllListeners()
 	ui.head:RemoveUIEvent()
 end
 

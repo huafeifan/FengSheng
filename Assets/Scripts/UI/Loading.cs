@@ -1,4 +1,5 @@
 using DG.Tweening;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,8 +26,11 @@ namespace FengSheng
         public void Start()
         {
             transform.gameObject.SetActive(true);
+            if (mTweener != null)
+            {
+                mTweener.Kill();
+            }
             mTweener = mRotate.DORotate(Vector3.forward * 360, 1, RotateMode.FastBeyond360).SetLoops(-1).SetEase(Ease.Linear);
-            AddListener();
         }
 
         public void Dispose()
@@ -44,7 +48,7 @@ namespace FengSheng
             RemoveListener();
         }
 
-        private void AddListener()
+        public void AddListener()
         {
             EventManager.Instance.AddListener(EventManager.Event_LoadingProgress, OnProgressChange, "CSharp.Loading.OnProgressChange");
         }
@@ -65,6 +69,10 @@ namespace FengSheng
                 if (data.Tips == "success")
                 {
                     transform.gameObject.SetActive(false);
+                }
+                else if (data.Tips == "start")
+                {
+                    Start();
                 }
             }
         }

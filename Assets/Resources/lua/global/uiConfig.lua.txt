@@ -24,3 +24,7 @@ Global.RoomListPrefab_SiblingIndex = 0
 Global.CreateRoomPrefab_Path = "prefab/room/CreateRoom"
 Global.CreateRoomPrefab_Layer = NormalUI_Level1
 Global.CreateRoomPrefab_SiblingIndex = 1
+
+Global.RulePrefab_Path = "prefab/rule/Rule"
+Global.CreateRoomPrefab_Layer = NormalUI_Level1
+Global.CreateRoomPrefab_SiblingIndex = 2
