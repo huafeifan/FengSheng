@@ -119,7 +119,7 @@ public class AssetBundleConfig : EditorWindow
         {
             string filePath = Utils.GetResourcesManifestPath();
             string outputPath = Utils.GetReleasePath();
-            string[] guids = AssetDatabase.FindAssets("t:Texture2D t:Prefab t:TextAsset", new string[] { "Assets/Resources" });
+            string[] guids = AssetDatabase.FindAssets("t:Texture2D t:Prefab t:TextAsset", new string[] { "Assets/Resources/hotfix" });
 
             if (!Directory.Exists(outputPath))
             {

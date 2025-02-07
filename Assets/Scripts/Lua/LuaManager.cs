@@ -78,7 +78,7 @@ namespace FengSheng
                 string filePath = string.Empty;
                 if (GameManager.Instance.IsEditorMode)
                 {
-                    filePath = Path.Combine(Application.dataPath, "Resources", "lua", fileName + ".lua.txt");
+                    filePath = Path.Combine(Application.dataPath, "Resources", "hotfix", "lua", fileName + ".lua.txt");
                 }
                 else
                 {

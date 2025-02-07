@@ -615,7 +615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e23040d5678cbad4c9c124a824f0e277, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsEditorMode: 0
+  IsEditorMode: 1
   mManagerList: []
 --- !u!4 &1042307049
 Transform:
@@ -1101,7 +1101,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d349dfb36404c2547b78b24a9a20f373, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a36ab29d7a3601b449a9f3b6ac7269a6, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2100,7 +2100,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a5aeb78fe9582d945bd8e029567b3311, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 909d41ce69de00943afd95cb0126b398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

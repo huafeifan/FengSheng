@@ -116,7 +116,7 @@ namespace FengSheng
         {
             if (GameManager.Instance.IsEditorMode)
             {
-                return Resources.Load<Sprite>(resourcesPath);
+                return Resources.Load<Sprite>(Path.Combine("hotfix", resourcesPath));
             }
 
             Texture2D texture = LoadResourcesFromAssetBundle<Texture2D>(resourcesPath);
@@ -132,7 +132,7 @@ namespace FengSheng
         {
             if (GameManager.Instance.IsEditorMode)
             {
-                return Resources.Load<GameObject>(resourcesPath);
+                return Resources.Load<GameObject>(Path.Combine("hotfix", resourcesPath));
             }
 
             return LoadResourcesFromAssetBundle<GameObject>(resourcesPath);
@@ -142,7 +142,7 @@ namespace FengSheng
         {
             if (GameManager.Instance.IsEditorMode)
             {
-                return Resources.Load<TextAsset>(resourcesPath);
+                return Resources.Load<TextAsset>(Path.Combine("hotfix", resourcesPath));
             }
 
             return LoadResourcesFromAssetBundle<TextAsset>(resourcesPath);
@@ -155,7 +155,7 @@ namespace FengSheng
         {
             if (GameManager.Instance.IsEditorMode)
             {
-                return Resources.Load<TextAsset>(resourcesPath.Replace(".txt", string.Empty)).text;
+                return Resources.Load<TextAsset>(Path.Combine("hotfix", resourcesPath.Replace(".txt", string.Empty))).text;
             }
 
             return File.ReadAllText(Path.Combine(Utils.GetReleasePath(), resourcesPath));

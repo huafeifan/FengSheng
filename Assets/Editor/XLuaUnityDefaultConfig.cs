@@ -2,17 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
 using XLua;
-using DG.Tweening;
-using FengSheng;
-using DG.Tweening.Core;
-using DG.Tweening.Plugins.Options;
 
 /// <summary>
-/// xLua 默认配置
+/// xLua 配置
 /// </summary>
 static class XLuaUnityDefaultConfig
 {
@@ -53,7 +46,19 @@ static class XLuaUnityDefaultConfig
         "ClusterInput", "Motion",
         "UnityEngine.UI.ReflectionMethodsCache", "NativeLeakDetection",
         "NativeLeakDetectionMode", "WWWAudioExtensions", "UnityEngine.Experimental",
-        "UnityEngine.Application.MemoryUsageChangedCallback"
+
+        "UnityEngine.DrivenRectTransformTracker", "UnityEngine.AnimatorControllerParameter", "UnityEngine.AudioSettings",
+        "UnityEngine.AudioSource", "UnityEngine.CanvasRenderer", "UnityEngine.Caching",
+        "DrivenRectTransformTracker", "UnityEngine.LightProbeGroup", "UnityEngine.LightingSettings", 
+        "UnityEngine.MeshRenderer", "UnityEngine.Material", "UnityEngine.ParticleSystemRenderer",
+        "UnityEngine.UI.DefaultControls", "UnityEngine.TextureMipmapLimitGroups", "UnityEngine.Input",
+        "UnityEngine.TextureMipmapLimitGroups", "UnityEngine.Texture", "UnityEngine.ParticleSystemForceField",
+        "UnityEngine.Texture2D", "UnityEngine.QualitySettings", "UnityEngine.Light",
+        "UnityEngine.MonoBehaviour", "UnityEngine.UI.Text", "UnityEngine.UI.Graphic",
+
+        "FengSheng.EventManagerEditor", "FengSheng.GameManagerEditor", "FengSheng.HotfixManagerEditor",
+        "FengSheng.LuaManagerEditor", "FengSheng.NetManagerEditor", "FengSheng.ProtosManagerEditor",
+        "FengSheng.ResourcesManagerEditor", "FengSheng.UIManagerEditor"
     };
 
     static bool isExcluded(Type type)
@@ -74,29 +79,25 @@ static class XLuaUnityDefaultConfig
     {
         get
         {
-            List<string> namespaces = new List<string>() // 在这里添加名字空间
+            List<string> namespaces = new List<string>()
             {
                 "UnityEngine",
                 "UnityEngine.UI",
                 "DG.Tweening",
                 "FengSheng"
             };
-            var unityTypes = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                              where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)
-                              from type in assembly.GetExportedTypes()
-                              where type.Namespace != null && namespaces.Contains(type.Namespace) && !isExcluded(type)
-                                      && type.BaseType != typeof(MulticastDelegate) && !type.IsInterface && !type.IsEnum
+            var unityTypes = (from assembly in AppDomain.CurrentDomain.GetAssemblies()//获取全部程序集
+                              where !(assembly.ManifestModule is System.Reflection.Emit.ModuleBuilder)//过滤动态生成程序集
+                              from type in assembly.GetExportedTypes()//获取程序集中公共非嵌套类型
+                              where type.Namespace != null //命名空间非空
+                                && namespaces.Contains(type.Namespace) //包含指定的命名空间
+                                && !isExcluded(type) //不在列表中
+                                && type.BaseType != typeof(MulticastDelegate) //非委托类型
+                                && !type.IsInterface //不是接口
+                                && !type.IsEnum //不是枚举
                               select type);
-            
-                string[] customAssemblys = new string[] {
-                "Assembly-CSharp",
-            };
-            var customTypes = (from assembly in customAssemblys.Select(s => Assembly.Load(s))
-                               from type in assembly.GetExportedTypes()
-                               where type.Namespace == null || !type.Namespace.StartsWith("XLua")
-                                       && type.BaseType != typeof(MulticastDelegate) && !type.IsInterface && !type.IsEnum
-                               select type);
-            return unityTypes.Concat(customTypes);
+
+            return unityTypes;
         }
     }
 
@@ -216,7 +217,7 @@ static class XLuaUnityDefaultConfig
     {
         if (!type.IsGenericType)
             return false;
-        
+
         var genericDefinition = type.GetGenericTypeDefinition();
 
         return

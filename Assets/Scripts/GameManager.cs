@@ -27,6 +27,7 @@ namespace FengSheng
         }
 
         public bool IsEditorMode = true;
+
         private Status mStatus;
 
         private static GameManager mInstance;
@@ -164,7 +165,7 @@ namespace FengSheng
         private void OnExit(object obj)
         {
             if (mStatus == Status.Run)
-                StartCoroutine(Unregister());
+                StartCoroutine(Exit());
         }
 
         private void OnRestart(object obj)
@@ -178,6 +179,13 @@ namespace FengSheng
             yield return Unregister();
 
             StartCoroutine(Register());
+        }
+
+        private IEnumerator Exit()
+        {
+            yield return Unregister();
+
+            Application.Quit();
         }
 
 

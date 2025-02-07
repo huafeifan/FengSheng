@@ -80,7 +80,7 @@ namespace FengSheng
         /// <returns></returns>
         public static string GetProjectLuaPath()
         {
-            return Path.Combine(Application.dataPath, "Resources", "lua");
+            return Path.Combine(Application.dataPath, "Resources", "hotfix", "lua");
         }
 
         /// <summary>
