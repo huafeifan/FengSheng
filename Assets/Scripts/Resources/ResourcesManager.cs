@@ -54,6 +54,7 @@ namespace FengSheng
             {
                 AssetBundle.UnloadAllAssetBundles(true);
             }
+            StopAllCoroutines();
             yield return null;
         }
 
@@ -112,11 +113,49 @@ namespace FengSheng
             return pack.AssetBundle.LoadAsset<T>(pack.ResourecesName);
         }
 
+        public IEnumerator LoadResourcesFromAssetBundleAsync<T>(string resourcesPath) where T : UnityEngine.Object
+        {
+            ResourcesPackage pack = mResourcesPackageList.Find(p => p.ResourcesPath.Contains(resourcesPath));
+            if (pack == null)
+            {
+                yield break;
+            }
+
+            if (string.IsNullOrEmpty(pack.AssetBundleName))
+            {
+                Debug.LogError($"{pack.ResourcesPath}Œ¥≈‰÷√AB∞¸√˚");
+                yield break;
+            }
+
+            string readPath = Path.Combine(Utils.GetReleasePath(), pack.AssetBundleName);
+
+            if (pack.AssetBundle == null)
+            {
+                if (!mAssetBundleDict.ContainsKey(pack.AssetBundleName))
+                {
+                    var ab = AssetBundle.LoadFromFileAsync(readPath);
+                    yield return ab;
+                    mAssetBundleDict.Add(pack.AssetBundleName, ab.assetBundle);
+                }
+                pack.AssetBundle = mAssetBundleDict[pack.AssetBundleName];
+            }
+
+            if (pack.AssetBundle == null)
+            {
+                Debug.LogError($"{resourcesPath} ResourcesManager.LoadResourceFromAssetBundle({pack.AssetBundleName}) is null");
+                yield break;
+            }
+
+            var result = pack.AssetBundle.LoadAssetAsync<T>(pack.ResourecesName);
+            yield return result;
+        }
+
+
         public Sprite LoadSprite(string resourcesPath)
         {
             if (GameManager.Instance.IsEditorMode)
             {
-                return Resources.Load<Sprite>(Path.Combine("hotfix", resourcesPath));
+                return Resources.Load<Sprite>(Path.Combine(Utils.Hotfix, resourcesPath));
             }
 
             Texture2D texture = LoadResourcesFromAssetBundle<Texture2D>(resourcesPath);
@@ -128,21 +167,57 @@ namespace FengSheng
             return null;
         }
 
+        public IEnumerator LoadSpriteAsyncCoroutine(string resourcesPath, Action onComplete)
+        {
+            if (GameManager.Instance.IsEditorMode)
+            {
+                yield return Resources.LoadAsync<Sprite>(Path.Combine(Utils.Hotfix, resourcesPath));
+            }
+            else
+            {
+                yield return LoadResourcesFromAssetBundleAsync<Sprite>(resourcesPath);
+            }
+            onComplete?.Invoke();
+        }
+
+        public void LoadSpriteAsync(string resourcesPath, Action onComplete)
+        {
+            StartCoroutine(LoadSpriteAsyncCoroutine(resourcesPath, onComplete));
+        }
+
         public GameObject LoadGameObject(string resourcesPath)
         {
             if (GameManager.Instance.IsEditorMode)
             {
-                return Resources.Load<GameObject>(Path.Combine("hotfix", resourcesPath));
+                return Resources.Load<GameObject>(Path.Combine(Utils.Hotfix, resourcesPath));
             }
 
             return LoadResourcesFromAssetBundle<GameObject>(resourcesPath);
+        }
+
+        public IEnumerator LoadGameObjectAsyncCoroutine(string resourcesPath, Action onComplete)
+        {
+            if (GameManager.Instance.IsEditorMode)
+            {
+                yield return Resources.LoadAsync<GameObject>(Path.Combine(Utils.Hotfix, resourcesPath));
+            }
+            else 
+            {
+                yield return LoadResourcesFromAssetBundleAsync<GameObject>(resourcesPath);
+            }
+            onComplete?.Invoke();
+        }
+
+        public void LoadGameObjectAsync(string resourcesPath, Action onComplete)
+        {
+            StartCoroutine(LoadGameObjectAsyncCoroutine(resourcesPath, onComplete));
         }
 
         public TextAsset LoadProtos(string resourcesPath)
         {
             if (GameManager.Instance.IsEditorMode)
             {
-                return Resources.Load<TextAsset>(Path.Combine("hotfix", resourcesPath));
+                return Resources.Load<TextAsset>(Path.Combine(Utils.Hotfix, resourcesPath));
             }
 
             return LoadResourcesFromAssetBundle<TextAsset>(resourcesPath);
@@ -155,7 +230,7 @@ namespace FengSheng
         {
             if (GameManager.Instance.IsEditorMode)
             {
-                return Resources.Load<TextAsset>(Path.Combine("hotfix", resourcesPath.Replace(".txt", string.Empty))).text;
+                return Resources.Load<TextAsset>(Path.Combine(Utils.Hotfix, resourcesPath.Replace(".txt", string.Empty))).text;
             }
 
             return File.ReadAllText(Path.Combine(Utils.GetReleasePath(), resourcesPath));

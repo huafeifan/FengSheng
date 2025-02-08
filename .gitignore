@@ -3,6 +3,7 @@ Logs/
 v17/
 Assets/XLua/Gen/
 OutputABs/
+Build/
 *.vsidx
 *.dwlt
 *.cache

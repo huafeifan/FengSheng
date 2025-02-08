@@ -13,6 +13,7 @@ local InitUIReference = function()
 	ui.restartBtn = self.transform:Find("BtnList/RestartBtn"):GetComponent(typeof(Button))
 	ui.ruleBtn = self.transform:Find("BtnList/RuleBtn"):GetComponent(typeof(Button))
 	ui.inputName = self.transform:Find("InputName"):GetComponent(typeof(InputField))
+	ui.version = self.transform:Find("Version"):GetComponent(typeof(Text))
 	
 	ui.head = UserHead:New(self.transform:Find("User").gameObject)
 	ui.head:InitUIReference()
@@ -51,6 +52,9 @@ local InitUI = function()
 				ui.ruleBtn.gameObject:SetActive(true)
 			end)
 	end
+	
+	local versionInfo = Utils:GetCurrentVersion()
+	ui.version.text = "L" .. versionInfo.LuaVersion .. "_O" .. versionInfo.ProtosVersion .. "_T" .. versionInfo.TextureVersion .. "_P" .. versionInfo.PrefabVersion
 end
 
 local OnBtnStart = function()

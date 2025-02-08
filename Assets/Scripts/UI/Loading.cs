@@ -1,17 +1,18 @@
 using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
+using XLua;
 
 namespace FengSheng
 {
     public class Loading
     {
-        public const string Progress_Hotfix = "Loading_Hotfix";
-
         private Transform transform;
         private Slider mSlider;
         private Text mText;
+        private Text mProgressText;
         private Transform mRotate;
         private Tweener mTweener;
 
@@ -21,6 +22,7 @@ namespace FengSheng
             mRotate = transform.Find("Image");
             mText = transform.Find("Tip").GetComponent<Text>();
             mSlider = transform.Find("Slider").GetComponent<Slider>();
+            mProgressText = transform.Find("Slider/ProgressText").GetComponent<Text>();
         }
 
         public void Start()
@@ -60,26 +62,59 @@ namespace FengSheng
 
         private void OnProgressChange(object obj)
         {
-            var data = obj as LoadingEventPackage;
-            if (data != null)
-            {
-                mSlider.value = GetProgress(data);
-                mText.text = data.Tips;
+            string tips = null;
 
-                if (data.Tips == "success")
+            if (obj is LoadingEventPackage)
+            {
+                var data = obj as LoadingEventPackage;
+                if (data != null)
                 {
-                    transform.gameObject.SetActive(false);
+                    float progress = GetProgress(data);
+                    mSlider.value = progress;
+                    mText.text = data.Tips;
+                    mProgressText.text = (progress * 100).ToString("F0") + "%";
+
+                    tips = data.Tips;
                 }
-                else if (data.Tips == "start")
+            }
+            else if (obj is LuaTable)
+            {
+                var data = obj as LuaTable;
+                if (data != null)
                 {
-                    Start();
+                    float progress = GetProgress(data);
+                    mSlider.value = progress;
+                    mText.text = data.Get<string>("tips");
+                    mProgressText.text = (progress * 100).ToString("F0") + "%";
+
+                    tips = mText.text;
                 }
+            }
+
+            if (string.IsNullOrEmpty(tips))
+            {
+                return;
+            }
+            else if(tips == "success")
+            {
+                mText.text = string.Empty;
+                transform.gameObject.SetActive(false);
+            }
+            else if (tips == "start")
+            {
+                mText.text = string.Empty;
+                Start();
             }
         }
 
         private float GetProgress(LoadingEventPackage data)
         {
             return data.Progress;
+        }
+
+        private float GetProgress(LuaTable data)
+        {
+            return data.Get<float>("progress");
         }
 
     }

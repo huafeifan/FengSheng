@@ -5,6 +5,7 @@ local InitUIReference = function()
 	ui.closeBtn = self.transform:Find("CloseBtn"):GetComponent(typeof(Button))
 	ui.createRoomBtn = self.transform:Find("CreateBtn"):GetComponent(typeof(Button))
 	ui.inputRoomName = self.transform:Find("RoomName/InputBg"):GetComponent(typeof(InputField))
+	ui.chair3 = self.transform:Find("ChairCount/Item3/Toggle"):GetComponent(typeof(Toggle))
 	ui.chair4 = self.transform:Find("ChairCount/Item4/Toggle"):GetComponent(typeof(Toggle))
 	ui.chair5 = self.transform:Find("ChairCount/Item5/Toggle"):GetComponent(typeof(Toggle))
 	ui.chair6 = self.transform:Find("ChairCount/Item6/Toggle"):GetComponent(typeof(Toggle))
@@ -12,9 +13,9 @@ end
 
 local InitUI = function()
 	local defaultRoomName = "哦嗨哟,快来一起玩吧"
-	ui.chair4.isOn = true
+	ui.chair3.isOn = true
 	ui.inputRoomName.text = defaultRoomName
-	roomData.chairCount = 4
+	roomData.chairCount = 3
 	roomData.roomName = defaultRoomName
 end
 

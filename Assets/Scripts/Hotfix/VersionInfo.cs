@@ -21,10 +21,16 @@ namespace FengSheng
         public int ProtosVersion = 0;
 
         /// <summary>
-        /// 资源文件版本号(预制体和图片纹理)
+        /// 预制体文件版本号
         /// </summary>
         [SerializeField]
-        public int ResourcesVersion = 0;
+        public int PrefabVersion = 0;
+
+        /// <summary>
+        /// 图片纹理文件版本号
+        /// </summary>
+        [SerializeField]
+        public int TextureVersion = 0;
 
         public void Analysis(string versionInfo)
         {
@@ -39,8 +45,11 @@ namespace FengSheng
                     case "protos version":
                         ProtosVersion = int.Parse(infos[++i]);
                         break;
-                    case "resources version":
-                        ResourcesVersion = int.Parse(infos[++i]);
+                    case "prefab version":
+                        PrefabVersion = int.Parse(infos[++i]);
+                        break;
+                    case "texture version":
+                        TextureVersion = int.Parse(infos[++i]);
                         break;
                 }
             }
@@ -48,7 +57,7 @@ namespace FengSheng
 
         public string GetWrite()
         {
-            return string.Format("{0}:{1}\r\n{2}:{3}\r\n{4}:{5}", "lua version", LuaVersion, "protos version", ProtosVersion, "resources version", ResourcesVersion);
+            return string.Format("{0}:{1}\r\n{2}:{3}\r\n{4}:{5}\r\n{6}:{7}", "lua version", LuaVersion, "protos version", ProtosVersion, "prefab version", PrefabVersion, "texture version", TextureVersion);
         }
 
     }

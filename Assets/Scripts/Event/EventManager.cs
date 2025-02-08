@@ -11,7 +11,7 @@ namespace FengSheng
         public const string Event_Exit = "Event_Exit";
         public const string Event_Restart = "Event_Restart";
 
-        public const string Event_LoadingProgress = "Event_LoadingProgress";
+        public static readonly string Event_LoadingProgress = "Event_LoadingProgress";//lua中需要用到，故改用static readonly
 
         private static EventManager mInstance;
         public static EventManager Instance

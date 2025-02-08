@@ -33,6 +33,7 @@ namespace FengSheng
         {
             mInstance = this;
             LuaEnvInit();
+
             yield return null;
         }
 
@@ -43,6 +44,7 @@ namespace FengSheng
                 mLuaBehaviourList[i]?.Clear();
             }
             mLuaBehaviourList.Clear();
+            StopAllCoroutines();
 
             yield return new WaitForSeconds(0.2f);
 
@@ -66,6 +68,7 @@ namespace FengSheng
                 luaEnv.Tick();
                 lastGCTime = Time.time;
             }
+
         }
 
         public void LuaEnvInit()
@@ -78,7 +81,7 @@ namespace FengSheng
                 string filePath = string.Empty;
                 if (GameManager.Instance.IsEditorMode)
                 {
-                    filePath = Path.Combine(Application.dataPath, "Resources", "hotfix", "lua", fileName + ".lua.txt");
+                    filePath = Path.Combine(Application.dataPath, Utils.Resources, Utils.Hotfix, Utils.Lua, fileName + ".lua.txt");
                 }
                 else
                 {
@@ -124,5 +127,15 @@ namespace FengSheng
             mLuaBehaviourList.Remove(luaBehaviour);
         }
 
+        private IEnumerator CustomIEnumerator(IEnumerator method, Action onComplete)
+        {
+            yield return method;
+            onComplete?.Invoke();
+        }
+
+        public Coroutine AddCoroutine(IEnumerator method, Action onComplete)
+        {
+            return StartCoroutine(CustomIEnumerator(method, onComplete));
+        }
     }
 }

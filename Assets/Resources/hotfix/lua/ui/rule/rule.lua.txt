@@ -2,30 +2,13 @@ local ui = {}
 local ruleConfig = { 
 	[1] = { 
 		["title"] = "游戏介绍",
-		["pages"] = { 
-			"ui/rule/rule_introduce1", 
-			"ui/rule/rule_introduce2", 
-			"ui/rule/rule_introduce3", 
-			"ui/rule/rule_introduce4" }},
+		["pages"] = Global.Resources.Rule_Introduce },
 	[2] = {
 		["title"] = "基础牌功能说明",
-		["pages"] = {
-			"ui/rule/rule_base1",
-			"ui/rule/rule_base2",
-			"ui/rule/rule_base3",
-			"ui/rule/rule_base4" }},
+		["pages"] = Global.Resources.Rule_Base },
 	[3] = {
 		["title"] = "角色牌技能说明",
-		["pages"] = {
-			"ui/rule/rule_role1",
-			"ui/rule/rule_role2",
-			"ui/rule/rule_role3",
-			"ui/rule/rule_role4",
-			"ui/rule/rule_role5",
-			"ui/rule/rule_role6",
-			"ui/rule/rule_role7",
-			"ui/rule/rule_role8",
-			"ui/rule/rule_role9" }}
+		["pages"] = Global.Resources.Rule_Role }
 }
 local currentPageNub = 0
 local currentTitleNub = 0
@@ -93,7 +76,7 @@ local SetPage = function(pageNub)
 	ui.leftBtn.gameObject:SetActive(pageNub > 1)
 	ui.rightBtn.gameObject:SetActive(pageNub < maxPageIndex)
 	
-	local targetPositionX = startLocalPositionX + (-808 * (pageNub - 1))
+	local targetPositionX = startLocalPositionX + (-710 * (pageNub - 1))
 	ui.pageRoot:DOLocalMoveX(targetPositionX, 0.5)---285 * (pageNub - 1)
 
 	currentPageNub = pageNub

@@ -71,7 +71,6 @@ namespace FengSheng
 
             EventManager.Instance.TriggerEvent(EventManager.Event_LoadingProgress, new LoadingEventPackage()
             {
-                Name = string.Empty,
                 Progress = 0,
                 Tips = "start"
             });
@@ -86,13 +85,6 @@ namespace FengSheng
             yield return Register<NetManager>();
 
             yield return Register<LuaManager>();
-
-            EventManager.Instance.TriggerEvent(EventManager.Event_LoadingProgress, new LoadingEventPackage()
-            {
-                Name = string.Empty,
-                Progress = 100,
-                Tips = "success"
-            });
 
             AddListener();
             mStatus = Status.Run;

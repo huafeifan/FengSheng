@@ -62,9 +62,9 @@
   <ItemGroup>
     <Compile Include="Assets\Editor\EditorConfig.cs" />
     <Compile Include="Assets\XLua\Src\Editor\Generator.cs" />
-    <Compile Include="Assets\XLua\Hotfix\Editor\HotfixTestCfg.cs" />
     <Compile Include="Assets\XLua\Src\Editor\Hotfix.cs" />
     <Compile Include="Assets\Editor\XLuaUnityDefaultConfig.cs" />
+    <Compile Include="Assets\Editor\CustomBuildWin64.cs" />
     <Compile Include="Assets\ThirdParty\LuaPerfect\Editor\ApiGenerator.cs" />
     <Compile Include="Assets\XLua\Src\Editor\TemplateRef.cs" />
     <Compile Include="Assets\XLua\Src\Editor\Report.cs" />

@@ -15,6 +15,9 @@ namespace FengSheng
         [SerializeField]
         private VersionInfo mTargetVersion = new VersionInfo();
 
+        [SerializeField]
+        private List<HotfixFileInfo> mUpdateList = new List<HotfixFileInfo>();
+
         private static HotfixManager mInstance;
         public static HotfixManager Instance
         {
@@ -48,12 +51,11 @@ namespace FengSheng
             string versionInfo = versionInfoRequest.downloadHandler.text;
             mTargetVersion.Analysis(versionInfo);
 
-
             TriggerLoadingProgressChange(0, "正在检查更新...");
 
             if (IsNeedUpdate() == false)
             {
-                TriggerLoadingProgressChange(100, "success");
+                TriggerLoadingProgressChange(1, "正在检查更新...");
                 yield break;
             }
 
@@ -66,37 +68,41 @@ namespace FengSheng
             TriggerLoadingProgressChange(0, "正在计算更新资源大小...");
 
             //更新内容
-            List<HotfixFileInfo> updateList = new List<HotfixFileInfo>();
+            mUpdateList.Clear();
 
             for (int i = 0; i < filesList.Length; i++)
             {
                 //判断lua更新
-                if (mTargetVersion.LuaVersion > mCurrentVersion.LuaVersion && filesList[i].Contains("lua"))
+                if (mTargetVersion.LuaVersion > mCurrentVersion.LuaVersion && 
+                    filesList[i].Contains(Utils.Lua) &&
+                    !filesList[i].Contains(Utils.abEnd))
                 {
                     string[] files = filesList[i].Split(",");
-                    updateList.Add(new HotfixFileInfo()
+                    mUpdateList.Add(new HotfixFileInfo()
                     {
                         FilePath = files[0],
                         FileSize = long.Parse(files[1]),
                         FileType = HotfixFileEnum.Lua
                     });
                 }
-                //判断资源更新
-                else if (mTargetVersion.ResourcesVersion > mCurrentVersion.ResourcesVersion && filesList[i].Contains("ui"))
+                //判断图片纹理资源更新
+                else if (mTargetVersion.TextureVersion > mCurrentVersion.TextureVersion && 
+                    filesList[i].Contains(Utils.Texture + "." + Utils.abEnd))
                 {
                     string[] files = filesList[i].Split(",");
-                    updateList.Add(new HotfixFileInfo()
+                    mUpdateList.Add(new HotfixFileInfo()
                     {
                         FilePath = files[0],
                         FileSize = long.Parse(files[1]),
-                        FileType = HotfixFileEnum.UI
+                        FileType = HotfixFileEnum.Texture
                     });
                 }
-                //判断资源更新
-                else if (mTargetVersion.ResourcesVersion > mCurrentVersion.ResourcesVersion && filesList[i].Contains("prefab"))
+                //判断预制体资源更新
+                else if (mTargetVersion.PrefabVersion > mCurrentVersion.PrefabVersion && 
+                    filesList[i].Contains(Utils.Prefab + "." + Utils.abEnd))
                 {
                     string[] files = filesList[i].Split(",");
-                    updateList.Add(new HotfixFileInfo()
+                    mUpdateList.Add(new HotfixFileInfo()
                     {
                         FilePath = files[0],
                         FileSize = long.Parse(files[1]),
@@ -104,20 +110,21 @@ namespace FengSheng
                     });
                 }
                 //判断协议更新
-                else if (mTargetVersion.ProtosVersion > mCurrentVersion.ProtosVersion && filesList[i].Contains("protos"))
+                else if (mTargetVersion.ProtosVersion > mCurrentVersion.ProtosVersion && 
+                    filesList[i].Contains(Utils.Protos + "." + Utils.abEnd))
                 {
                     string[] files = filesList[i].Split(",");
-                    updateList.Add(new HotfixFileInfo()
+                    mUpdateList.Add(new HotfixFileInfo()
                     {
                         FilePath = files[0].Replace(".txt", string.Empty),
                         FileSize = long.Parse(files[1]),
                         FileType = HotfixFileEnum.Protos
                     });
                 }
-                else if (filesList[i].Contains("manifest.txt"))
+                else if (filesList[i].Contains(Utils.Manifest))
                 {
                     string[] files = filesList[i].Split(",");
-                    updateList.Add(new HotfixFileInfo()
+                    mUpdateList.Add(new HotfixFileInfo()
                     {
                         FilePath = files[0],
                         FileSize = long.Parse(files[1]),
@@ -129,19 +136,19 @@ namespace FengSheng
             //计算文件大小
             long updateSize = 0;//需要更新的大小
 
-            for (int i = 0; i < updateList.Count; i++)
+            for (int i = 0; i < mUpdateList.Count; i++)
             {
-                updateSize += updateList[i].FileSize;
+                updateSize += mUpdateList[i].FileSize;
             }
             string updateSizeString = Utils.GetSize(updateSize);
 
             //开始更新
             long updatedSize = 0;//已更新的大小
-            for (int i = 0; i < updateList.Count; i++) 
+            for (int i = 0; i < mUpdateList.Count; i++) 
             {
                 TriggerLoadingProgressChange((float)updatedSize / updateSize, $"更新中...{Utils.GetSize(updatedSize)}/{updateSizeString}");
                 
-                UnityWebRequest fileContentRequest = UnityWebRequest.Get(Path.Combine(Utils.GetUpdateAddress(), updateList[i].FilePath));
+                UnityWebRequest fileContentRequest = UnityWebRequest.Get(Path.Combine(Utils.GetUpdateAddress(), mUpdateList[i].FilePath));
                 fileContentRequest.SendWebRequest();
                 while (fileContentRequest.isDone == false)
                 {
@@ -150,26 +157,27 @@ namespace FengSheng
                     TriggerLoadingProgressChange((float)tempUpdateSize / updateSize, $"更新中...{Utils.GetSize(tempUpdateSize)}/{updateSizeString}");
                 }
 
-                if (updateList[i].FileType == HotfixFileEnum.Lua ||
-                    updateList[i].FileType == HotfixFileEnum.Manifest)
+                if (mUpdateList[i].FileType == HotfixFileEnum.Lua ||
+                    mUpdateList[i].FileType == HotfixFileEnum.Manifest)
                 {
                     string fileContentString = fileContentRequest.downloadHandler.text;
-                    string filePath = Path.Combine(Utils.GetReleasePath(), updateList[i].FilePath);
+                    string filePath = Path.Combine(Utils.GetReleasePath(), mUpdateList[i].FilePath);
                     Utils.WriteFile(fileContentString, filePath);
                 }
                 else
                 {
                     byte[] fileContentBytes = fileContentRequest.downloadHandler.data;
-                    string filePath = Path.Combine(Utils.GetReleasePath(), updateList[i].FilePath);
+                    string filePath = Path.Combine(Utils.GetReleasePath(), mUpdateList[i].FilePath);
                     Utils.WriteFile(fileContentBytes, filePath);
                 }
 
-                updatedSize += updateList[i].FileSize;
+                updatedSize += mUpdateList[i].FileSize;
             }
             TriggerLoadingProgressChange((float)updatedSize / updateSize, $"更新中...{Utils.GetSize(updatedSize)}/{updateSizeString}");
 
             mCurrentVersion.LuaVersion = mTargetVersion.LuaVersion;
-            mCurrentVersion.ResourcesVersion = mTargetVersion.ResourcesVersion;
+            mCurrentVersion.PrefabVersion = mTargetVersion.PrefabVersion;
+            mCurrentVersion.TextureVersion = mTargetVersion.TextureVersion;
             mCurrentVersion.ProtosVersion = mTargetVersion.ProtosVersion;
             Utils.WriteFile(mCurrentVersion.GetWrite(), Utils.GetVersionInfoPath());
         }
@@ -188,7 +196,8 @@ namespace FengSheng
         {
             return mTargetVersion.LuaVersion > mCurrentVersion.LuaVersion ||
                 mTargetVersion.ProtosVersion > mCurrentVersion.ProtosVersion ||
-                mTargetVersion.ResourcesVersion > mCurrentVersion.ResourcesVersion;
+                mTargetVersion.TextureVersion > mCurrentVersion.TextureVersion ||
+                mTargetVersion.PrefabVersion > mCurrentVersion.PrefabVersion;
         }
 
         /// <summary>
@@ -200,7 +209,6 @@ namespace FengSheng
         {
             EventManager.Instance.TriggerEvent(EventManager.Event_LoadingProgress, new LoadingEventPackage()
             {
-                Name = Loading.Progress_Hotfix,
                 Progress = progress,
                 Tips = tip
             });

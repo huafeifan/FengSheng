@@ -14,17 +14,12 @@ public class AssetBundleConfig : EditorWindow
     }
 
     private string abName = string.Empty;
-    private string endName = string.Empty;
     private string folderPath = string.Empty;
     private void OnGUI()
     {
-        GUILayout.Label("AssetBundle Name", EditorStyles.boldLabel);
+        GUILayout.Label("AssetBundle", EditorStyles.boldLabel);
         abName = EditorGUILayout.TextField("包名", abName);
-
-        GUILayout.Label("End Name", EditorStyles.boldLabel);
-        endName = EditorGUILayout.TextField("后缀名", endName);
-
-        GUILayout.Label("Folder Path", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("后缀名", Utils.abEnd);
         folderPath = EditorGUILayout.TextField("路径", folderPath);
 
         if (GUILayout.Button("设置包名并打资源"))
@@ -39,7 +34,7 @@ public class AssetBundleConfig : EditorWindow
             string[] guids = AssetDatabase.FindAssets("t:Texture2D t:Prefab t:TextAsset", new string[] { folderPath });
             string[] assetPaths = new string[guids.Length];
 
-            string fullName = string.IsNullOrEmpty(endName) ? abName : abName + "." + endName;
+            string fullName = abName + "." + Utils.abEnd;
             for (int i = 0; i < guids.Length; i++)
             {
                 assetPaths[i] = AssetDatabase.GUIDToAssetPath(guids[i]);
@@ -58,6 +53,32 @@ public class AssetBundleConfig : EditorWindow
             BuildPipeline.BuildAssetBundles(outputPath, buildMap, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows64);
 
             AssetDatabase.Refresh();
+
+            VersionInfo version = Utils.GetCurrentVersion();
+            if (version != null) 
+            {
+                if (fullName.Contains(Utils.Texture + "." + Utils.abEnd))
+                {
+                    version.TextureVersion++;
+                    Debug.Log($"已更新版本号 texture version:<color=green>{version.TextureVersion - 1} => {version.TextureVersion}</color>");
+                }
+                else if (fullName.Contains(Utils.Protos + "." + Utils.abEnd))
+                {
+                    version.ProtosVersion++;
+                    Debug.Log($"已更新版本号 protos version:<color=green>{version.ProtosVersion - 1} => {version.ProtosVersion}</color>");
+                }
+                else if (fullName.Contains(Utils.Prefab + "." + Utils.abEnd))
+                {
+                    version.PrefabVersion++;
+                    Debug.Log($"已更新版本号 prefab version:<color=green>{version.PrefabVersion - 1} => {version.PrefabVersion}</color>");
+                }
+                Utils.WriteFile(version.GetWrite(), Utils.GetVersionInfoPath());
+            }
+            else
+            {
+                Debug.LogError($"本地版本信息文件不存在,路径{Utils.GetVersionInfoPath()}");
+            }
+
             Debug.Log(@$"Build Windows64 AssetBundles Completed
 <color=green>folderPath</color>:{folderPath}
 <color=green>abName</color>:{fullName}
@@ -119,7 +140,7 @@ public class AssetBundleConfig : EditorWindow
         {
             string filePath = Utils.GetResourcesManifestPath();
             string outputPath = Utils.GetReleasePath();
-            string[] guids = AssetDatabase.FindAssets("t:Texture2D t:Prefab t:TextAsset", new string[] { "Assets/Resources/hotfix" });
+            string[] guids = AssetDatabase.FindAssets("t:Texture2D t:Prefab t:TextAsset", new string[] { Path.Combine("Assets", Utils.Resources , Utils.Hotfix) });
 
             if (!Directory.Exists(outputPath))
             {
@@ -190,6 +211,7 @@ public class AssetBundleConfig : EditorWindow
                     writer.WriteLine(writes[i]);
                 }
             }
+
             Debug.Log("热更文件列表文件生成成功");
         }
         catch (Exception e)
@@ -225,6 +247,18 @@ public class AssetBundleConfig : EditorWindow
         {
             CopyDirectory(sourceDir, targetDir);
             Debug.Log("生成lua文件成功");
+
+            VersionInfo version = Utils.GetCurrentVersion();
+            if (version != null)
+            {
+                version.LuaVersion++;
+                Utils.WriteFile(version.GetWrite(), Utils.GetVersionInfoPath());
+                Debug.Log($"已更新版本号 lua version:<color=green>{version.LuaVersion - 1} => {version.LuaVersion}</color>");
+            }
+            else
+            {
+                Debug.LogError($"本地版本信息文件不存在,路径{Utils.GetVersionInfoPath()}");
+            }
         }
         catch (Exception e)
         {

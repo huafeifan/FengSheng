@@ -36,15 +36,14 @@ local InitUI = function()
 	chairs[1] = ui.chairList.bottom
 	chairs[1]:InitUI()
 	
-	--左1
-	chairs[2] = ui.chairList.left
-	chairs[2]:InitUI()
-	
-	--上1
-	chairs[3] = ui.chairList.top1
-	chairs[3]:InitUI()
-	
+	--6人桌
 	if Global.Data.RoomInfo.ChairCount == 6 then
+		chairs[2] = ui.chairList.left
+		chairs[2]:InitUI()
+		
+		chairs[3] = ui.chairList.top1
+		chairs[3]:InitUI()
+		
 		chairs[4] = ui.chairList.top2
 		chairs[4]:InitUI()
 		
@@ -53,7 +52,14 @@ local InitUI = function()
 		
 		chairs[6] = ui.chairList.right
 		chairs[6]:InitUI()
+	--5人桌
 	elseif Global.Data.RoomInfo.ChairCount == 5 then
+		chairs[2] = ui.chairList.left
+		chairs[2]:InitUI()
+		
+		chairs[3] = ui.chairList.top1
+		chairs[3]:InitUI()
+		
 		chairs[4] = ui.chairList.top2
 		chairs[4]:InitUI()
 		
@@ -61,10 +67,28 @@ local InitUI = function()
 		chairs[5]:InitUI()
 		
 		ui.chairList.top3.gameObject:SetActive(false)
-	else
+	--4人桌
+	elseif Global.Data.RoomInfo.ChairCount == 4 then
+		chairs[2] = ui.chairList.left
+		chairs[2]:InitUI()
+		
+		chairs[3] = ui.chairList.top1
+		chairs[3]:InitUI()
+		
 		chairs[4] = ui.chairList.right
 		chairs[4]:InitUI()
 		
+		ui.chairList.top2.gameObject:SetActive(false)
+		ui.chairList.top3.gameObject:SetActive(false)
+	--3人桌
+	else
+		chairs[2] = ui.chairList.left
+		chairs[2]:InitUI()
+
+		chairs[3] = ui.chairList.right
+		chairs[3]:InitUI()
+		
+		ui.chairList.top1.gameObject:SetActive(false)
 		ui.chairList.top2.gameObject:SetActive(false)
 		ui.chairList.top3.gameObject:SetActive(false)
 	end

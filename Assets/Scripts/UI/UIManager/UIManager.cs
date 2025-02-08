@@ -108,6 +108,11 @@ namespace FengSheng
                         SiblingIndex = int.Parse(items[i + 5].Trim())
                     });
                 }
+
+                if (!string.IsNullOrEmpty(items[i]) && items[i].Contains("--#endregion"))
+                {
+                    break;
+                }
             }
 
         }
