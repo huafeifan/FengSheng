@@ -27,6 +27,7 @@ namespace FengSheng
         }
 
         public bool IsEditorMode = true;
+        public bool IsOpenDebug = true;
 
         private Status mStatus;
 
@@ -83,6 +84,10 @@ namespace FengSheng
             yield return Register<ProtosManager>();
             yield return Register<UIManager>();
             yield return Register<NetManager>();
+            if (IsOpenDebug)
+            {
+                yield return Register<DebugManager>();
+            }
 
             yield return Register<LuaManager>();
 
@@ -103,6 +108,10 @@ namespace FengSheng
             yield return Unregister<UIManager>();
             yield return Unregister<NetManager>();
             yield return Unregister<EventManager>();
+            if (IsOpenDebug)
+            {
+                yield return Unregister<DebugManager>();
+            }
 
             yield return Unregister<LuaManager>();
             yield return Unregister<ResourcesManager>();
