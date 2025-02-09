@@ -23,8 +23,8 @@ namespace FengSheng
         /// </summary>
         [SerializeField]
         private List<string> mCallBackNameList = new List<string>();
-        
-        public EventPackage(string name) 
+
+        public EventPackage(string name)
         {
             Name = name;
         }
@@ -37,9 +37,21 @@ namespace FengSheng
 
         public void RemoveEvent(Action<System.Object> action)
         {
-            for (int i = 0; i < mCallBack.Count; i++) 
+            for (int i = 0; i < mCallBack.Count; i++)
             {
-                if (mCallBack[i] == action) 
+                if (mCallBack[i] == action)
+                {
+                    mCallBack.RemoveAt(i);
+                    mCallBackNameList.RemoveAt(i);
+                }
+            }
+        }
+
+        public void RemoveEvent(string actionName)
+        {
+            for (int i = 0; i < mCallBackNameList.Count; i++)
+            {
+                if (mCallBackNameList[i] == actionName)
                 {
                     mCallBack.RemoveAt(i);
                     mCallBackNameList.RemoveAt(i);
@@ -50,7 +62,7 @@ namespace FengSheng
         public void TriggerEvent(object arg)
         {
             Action<object>[] action = mCallBack.ToArray();
-            for (int i = 0; i < action.Length; i++) 
+            for (int i = 0; i < action.Length; i++)
             {
                 action[i].Invoke(arg);
             }

@@ -85,6 +85,15 @@ namespace FengSheng
             }
         }
 
+        public void RemoveListener(string eventName, string actionName)
+        {
+            EventPackage eventPackage = GetEventPackage(eventName);
+            if (eventPackage != null)
+            {
+                eventPackage.RemoveEvent(actionName);
+            }
+        }
+
         public void TriggerEvent(string eventName, object arg)
         {
             mCache.Enqueue(new EventTriggerCache() 
