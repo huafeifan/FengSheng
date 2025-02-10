@@ -64,13 +64,13 @@ local OnReceiveRoomList = function(bytes)
 end
 
 local AddUIEvent = function()
-	ui.closeBtn.onClick:AddListener(OnBtnClose)
-	ui.flashBtn.onClick:AddListener(OnBtnFlash)
+	UIEventManager:AddListener(ui.closeBtn, OnBtnClose, "lua.roomList.OnBtnClose")
+	UIEventManager:AddListener(ui.flashBtn, OnBtnFlash, "lua.roomList.OnBtnFlash")
 end
 
 local RemoveUIEvent = function()
-	ui.closeBtn.onClick:RemoveAllListeners()
-	ui.flashBtn.onClick:RemoveAllListeners()
+	UIEventManager:RemoveAllListeners(ui.closeBtn)
+	UIEventManager:RemoveAllListeners(ui.flashBtn)
 end
 
 local AddListener = function()

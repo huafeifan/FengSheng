@@ -2,6 +2,7 @@ require "ui/login/userHead"
 
 local ui = {}
 local inputName = nil
+local debugTrigger = 0
 
 local InitUIReference = function()
 	ui.bg = self.transform:Find("Bg"):GetComponent(typeof(Image))
@@ -14,10 +15,11 @@ local InitUIReference = function()
 	ui.ruleBtn = self.transform:Find("BtnList/RuleBtn"):GetComponent(typeof(Button))
 	ui.inputName = self.transform:Find("InputName"):GetComponent(typeof(InputField))
 	ui.version = self.transform:Find("Version"):GetComponent(typeof(Text))
+	ui.debugBtn = self.transform:Find("DebugBtn"):GetComponent(typeof(Button))
 	
 	ui.head = UserHead:New(self.transform:Find("User").gameObject)
 	ui.head:InitUIReference()
-	
+
 end
 
 local InitUI = function()
@@ -109,28 +111,38 @@ local OnBtnRule = function()
 	UIManager:OpenUI(Global.RulePrefab_Path)
 end
 
+local OnBtnDebug = function()
+	debugTrigger = debugTrigger + 1
+	Debug.Log(debugTrigger)
+	if debugTrigger >= 5 then
+		DebugManager:SetDisPlayLog(true)
+	end
+end
+
 local AddUIEvent = function()
-	ui.startBtn.onClick:AddListener(OnBtnStart)
-	ui.exitBtn.onClick:AddListener(OnBtnExit)
-	ui.loginBtn.onClick:AddListener(OnBtnLogin)
-	ui.createRoomBtn.onClick:AddListener(OnBtnCreateRoom)
-	ui.checkRoomBtn.onClick:AddListener(OnBtnCheckRoom)
-	ui.inputName.onValueChanged:AddListener(OnInputNameChanged)
-	ui.restartBtn.onClick:AddListener(OnBtnRestart)
-	ui.ruleBtn.onClick:AddListener(OnBtnRule)
 	ui.head:AddUIEvent()
+	UIEventManager:AddListener(ui.startBtn, OnBtnStart, "lua.login.OnBtnStart")
+	UIEventManager:AddListener(ui.exitBtn, OnBtnExit, "lua.login.OnBtnExit")
+	UIEventManager:AddListener(ui.loginBtn, OnBtnLogin, "lua.login.OnBtnLogin")
+	UIEventManager:AddListener(ui.createRoomBtn, OnBtnCreateRoom, "lua.login.OnBtnCreateRoom")
+	UIEventManager:AddListener(ui.checkRoomBtn, OnBtnCheckRoom, "lua.login.OnBtnCheckRoom")
+	UIEventManager:AddListener(ui.restartBtn, OnBtnRestart, "lua.login.OnBtnRestart")
+	UIEventManager:AddListener(ui.ruleBtn, OnBtnRule, "lua.login.OnBtnRule")
+	UIEventManager:AddListener(ui.debugBtn, OnBtnDebug, "lua.login.OnBtnDebug")
+	UIEventManager:AddListener(ui.inputName, OnInputNameChanged, "lua.login.OnInputNameChanged")
 end
 
 local RemoveUIEvent = function()
-	ui.startBtn.onClick:RemoveAllListeners()
-	ui.exitBtn.onClick:RemoveAllListeners()
-	ui.loginBtn.onClick:RemoveAllListeners()
-	ui.createRoomBtn.onClick:RemoveAllListeners()
-	ui.checkRoomBtn.onClick:RemoveAllListeners()
-	ui.inputName.onValueChanged:RemoveAllListeners()
-	ui.restartBtn.onClick:RemoveAllListeners()
-	ui.ruleBtn.onClick:RemoveAllListeners()
 	ui.head:RemoveUIEvent()
+	UIEventManager:RemoveAllListeners(ui.startBtn)
+	UIEventManager:RemoveAllListeners(ui.exitBtn)
+	UIEventManager:RemoveAllListeners(ui.loginBtn)
+	UIEventManager:RemoveAllListeners(ui.createRoomBtn)
+	UIEventManager:RemoveAllListeners(ui.checkRoomBtn)
+	UIEventManager:RemoveAllListeners(ui.restartBtn)
+	UIEventManager:RemoveAllListeners(ui.ruleBtn)
+	UIEventManager:RemoveAllListeners(ui.debugBtn)
+	UIEventManager:RemoveAllListeners(ui.inputName)
 end
 
 local OnConnect = function(netWorkEventPackage)

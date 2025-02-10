@@ -67,5 +67,10 @@ namespace FengSheng
                 action[i].Invoke(arg);
             }
         }
+
+        public int GetCallBackCount()
+        {
+            return mCallBack.Count;
+        }
     }
 }

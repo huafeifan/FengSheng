@@ -43,11 +43,11 @@ local OnEvent_ShowTips = function(tip)
 end
 
 local AddUIEvent = function()
-	ui.closeBtn.onClick:AddListener(OnBtnClose)
+	UIEventManager:AddListener(ui.closeBtn, OnBtnClose, "lua.normalTip.OnBtnClose")
 end
 
 local RemoveUIEvent = function()
-	ui.closeBtn.onClick:RemoveAllListeners()
+	UIEventManager:RemoveAllListeners(ui.closeBtn)
 end
 
 local AddListener = function()
@@ -55,7 +55,7 @@ local AddListener = function()
 end
 
 local RemoveListener = function()
-	EventManager:RemoveListener(Global.Event.Connect, OnEvent_ShowTips)
+	EventManager:RemoveListener(Global.Event.ShowTips, OnEvent_ShowTips)
 end
 
 function awake()

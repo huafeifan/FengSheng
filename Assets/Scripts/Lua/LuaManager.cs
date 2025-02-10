@@ -88,6 +88,11 @@ namespace FengSheng
                     filePath = Path.Combine(Utils.GetReleaseLuaPath(), fileName + ".lua.txt");
                 }
 
+                if (!File.Exists(filePath))
+                {
+                    filePath = Path.Combine(Application.dataPath, fileName + ".lua.txt");
+                }
+
                 return System.Text.Encoding.UTF8.GetBytes(File.ReadAllText(filePath));
             });
 

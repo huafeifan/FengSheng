@@ -28,6 +28,10 @@ function UserHead:SetData(name)
 	self.ui.userName.text = name
 end
 
+function UserHead:SetHeadActive(b)
+	self.ui.userHead.gameObject:SetActive(b)
+end
+
 function UserHead:AddUIEvent()
 
 end

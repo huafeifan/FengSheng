@@ -35,7 +35,7 @@ namespace FengSheng
 
         public override IEnumerator Unregister()
         {
-            mListeners.Clear();
+            //mListeners.Clear();
             mCache.Clear();
             yield return null;
         }
@@ -82,6 +82,10 @@ namespace FengSheng
             if (eventPackage != null)
             {
                 eventPackage.RemoveEvent(callBack);
+                if(eventPackage.GetCallBackCount() == 0)
+                {
+                    mListeners.Remove(eventPackage);
+                }
             }
         }
 
@@ -91,6 +95,10 @@ namespace FengSheng
             if (eventPackage != null)
             {
                 eventPackage.RemoveEvent(actionName);
+                if (eventPackage.GetCallBackCount() == 0)
+                {
+                    mListeners.Remove(eventPackage);
+                }
             }
         }
 

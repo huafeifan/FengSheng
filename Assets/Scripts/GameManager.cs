@@ -67,6 +67,7 @@ namespace FengSheng
 
             mStatus = Status.Registering;
 
+            yield return Register<UIEventManager>();
             yield return Register<EventManager>();
             mLoading.AddListener();
 
@@ -105,6 +106,7 @@ namespace FengSheng
                 yield return Unregister<HotfixManager>();
             }
             yield return Unregister<ProtosManager>();
+            yield return Unregister<UIEventManager>();
             yield return Unregister<UIManager>();
             yield return Unregister<NetManager>();
             yield return Unregister<EventManager>();

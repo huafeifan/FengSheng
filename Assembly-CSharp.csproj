@@ -65,6 +65,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_AvatarMaskWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_IntegratedSubsystemWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ArticulationReducedSpaceWrap.cs" />
+    <Compile Include="Assets\XLua\Gen\FengSheng_UIEventPackageWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ImageConversionWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_SystemInfoWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_WaitForSecondsWrap.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Assets\XLua\Gen\DG_Tweening_SequenceWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AudioLowPassFilterWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AnimatorOverrideControllerWrap.cs" />
+    <Compile Include="Assets\XLua\Gen\FengSheng_UIEventManagerWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AudioListenerWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_DisplayInfoWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_HDROutputSettingsWrap.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_ImageEffectTransformsToLDRWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_WaitForFixedUpdateWrap.cs" />
     <Compile Include="Assets\XLua\Src\TemplateEngine\TemplateEngine.cs" />
+    <Compile Include="Assets\Scripts\Debug\DebugManager.cs" />
     <Compile Include="Assets\Scripts\UI\UIManager\UICache.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_UICharInfoWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_CubemapWrap.cs" />
@@ -290,6 +293,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_ClusterSerializationWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ComputeBufferWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_FixedJoint2DWrap.cs" />
+    <Compile Include="Assets\XLua\Gen\FengSheng_UIEventManagerEditorWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_PhysicsSceneWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AudioDistortionFilterWrap.cs" />
     <Compile Include="Assets\Scripts\Resources\ResourcesManager.cs" />
@@ -321,6 +325,7 @@
     <Compile Include="Assets\Scripts\Protos\ProtosManager.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_Button_ButtonClickedEventWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AnimatorUtilityWrap.cs" />
+    <Compile Include="Assets\XLua\Gen\FengSheng_DebugManagerWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AssetBundleCreateRequestWrap.cs" />
     <Compile Include="Assets\Scripts\Inspector\NetManagerEditor.cs" />
     <Compile Include="Assets\XLua\Gen\DG_Tweening_TweenerWrap.cs" />
@@ -379,6 +384,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_ExpressionEvaluatorWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_MeshWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_ScrollRect_ScrollRectEventWrap.cs" />
+    <Compile Include="Assets\Scripts\UI\UIEvent\UIEventManager.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_JointAngleLimits2DWrap.cs" />
     <Compile Include="Assets\Scripts\Lua\LuaTable.Extension.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ParticleSystem_ColorOverLifetimeModuleWrap.cs" />
@@ -479,6 +485,7 @@
     <Compile Include="Assets\XLua\Gen\FengSheng_LuaBehaviourWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ImageEffectAllowedInSceneViewWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ControllerColliderHitWrap.cs" />
+    <Compile Include="Assets\Scripts\Inspector\UIEventManagerManagerEditor.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ContactPairPointWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_PreferBinarySerializationWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_Toggle_ToggleEventWrap.cs" />
@@ -508,6 +515,7 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_UI_MaskWrap.cs" />
     <Compile Include="Assets\Scripts\Inspector\LuaManagerEditor.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_BillboardAssetWrap.cs" />
+    <Compile Include="Assets\Scripts\UI\UIEvent\UIEventPackage.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ClothSphereColliderPairWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_Effector2DWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ConstantForce2DWrap.cs" />

@@ -132,25 +132,23 @@ local OnBtnTitleItem = function(index)
 end
 
 local AddUIEvent = function()
-	ui.closeBtn.onClick:AddListener(OnBtnClose)
-	ui.leftBtn.onClick:AddListener(OnBtnLeft)
-	ui.rightBtn.onClick:AddListener(OnBtnRight)
+	UIEventManager:AddListener(ui.closeBtn, OnBtnClose, "lua.rule.OnBtnClose")
+	UIEventManager:AddListener(ui.leftBtn, OnBtnLeft, "lua.rule.OnBtnLeft")
+	UIEventManager:AddListener(ui.rightBtn, OnBtnRight, "lua.rule.OnBtnRight")
 	
 	for i = 1, #ui.titles do
 		local index = i
-		ui.titles[index].btn.onClick:AddListener(function()
-			OnBtnTitleItem(index)
-		end)
+		UIEventManager:AddListener(ui.titles[index].btn, function() OnBtnTitleItem(index) end, "lua.rule.OnBtnTitleItem")
 	end
 end
 
 local RemoveUIEvent = function()
-	ui.closeBtn.onClick:RemoveAllListeners()
-	ui.leftBtn.onClick:RemoveAllListeners()
-	ui.rightBtn.onClick:RemoveAllListeners()
+	UIEventManager:RemoveAllListeners(ui.closeBtn)
+	UIEventManager:RemoveAllListeners(ui.leftBtn)
+	UIEventManager:RemoveAllListeners(ui.rightBtn)
 	
 	for i = 1, #ui.titles do
-		ui.titles[i].btn.onClick:RemoveAllListeners()
+		UIEventManager:RemoveAllListeners(ui.titles[i].btn)
 	end
 end
 

@@ -27,7 +27,8 @@ namespace FengSheng
                 mLogStyle = new GUIStyle();
                 mLogStyle.fontSize = 25;
                 mLogStyle.normal.textColor = Color.white;
-                Application.logMessageReceived += Log;
+                //Application.logMessageReceived += Log;
+                Application.logMessageReceivedThreaded += Log;
             }
             mInstance = this;
             yield return null;
@@ -39,7 +40,8 @@ namespace FengSheng
             {
                 mLogMessage.Clear();
                 mLogStyle = null;
-                Application.logMessageReceived -= Log;
+                //Application.logMessageReceived -= Log;
+                Application.logMessageReceivedThreaded -= Log;
             }
             yield return null;
         }

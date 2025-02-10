@@ -45,9 +45,9 @@ function RoomInfoItem:OnBtnEnter()
 end
 
 function RoomInfoItem:AddUIEvent()
-	self.ui.enterBtn.onClick:AddListener(function()	self:OnBtnEnter() end)
+	UIEventManager:AddListener(self.ui.enterBtn, self.OnBtnEnter, self, "lua.roomItemInfo.OnBtnEnter")
 end
 
 function RoomInfoItem:RemoveUIEvent()
-	self.ui.enterBtn.onClick:RemoveAllListeners()
+	UIEventManager:RemoveAllListeners(self.ui.enterBtn)
 end

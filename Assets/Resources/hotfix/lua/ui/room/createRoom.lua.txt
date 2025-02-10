@@ -44,6 +44,12 @@ end
 local OnInputRoomNameChanged = function(s)
 	roomData.roomName = s
 end
+
+local OnChair3ToggleChanged = function(b)
+	if b == true then
+		roomData.chairCount = 3
+	end
+end
 	
 local OnChair4ToggleChanged = function(b)
 	if b == true then
@@ -64,21 +70,24 @@ local OnChair6ToggleChanged = function(b)
 end
 
 local AddUIEvent = function()
-	ui.closeBtn.onClick:AddListener(OnBtnClose)
-	ui.createRoomBtn.onClick:AddListener(OnBtnCreate)
-	ui.inputRoomName.onValueChanged:AddListener(OnInputRoomNameChanged)
-	ui.chair4.onValueChanged:AddListener(OnChair4ToggleChanged)
-	ui.chair5.onValueChanged:AddListener(OnChair5ToggleChanged)
-	ui.chair6.onValueChanged:AddListener(OnChair6ToggleChanged)
+	UIEventManager:AddListener(ui.closeBtn, OnBtnClose, "lua.createRoom.OnBtnClose")
+	UIEventManager:AddListener(ui.createRoomBtn, OnBtnCreate, "lua.createRoom.OnBtnCreate")
+	UIEventManager:AddListener(ui.inputRoomName, OnInputRoomNameChanged, "lua.createRoom.OnInputRoomNameChanged")
+	UIEventManager:AddListener(ui.createRoomBtn, OnBtnCreate, "lua.createRoom.OnBtnCreate")
+	UIEventManager:AddListener(ui.chair3, OnChair3ToggleChanged, "lua.createRoom.OnChair3ToggleChanged")
+	UIEventManager:AddListener(ui.chair4, OnChair4ToggleChanged, "lua.createRoom.OnChair4ToggleChanged")
+	UIEventManager:AddListener(ui.chair5, OnChair5ToggleChanged, "lua.createRoom.OnChair5ToggleChanged")
+	UIEventManager:AddListener(ui.chair6, OnChair6ToggleChanged, "lua.createRoom.OnChair6ToggleChanged")
 end
 
 local RemoveUIEvent = function()
-	ui.closeBtn.onClick:RemoveAllListeners()
-	ui.createRoomBtn.onClick:RemoveAllListeners()
-	ui.inputRoomName.onValueChanged:RemoveAllListeners()
-	ui.chair4.onValueChanged:RemoveAllListeners()
-	ui.chair5.onValueChanged:RemoveAllListeners()
-	ui.chair6.onValueChanged:RemoveAllListeners()
+	UIEventManager:RemoveAllListeners(ui.closeBtn)
+	UIEventManager:RemoveAllListeners(ui.createRoomBtn)
+	UIEventManager:RemoveAllListeners(ui.inputRoomName)
+	UIEventManager:RemoveAllListeners(ui.chair3)
+	UIEventManager:RemoveAllListeners(ui.chair4)
+	UIEventManager:RemoveAllListeners(ui.chair5)
+	UIEventManager:RemoveAllListeners(ui.chair6)
 end
 
 local OnReceiveCreateRoom = function(bytes)
