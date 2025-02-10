@@ -1,166 +1,51 @@
-require "ui/game/chair"
+require "ui/game/chairList"
+require "ui/game/gameBtn"
+require "ui/game/identityChoose"
+require "ui/game/characterChoose"
 
 local ui = {}
-local chairs = {}
+local cacheData = {}
+local gameStage = GameStage.WaitStart
                         
 local InitUIReference = function()
-	ui.startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
-	ui.exitBtn = self.transform:Find("ExitBtn"):GetComponent(typeof(Button))
-	ui.readyBtn = self.transform:Find("ReadyBtn"):GetComponent(typeof(Button))
+	ui.gameBtn = GameBtn:New(self.gameObject, ui)
+	ui.gameBtn:InitUIReference()
 	
-	ui.chairList = {}
-	ui.chairList.top1 = Chair:New(self.transform:Find("ChairList/TopChairs/Chair1").gameObject)
-	ui.chairList.top1:InitUIReference()
-	
-	ui.chairList.top2 = Chair:New(self.transform:Find("ChairList/TopChairs/Chair2").gameObject)
-	ui.chairList.top2:InitUIReference()
-	
-	ui.chairList.top3 = Chair:New(self.transform:Find("ChairList/TopChairs/Chair3").gameObject)
-	ui.chairList.top3:InitUIReference()
-	
-	ui.chairList.left = Chair:New(self.transform:Find("ChairList/LeftChairs/Chair").gameObject)
-	ui.chairList.left:InitUIReference()
-	
-	ui.chairList.right = Chair:New(self.transform:Find("ChairList/RightChairs/Chair").gameObject)
-	ui.chairList.right:InitUIReference()
-	
-	ui.chairList.bottom = Chair:New(self.transform:Find("ChairList/BottomChairs/Chair").gameObject)
-	ui.chairList.bottom:InitUIReference()
+	ui.chairList = ChairList:New(self.transform:Find("ChairList").gameObject)
+	ui.chairList:InitUIReference()
 		
+	ui.identityChoose = IdentityChoose:New(self.transform:Find("Identity").gameObject)
+	ui.identityChoose:InitUIReference()
+	
+	ui.characterChoose = CharacterChoose:New(self.transform:Find("CharacterChoose").gameObject)
+	ui.characterChoose:InitUIReference()
+	
 end
 	
 local InitUI = function()
-	chairs = {}
-	
-	--自己
-	chairs[1] = ui.chairList.bottom
-	chairs[1]:InitUI()
-	
-	--6人桌
-	if Global.Data.RoomInfo.ChairCount == 6 then
-		chairs[2] = ui.chairList.left
-		chairs[2]:InitUI()
-		
-		chairs[3] = ui.chairList.top1
-		chairs[3]:InitUI()
-		
-		chairs[4] = ui.chairList.top2
-		chairs[4]:InitUI()
-		
-		chairs[5] = ui.chairList.top3
-		chairs[5]:InitUI()
-		
-		chairs[6] = ui.chairList.right
-		chairs[6]:InitUI()
-	--5人桌
-	elseif Global.Data.RoomInfo.ChairCount == 5 then
-		chairs[2] = ui.chairList.left
-		chairs[2]:InitUI()
-		
-		chairs[3] = ui.chairList.top1
-		chairs[3]:InitUI()
-		
-		chairs[4] = ui.chairList.top2
-		chairs[4]:InitUI()
-		
-		chairs[5] = ui.chairList.right
-		chairs[5]:InitUI()
-		
-		ui.chairList.top3.gameObject:SetActive(false)
-	--4人桌
-	elseif Global.Data.RoomInfo.ChairCount == 4 then
-		chairs[2] = ui.chairList.left
-		chairs[2]:InitUI()
-		
-		chairs[3] = ui.chairList.top1
-		chairs[3]:InitUI()
-		
-		chairs[4] = ui.chairList.right
-		chairs[4]:InitUI()
-		
-		ui.chairList.top2.gameObject:SetActive(false)
-		ui.chairList.top3.gameObject:SetActive(false)
-	--3人桌
-	else
-		chairs[2] = ui.chairList.left
-		chairs[2]:InitUI()
-
-		chairs[3] = ui.chairList.right
-		chairs[3]:InitUI()
-		
-		ui.chairList.top1.gameObject:SetActive(false)
-		ui.chairList.top2.gameObject:SetActive(false)
-		ui.chairList.top3.gameObject:SetActive(false)
-	end
-	
-	ui.startBtn.gameObject:SetActive(false)
-	ui.exitBtn.gameObject:SetActive(true)
-	ui.readyBtn.gameObject:SetActive(false)
-
+	ui.gameBtn:InitUI()
+	ui.chairList:InitUI()
+	ui.identityChoose:InitUI()
+	ui.characterChoose:InitUI()
 end
 
 local RefreshRoomInfo = function()
-	--服务端传来的座位信息
-	local chairsInfo = Global.Data.RoomInfo.ChairsInfo
-	--座位信息数量
-	local chairInfoCount = #chairsInfo
-	--座位数量
-	local chairCount = #chairs
-	
-	--房主是1号座椅,找出自己是几号座椅
-	local index = 1
-	for i = 1, chairInfoCount do
-		if chairsInfo[i].isNull == false and chairsInfo[i].userData.name == Global.Data.User.UserName then
-			break
-		end
-		index = index + 1
-	end
-	
-	--开始排座,从自己开始排
-	for j = 1, chairCount do
-		if index > chairInfoCount then
-			index = 1
-		end
-		chairs[j]:SetChairInfo(chairsInfo[index])
-		index = index + 1
-	end
-	
-	if chairs[1]:IsOwner() == true then
-		ui.startBtn.gameObject:SetActive(true)
-		ui.readyBtn.gameObject:SetActive(false)
-	else
-		ui.startBtn.gameObject:SetActive(false)
-		ui.readyBtn.gameObject:SetActive(chairs[1]:IsReady() == true)
-	end
-
-end
-
-local OnBtnStart = function()
-	
-end
-
-local OnBtnExit = function()
-	local data = {}
-	data.roomNub = Global.Data.RoomInfo.RoomNub
-	data.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.ExitRoom_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.ExitRoom_C2S, dataBytes)
-end
-
-local OnBtnReady = function()
-	
+	ui.chairList:RefreshRoomInfo()
+	ui.gameBtn:RefreshRoomInfo()
 end
 
 local AddUIEvent = function()
-	ui.startBtn.onClick:AddListener(OnBtnStart)
-	ui.exitBtn.onClick:AddListener(OnBtnExit)
-	ui.readyBtn.onClick:AddListener(OnBtnReady)
+	ui.gameBtn:AddUIEvent()
+	ui.chairList:AddUIEvent()
+	ui.identityChoose:AddUIEvent()
+	ui.characterChoose:AddUIEvent()
 end
 
 local RemoveUIEvent = function()
-	ui.startBtn.onClick:RemoveAllListeners()
-	ui.exitBtn.onClick:RemoveAllListeners()
-	ui.readyBtn.onClick:RemoveAllListeners()
+	ui.gameBtn:RemoveUIEvent()
+	ui.chairList:RemoveUIEvent()
+	ui.identityChoose:RemoveUIEvent()
+	ui.characterChoose:RemoveUIEvent()
 end
 
 local OnReceiveRoomInfoChange = function(bytes)
@@ -173,6 +58,11 @@ end
 local OnReceiveExitRoom = function(bytes)
 	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.ExitRoom_S2C, bytes)
 	if data.code == "Success" then
+		Global.Data.RoomInfo.Clear()
+		UIManager:CloseUI(Global.GamePrefab_Path)
+		UIManager:OpenUI(Global.LoginPrefab_Path)
+	elseif data.code == "Kick" then
+		Global.Methods.ShowTips(data.msg)
 		Global.Data.RoomInfo.Clear()
 		UIManager:CloseUI(Global.GamePrefab_Path)
 		UIManager:OpenUI(Global.LoginPrefab_Path)
@@ -192,16 +82,124 @@ local OnReceiveRequestRoomInfo = function(bytes)
 	end
 end
 
+local OnReceiveReadyStatus = function(bytes)
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.ReadyStatus_S2C, bytes)
+	if data.code == "Failed" then
+		Global.Methods.ShowTips(data.msg)
+	end
+end
+
+local OnReceiveCharacterChooseList = function(bytes)
+	if gameStage ~= GameStage.WaitCharacterChoose then
+		cacheData.CharacterChoose = bytes
+		return
+	end
+	
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.CharacterChooseList_S2C, bytes)
+	gameStage = GameStage.CharacterChoose
+	EventManager:TriggerEvent(Global.Event.CharacterChooseStart, data)
+end
+
+local OnIdentityChooseComplete = function()
+	gameStage = GameStage.WaitCharacterChoose
+	if cacheData.CharacterChoose ~= nil then
+		OnReceiveCharacterChooseList(cacheData.CharacterChoose)
+	end
+end
+
+local OnReceiveIdentity = function(bytes)
+	if gameStage ~= GameStage.WaitIdentityChoose then
+		cacheData.IdentityChoose = bytes
+		return
+	end
+	cacheData.IdentityChoose = nil
+	
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.Identity_S2C, bytes)
+	gameStage = GameStage.IdentityChoose
+	EventManager:TriggerEvent(Global.Event.IdentityChooseStart, data)
+end
+
+local OnReceiveGameStart = function(bytes)
+	if gameStage ~= GameStage.WaitStart then 
+		Debug.LogError("lua.game.OnReceiveGameStart 游戏未初始化")
+		return 
+	end
+
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameStart_S2C, bytes)
+	
+	if data.code == "Success" then
+		--Global.Methods.ShowTips("游戏开始")
+		gameStage = GameStage.WaitIdentityChoose
+		EventManager:TriggerEvent(Global.Event.GameStart, nil)
+		if cacheData.IdentityChoose ~= nil then
+			OnReceiveIdentity(cacheData.IdentityChoose)
+		end
+	else
+		Global.Methods.ShowTips(data.msg)
+	end
+end
+
+local OnReceiveDealCards = function(bytes)
+	if gameStage ~= GameStage.WaitDealCards then
+		cacheData.DealCards = bytes
+		return
+	end
+	cacheData.DealCards = nil
+
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_S2C, bytes)
+	gameStage = GameStage.DealCards
+	EventManager:TriggerEvent(Global.Event.DealCards, data)
+end
+
+local OnCharacterChooseComplete = function()
+	gameStage = GameStage.WaitDealCards
+	if cacheData.DealCards ~= nil then
+		OnReceiveDealCards(cacheData.DealCards)
+	end
+end
+
+local OnReceiveGameComplete = function()
+	cacheData = {}
+	gameStage = GameStage.WaitStart
+	Global.Data.User.GameData.Clear()
+	EventManager:TriggerEvent(Global.Event.GameComplete, nil)
+	--服务端会发送一个桌子信息变更的消息
+end
+
 local AddListener = function()
+	ui.gameBtn:AddListener()
+	ui.chairList:AddListener()
+	ui.identityChoose:AddListener()
+	ui.characterChoose:AddListener()
+	EventManager:AddListener(Global.Event.IdentityChooseComplete, OnIdentityChooseComplete, "Lua.game.OnIdentityChooseComplete")
+	EventManager:AddListener(Global.Event.CharacterChooseComplete, OnCharacterChooseComplete, "Lua.game.OnCharacterChooseComplete")
 	ProtosManager:AddListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom, "Lua.game.OnReceiveExitRoom")
 	ProtosManager:AddListener(Global.Protos.Cmd.RoomInfoChange_S2C, OnReceiveRoomInfoChange, "Lua.game.OnReceiveRoomInfoChange")
 	ProtosManager:AddListener(Global.Protos.Cmd.RequestRoomInfo_S2C, OnReceiveRequestRoomInfo, "Lua.game.OnReceiveRequestRoomInfo")
+	ProtosManager:AddListener(Global.Protos.Cmd.ReadyStatus_S2C, OnReceiveReadyStatus, "Lua.game.OnReceiveReadyStatus")
+	ProtosManager:AddListener(Global.Protos.Cmd.GameStart_S2C, OnReceiveGameStart, "Lua.game.OnReceiveGameStart")
+	ProtosManager:AddListener(Global.Protos.Cmd.Identity_S2C, OnReceiveIdentity, "Lua.game.OnReceiveIdentity")
+	ProtosManager:AddListener(Global.Protos.Cmd.CharacterChooseList_S2C, OnReceiveCharacterChooseList, "Lua.game.OnReceiveCharacterChooseList")
+	ProtosManager:AddListener(Global.Protos.Cmd.GameComplete_S2C, OnReceiveGameComplete, "Lua.game.OnReceiveGameComplete")
+	ProtosManager:AddListener(Global.Protos.Cmd.DealCards_S2C, OnReceiveDealCards, "Lua.game.OnReceiveDealCards")
 end
 
 local RemoveListener = function()
+	ui.gameBtn:RemoveListener()
+	ui.chairList:RemoveListener()
+	ui.identityChoose:RemoveListener()
+	ui.characterChoose:RemoveListener()
+	EventManager:RemoveListener(Global.Event.IdentityChooseComplete, OnIdentityChooseComplete)
+	EventManager:RemoveListener(Global.Event.CharacterChooseComplete, OnCharacterChooseComplete)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.RoomInfoChange_S2C, OnReceiveRoomInfoChange)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.RequestRoomInfo_S2C, OnReceiveRequestRoomInfo)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.ReadyStatus_S2C, OnReceiveReadyStatus)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.GameStart_S2C, OnReceiveGameStart)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.Identity_S2C, OnReceiveIdentity)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.CharacterChooseList_S2C, OnReceiveCharacterChooseList)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.GameComplete_S2C, OnReceiveGameComplete)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.DealCards_S2C, OnReceiveDealCards)
 end
 
 local RequestRoomInfo = function()
@@ -212,7 +210,13 @@ local RequestRoomInfo = function()
 end
 
 local Dispose = function()
+	ui.gameBtn:Dispose()
+	ui.chairList:Dispose()
+	ui.identityChoose:Dispose()
+	ui.characterChoose:Dispose()
 	
+	cacheData = {}
+	Global.Data.User.GameData.Clear()
 end
 
 function awake()
@@ -225,15 +229,17 @@ function onenable()
 	AddListener()
 	
 	RequestRoomInfo()
+	gameStage = GameStage.WaitStart
 end
 
 function ondisable()
 	RemoveUIEvent()
 	RemoveListener()
-	
+	Dispose()
 end
 
 function ondestroy()
 	RemoveUIEvent()
 	RemoveListener()
+	Dispose()
 end

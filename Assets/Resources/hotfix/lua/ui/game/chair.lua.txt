@@ -16,6 +16,10 @@ end
 function Chair:InitUIReference()
 	self.ui.ready = self.transform:Find("Ready")
 	self.ui.owener = self.transform:Find("Owener")
+	self.ui.character = {}
+	self.ui.character.transform = self.transform:Find("User/Character")
+	self.ui.character.btn = self.ui.character.transform:GetComponent(typeof(Button))
+	self.ui.character.image = self.ui.character.transform:GetComponent(typeof(Image))
 	
 	self.ui.head = UserHead:New(self.transform:Find("User").gameObject)
 	self.ui.head:InitUIReference()
@@ -25,8 +29,7 @@ function Chair:InitUI()
 	self.gameObject:SetActive(true)
 	self.ui.ready.gameObject:SetActive(false)
 	self.ui.owener.gameObject:SetActive(false)
-	
-	self.ui.head:SetActive(true)
+	self:ShowHead()
 	self.ui.head:SetData("")
 end
 
@@ -46,6 +49,26 @@ function Chair:SetChairInfo(chairInfo)
 		self:InitUI()
 	end
 	
+end
+
+function Chair:SetCharacter(character)
+	self.ui.character.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Character[character])
+end
+
+function Chair:HideStatus()
+	self.ui.ready.gameObject:SetActive(false)
+	self.ui.owener.gameObject:SetActive(false)
+end
+
+function Chair:ShowCharacter()
+	self.ui.head:SetHeadActive(false)
+	self.ui.character.transform.gameObject:SetActive(true)
+	self.ui.character.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Character[CharacterType.None])
+end
+
+function Chair:ShowHead()
+	self.ui.head:SetHeadActive(true)
+	self.ui.character.transform.gameObject:SetActive(false)
 end
 
 function Chair:IsOwner()
@@ -72,20 +95,23 @@ function Chair:IsReady()
 	return self.chairInfo.isReady
 end
 
-function Chair:Ready()
-	self.ui.ready.gameObject:SetActive(true)
-end
-
-function Chair:Unready()
-	self.ui.ready.gameObject:SetActive(false)
+function Chair:OnBtnCharacter()
+	
 end
 
 function Chair:AddUIEvent()
 	self.ui.head:AddUIEvent()
+	UIEventManager:AddListener(self.ui.character.btn, self.OnBtnCharacter, self, "lua.game.chair.OnBtnCharacter")
 end
 
 function Chair:RemoveUIEvent()
 	self.ui.head:RemoveUIEvent()
+	UIEventManager:RemoveAllListeners(self.ui.character.btn)
+end
+
+function Chair:OnReceiveGameStart()
+	self.ui.ready.gameObject:SetActive(false)
+	self.ui.owener.gameObject:SetActive(false)
 end
 
 function Chair:AddListener()

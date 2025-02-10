@@ -1,0 +1,45 @@
+GameStage = {}
+GameStage.WaitStart = 1
+
+GameStage.WaitIdentityChoose = 2
+GameStage.IdentityChoose = 3
+
+GameStage.WaitCharacterChoose = 4
+GameStage.CharacterChoose = 5
+
+GameStage.WaitDealCards = 6
+GameStage.DealCards = 6
+
+IdentityType = {}
+IdentityType.None = "IdentityType_None"
+IdentityType.TeGong = "IdentityType_TeGong"
+IdentityType.JunQing = "IdentityType_JunQing"
+IdentityType.QianFu = "IdentityType_QianFu"
+
+CharacterType = {}
+CharacterType.None = "CharacterType_None"
+CharacterType.LaoJin = "CharacterType_LaoJin"
+CharacterType.DaMeiNv = "CharacterType_DaMeiNv"
+CharacterType.EMeiFeng = "CharacterType_EMeiFeng"
+CharacterType.BeiLeiMao = "CharacterType_BeiLeiMao"
+CharacterType.HeiMeiGui = "CharacterType_HeiMeiGui"
+CharacterType.DaoFeng = "CharacterType_DaoFeng"
+CharacterType.DaiLi = "CharacterType_DaiLi"
+CharacterType.HuangQue = "CharacterType_HuangQue"
+CharacterType.ShanLin = "CharacterType_ShanLin"
+CharacterType.FuShe = "CharacterType_FuShe"
+CharacterType.YiDianYuan = "CharacterType_YiDianYuan"
+CharacterType.LiuJie = "CharacterType_LiuJie"
+CharacterType.FuPing = "CharacterType_FuPing"
+CharacterType.QingBaoChuZhang = "CharacterType_QingBaoChuZhang"
+CharacterType.ZhiMinXiangShui = "CharacterType_ZhiMinXiangShui"
+CharacterType.GuaiDaoJiuJiu = "CharacterType_GuaiDaoJiuJiu"
+CharacterType.GangTieTeGong = "CharacterType_GangTieTeGong"
+CharacterType.LiFuMengMian = "CharacterType_LiFuMengMian"
+CharacterType.FuErMoSi = "CharacterType_FuErMoSi"
+CharacterType.XiaoBai = "CharacterType_XiaoBai"
+CharacterType.XiaoMaGe = "CharacterType_XiaoMaGe"
+CharacterType.ZhiYeShaShou = "CharacterType_ZhiYeShaShou"
+CharacterType.LaoGui = "CharacterType_LaoGui"
+CharacterType.QiBai = "CharacterType_QiBai"
+CharacterType.LaoQiang = "CharacterType_LaoQiang"

@@ -50,4 +50,35 @@ Global.Protos.Class.RequestRoomInfo_C2S = "loginServer.room.RequestRoomInfo_C2S"
 
 Global.Protos.Cmd.RequestRoomInfo_S2C = 0x0105
 Global.Protos.Class.RequestRoomInfo_S2C = "loginServer.room.RequestRoomInfo_S2C"
+
+Global.Protos.Cmd.ReadyStatus_C2S = 0x0106
+Global.Protos.Class.ReadyStatus_C2S = "loginServer.room.ReadyStatus_C2S"
+
+Global.Protos.Cmd.ReadyStatus_S2C = 0x0106
+Global.Protos.Class.ReadyStatus_S2C = "loginServer.room.ReadyStatus_S2C"
 --room end
+
+--game
+Global.Protos.FileName.Game = "loginServer.game"
+
+Global.Protos.Cmd.GameStart_C2S = 0x0200
+Global.Protos.Class.GameStart_C2S = "loginServer.game.GameStart_C2S"
+
+Global.Protos.Cmd.GameStart_S2C = 0x0200
+Global.Protos.Class.GameStart_S2C = "loginServer.game.GameStart_S2C"
+
+Global.Protos.Cmd.Identity_S2C = 0x0201
+Global.Protos.Class.Identity_S2C = "loginServer.game.Identity_S2C"
+
+Global.Protos.Cmd.CharacterChoose_C2S = 0x0202
+Global.Protos.Class.CharacterChoose_C2S = "loginServer.game.CharacterChoose_C2S"
+
+Global.Protos.Cmd.CharacterChooseList_S2C = 0x0203
+Global.Protos.Class.CharacterChooseList_S2C = "loginServer.game.CharacterChooseList_S2C"
+
+Global.Protos.Cmd.GameComplete_S2C = 0x0204
+Global.Protos.Class.GameComplete_S2C = "loginServer.game.GameComplete_S2C"
+
+Global.Protos.Cmd.DealCards_S2C = 0x0205
+Global.Protos.Class.DealCards_S2C = "loginServer.game.DealCards_S2C"
+--game end

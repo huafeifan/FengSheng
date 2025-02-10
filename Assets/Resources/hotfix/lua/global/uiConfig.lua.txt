@@ -33,16 +33,19 @@ Global.CreateRoomPrefab_SiblingIndex = 2
 --#endregion
 
 Global.Resources = {}
+
 Global.Resources.Rule_Introduce = {}
 Global.Resources.Rule_Introduce[1] = "ui/rule/rule_introduce1"
 Global.Resources.Rule_Introduce[2] = "ui/rule/rule_introduce2"
 Global.Resources.Rule_Introduce[3] = "ui/rule/rule_introduce3"
 Global.Resources.Rule_Introduce[4] = "ui/rule/rule_introduce4"
+
 Global.Resources.Rule_Base = {}
 Global.Resources.Rule_Base[1] = "ui/rule/rule_base1"
 Global.Resources.Rule_Base[2] = "ui/rule/rule_base2"
 Global.Resources.Rule_Base[3] = "ui/rule/rule_base3"
 Global.Resources.Rule_Base[4] = "ui/rule/rule_base4"
+
 Global.Resources.Rule_Role = {}
 Global.Resources.Rule_Role[1] = "ui/rule/rule_role1"
 Global.Resources.Rule_Role[2] = "ui/rule/rule_role2"
@@ -53,3 +56,23 @@ Global.Resources.Rule_Role[6] = "ui/rule/rule_role6"
 Global.Resources.Rule_Role[7] = "ui/rule/rule_role7"
 Global.Resources.Rule_Role[8] = "ui/rule/rule_role8"
 Global.Resources.Rule_Role[9] = "ui/rule/rule_role9"
+
+Global.Resources.Identity = {}
+Global.Resources.Identity[1] = "ui/identity/identity_tegong"
+Global.Resources.Identity[IdentityType.TeGong] = "ui/identity/identity_tegong"
+Global.Resources.Identity[2] = "ui/identity/identity_junqing"
+Global.Resources.Identity[IdentityType.JunQing] = "ui/identity/identity_junqing"
+Global.Resources.Identity[3] = "ui/identity/identity_qianfu"
+Global.Resources.Identity[IdentityType.QianFu] = "ui/identity/identity_qianfu"
+Global.Resources.Identity[4] = "ui/identity/identity_cardbg"
+Global.Resources.Identity[IdentityType.None] = "ui/identity/identity_cardbg"
+
+Global.Resources.Character = {}
+Global.Resources.Character[1] = "ui/character/character_cardbg"
+Global.Resources.Character[CharacterType.None] = "ui/character/character_cardbg"
+Global.Resources.Character[2] = "ui/character/character_dameinv"
+Global.Resources.Character[CharacterType.DaMeiNv] = "ui/character/character_dameinv"
+Global.Resources.Character[3] = "ui/character/character_emeifeng"
+Global.Resources.Character[CharacterType.EMeiFeng] = "ui/character/character_emeifeng"
+Global.Resources.Character[4] = "ui/character/character_laojin"
+Global.Resources.Character[CharacterType.LaoJin] = "ui/character/character_laojin"

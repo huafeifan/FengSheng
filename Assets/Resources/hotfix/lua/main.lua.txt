@@ -37,6 +37,12 @@ function PreLoad(onComplete)
 	for i = 1, #Global.Resources.Rule_Base do
 		table.insert(loadSprites, Global.Resources.Rule_Role[i])
 	end
+	for i = 1, #Global.Resources.Identity do
+		table.insert(loadSprites, Global.Resources.Identity[i])
+	end
+	for i = 1, #Global.Resources.Character do
+		table.insert(loadSprites, Global.Resources.Character[i])
+	end
 	
 	local loadedCount = 0--已加载资源数量
 	local loadSunCount = (#loadPrefabs) + (#loadSprites)

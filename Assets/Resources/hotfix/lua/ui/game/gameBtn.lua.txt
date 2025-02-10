@@ -1,0 +1,96 @@
+GameBtn = {}
+GameBtn.__index = GameBtn
+
+function GameBtn:New(gameObject, main)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+	item.main = main
+
+	setmetatable(item, GameBtn)
+	return item
+end
+
+function GameBtn:InitUIReference()
+	self.ui.startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
+	self.ui.exitBtn = self.transform:Find("ExitBtn"):GetComponent(typeof(Button))
+	self.ui.readyBtn = self.transform:Find("ReadyBtn"):GetComponent(typeof(Button))
+end
+
+function GameBtn:InitUI()
+	self.ui.startBtn.gameObject:SetActive(false)
+	self.ui.exitBtn.gameObject:SetActive(true)
+	self.ui.readyBtn.gameObject:SetActive(false)
+end
+
+
+function GameBtn:RefreshRoomInfo()
+	local myChair = self.main.chairList:GetMyChair()
+	if myChair:IsOwner() == true then
+		self.ui.startBtn.gameObject:SetActive(true)
+		self.ui.readyBtn.gameObject:SetActive(false)
+	else
+		self.ui.startBtn.gameObject:SetActive(false)
+		self.ui.readyBtn.gameObject:SetActive(myChair:IsReady() == false)
+	end
+
+end
+
+function GameBtn:OnBtnStart()
+	Global.Methods.PlayBtnAnimation(self.ui.startBtn)
+	local data = {}
+	data.roomNub = Global.Data.RoomInfo.RoomNub
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameStart_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameStart_C2S, dataBytes)
+end
+
+function GameBtn:OnBtnExit()
+	Global.Methods.PlayBtnAnimation(self.ui.exitBtn)
+	local data = {}
+	data.roomNub = Global.Data.RoomInfo.RoomNub
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.ExitRoom_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.ExitRoom_C2S, dataBytes)
+end
+
+function GameBtn:OnBtnReady()
+	Global.Methods.PlayBtnAnimation(self.ui.readyBtn)
+	local myChair = self.main.chairList:GetMyChair()
+	if myChair:IsOwner() == false then
+		local data = {}
+		data.isReady = true
+		data.userName = Global.Data.User.UserName
+		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.ReadyStatus_C2S, data)
+		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.ReadyStatus_C2S, dataBytes)
+	end
+end
+
+function GameBtn:AddUIEvent()
+	UIEventManager:AddListener(self.ui.startBtn, self.OnBtnStart, self, "lua.game.gameBtn.OnBtnStart")
+	UIEventManager:AddListener(self.ui.exitBtn, self.OnBtnExit, self, "lua.game.gameBtn.OnBtnExit")
+	UIEventManager:AddListener(self.ui.readyBtn, self.OnBtnReady, self, "lua.game.gameBtn.OnBtnReady")
+end
+
+function GameBtn:RemoveUIEvent()
+	UIEventManager:RemoveAllListeners(self.ui.startBtn)
+	UIEventManager:RemoveAllListeners(self.ui.exitBtn)
+	UIEventManager:RemoveAllListeners(self.ui.readyBtn)
+end
+
+function GameBtn:OnGameStart()
+	self.ui.startBtn.gameObject:SetActive(false)
+	self.ui.readyBtn.gameObject:SetActive(false)
+end
+
+function GameBtn:AddListener()
+	EventManager:AddListener(Global.Event.GameStart, function() self:OnGameStart() end, "Lua.game.gameBtn.OnGameStart")
+end
+
+function GameBtn:RemoveListener()
+	EventManager:RemoveListener(Global.Event.GameStart, "Lua.game.gameBtn.OnGameStart")
+end
+
+function GameBtn:Dispose()
+
+end

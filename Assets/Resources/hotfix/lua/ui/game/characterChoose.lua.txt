@@ -1,0 +1,145 @@
+CharacterChoose = {}
+CharacterChoose.__index = CharacterChoose
+
+function CharacterChoose:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, CharacterChoose)
+	return item
+end
+
+function CharacterChoose:InitUIReference()
+	self.ui.character = {}
+	self.ui.character.Content = self.transform:Find("Choose")
+	self.ui.character.Choose = {}
+
+	self.ui.character.Choose[1] = {}
+	self.ui.character.Choose[1].transform = self.ui.character.Content:Find("Character1")
+	self.ui.character.Choose[1].btn = self.ui.character.Choose[1].transform:GetComponent(typeof(Button))
+	self.ui.character.Choose[1].image = self.ui.character.Choose[1].transform:GetComponent(typeof(Image))
+
+	self.ui.character.Choose[2] = {}
+	self.ui.character.Choose[2].transform = self.ui.character.Content:Find("Character2")
+	self.ui.character.Choose[2].btn = self.ui.character.Choose[2].transform:GetComponent(typeof(Button))
+	self.ui.character.Choose[2].image = self.ui.character.Choose[2].transform:GetComponent(typeof(Image))
+
+	self.ui.character.Choose[3] = {}
+	self.ui.character.Choose[3].transform = self.ui.character.Content:Find("Character3")
+	self.ui.character.Choose[3].btn = self.ui.character.Choose[3].transform:GetComponent(typeof(Button))
+	self.ui.character.Choose[3].image = self.ui.character.Choose[3].transform:GetComponent(typeof(Image))
+	
+	self.ui.affirmBtn = self.ui.character.Content:Find("AffirmBtn"):GetComponent(typeof(Button))
+	self.ui.highLight = self.ui.character.Content:Find("HighLight")
+	self.ui.tip = self.transform:Find("Tips")
+end
+
+function CharacterChoose:InitUI()
+	self.gameObject:SetActive(true)
+	self.ui.character.Content.gameObject:SetActive(false)
+	self.ui.affirmBtn.gameObject:SetActive(false)
+	self.ui.highLight.gameObject:SetActive(false)
+	self.ui.tip.gameObject:SetActive(false)
+end
+
+function CharacterChoose:OnBtnCharacterCard(index)
+	if self.charactersInfo == nil then
+		return
+	end
+	
+	self.ui.highLight.localPosition = self.ui.character.Choose[index].transform.localPosition
+	self.ui.highLight.gameObject:SetActive(true)
+	self.ui.affirmBtn.gameObject:SetActive(true)
+	
+	self.affirmCharacter = self.charactersInfo[index]
+end
+
+function CharacterChoose:OnBtnAffirm()
+	if self.affirmCharacter == nil then
+		return 
+	end
+	
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	data.character = self.affirmCharacter
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.CharacterChoose_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.CharacterChoose_C2S, dataBytes)
+	
+	self.ui.character.Content.gameObject:SetActive(false)
+	self.ui.affirmBtn.gameObject:SetActive(false)
+	self.ui.highLight.gameObject:SetActive(false)
+	self.ui.tip.gameObject:SetActive(true)
+	EventManager:TriggerEvent(Global.Event.CharacterChooseComplete, nil)
+end
+
+function CharacterChoose:AddUIEvent()
+	for i = 1, #self.ui.character.Choose do
+		local index = i
+		UIEventManager:AddListener(self.ui.character.Choose[i].btn, function() self:OnBtnCharacterCard(index) end, "lua.game.characterChoose.OnBtnCharacterCard")
+	end
+	UIEventManager:AddListener(self.ui.affirmBtn, self.OnBtnAffirm, self, "lua.game.characterChoose.OnBtnAffirm")
+end
+
+function CharacterChoose:RemoveUIEvent()
+	for i = 1, #self.ui.character.Choose do
+		UIEventManager:RemoveAllListeners(self.ui.character.Choose[i].btn)
+	end
+	UIEventManager:RemoveAllListeners(self.ui.affirmBtn)
+end
+
+function CharacterChoose:OnCharacterChoose(data)
+	--method
+	local Step1, Step2 = nil, nil
+	Step1 = function()
+		self.ui.character.Content.gameObject:SetActive(true)
+		self.ui.character.Content:DOScale(Vector3.one, 0.35):OnComplete(Step2)
+		self.ui.character.Choose[1].transform:DOLocalMoveX(-345, 0.35)
+		self.ui.character.Choose[3].transform:DOLocalMoveX(345, 0.35)
+	end
+
+	Step2 = function()
+		for i = 1, #self.ui.character.Choose do
+			self.ui.character.Choose[i].btn.interactable = true;
+		end
+	end
+	--method
+	self.charactersInfo = data.characters
+	self.ui.character.Content.localScale = Vector3.zero
+	for i = 1, #self.ui.character.Choose do
+		self.ui.character.Choose[i].transform.localPosition = Vector3.zero
+		self.ui.character.Choose[i].btn.interactable = false;
+		self.ui.character.Choose[i].image.sprite = ResourcesManager:LoadSprite(Global.Resources.Character[data.characters[i]])
+	end
+	
+	Step1()
+end
+
+function CharacterChoose:OnGameComplete()
+	self.charactersInfo = nil
+	self.affirmCharacter = nil
+	self.ui.tip.gameObject:SetActive(false)
+	self.gameObject:SetActive(false)
+end
+
+function CharacterChoose:OnDealCards(data)
+	self.ui.tip.gameObject:SetActive(false)
+end
+
+function CharacterChoose:AddListener()
+	EventManager:AddListener(Global.Event.CharacterChooseStart, function(data) self:OnCharacterChoose(data) end, "Lua.game.characterChoose.OnCharacterChoose")
+	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.characterChoose.OnGameComplete")
+	EventManager:AddListener(Global.Event.DealCards, function() self:OnDealCards() end, "Lua.game.characterChoose.OnDealCards")
+end
+
+function CharacterChoose:RemoveListener()
+	EventManager:RemoveListener(Global.Event.CharacterChooseStart, "Lua.game.characterChoose.OnCharacterChoose")
+	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.characterChoose.OnGameComplete")
+	EventManager:RemoveListener(Global.Event.DealCards, "Lua.game.characterChoose.OnDealCards")
+end
+
+function CharacterChoose:Dispose()
+	self.charactersInfo = nil
+	self.affirmCharacter = nil
+end

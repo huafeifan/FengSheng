@@ -1,0 +1,172 @@
+IdentityChoose = {}
+IdentityChoose.__index = IdentityChoose
+
+function IdentityChoose:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, IdentityChoose)
+	return item
+end
+
+function IdentityChoose:InitUIReference()
+	self.ui.identity = {}
+	self.ui.identity.Content = self.transform:Find("Choose")
+	self.ui.identity.Choose = {}
+
+	self.ui.identity.Choose[1] = {}
+	self.ui.identity.Choose[1].transform = self.ui.identity.Content:Find("Identity1")
+	self.ui.identity.Choose[1].btn = self.ui.identity.Choose[1].transform:GetComponent(typeof(Button))
+	self.ui.identity.Choose[1].image = self.ui.identity.Choose[1].transform:GetComponent(typeof(Image))
+	self.ui.identity.Choose.defaultLocalScale = self.ui.identity.Choose[1].transform.localScale
+
+	self.ui.identity.Choose[2] = {}
+	self.ui.identity.Choose[2].transform = self.ui.identity.Content:Find("Identity2")
+	self.ui.identity.Choose[2].btn = self.ui.identity.Choose[2].transform:GetComponent(typeof(Button))
+	self.ui.identity.Choose[2].image = self.ui.identity.Choose[2].transform:GetComponent(typeof(Image))
+
+	self.ui.identity.Choose[3] = {}
+	self.ui.identity.Choose[3].transform = self.ui.identity.Content:Find("Identity3")
+	self.ui.identity.Choose[3].btn = self.ui.identity.Choose[3].transform:GetComponent(typeof(Button))
+	self.ui.identity.Choose[3].image = self.ui.identity.Choose[3].transform:GetComponent(typeof(Image))
+	
+	self.ui.myIdentity = {}
+	self.ui.myIdentity.transform = self.transform:Find("Identity")
+	self.ui.myIdentity.image = self.ui.myIdentity.transform:GetComponent(typeof(Image))
+	self.ui.myIdentity.btn = self.ui.myIdentity.transform:GetComponent(typeof(Button))
+	self.ui.myIdentity.defaultPos = self.ui.myIdentity.transform.localPosition
+	self.ui.myIdentity.defaultScale = self.ui.myIdentity.transform.localScale
+end
+
+function IdentityChoose:InitUI()
+	self.gameObject:SetActive(true)
+	self.ui.identity.Content.gameObject:SetActive(false)
+	self.ui.myIdentity.transform.gameObject:SetActive(false)
+end
+
+function IdentityChoose:OnBtnIdentityCard(index)
+	local path = Global.Resources.Identity[self.identityType]
+	local card = self.ui.identity.Choose[index]
+	
+	--method
+	local Step1, Step2, Step3, Step4 = nil, nil, nil, nil
+	Step1 = function()
+		for i = 1, #self.ui.identity.Choose do
+			self.ui.identity.Choose[i].btn.interactable = false;
+		end
+		
+		card.transform:DOLocalRotate(Vector3(0, 90, 0), 0.2):SetEase(Ease.Linear):OnComplete(Step2)
+	end
+	
+	Step2 = function()
+		card.image.sprite = ResourcesManager:LoadSprite(path)
+		card.transform:DOLocalRotate(Vector3.zero, 0.2):SetEase(Ease.Linear):OnComplete(Step3)
+	end
+	
+	Step3 = function()
+		local targetMove = self.ui.myIdentity.transform.position
+		local targetScale = self.ui.myIdentity.transform.localScale
+		card.transform:DOMove(targetMove, 0.3):SetDelay(0.3)
+		card.transform:DOScale(targetScale, 0.3):SetDelay(0.3):OnComplete(Step4)
+	end
+	
+	Step4 = function()
+		self.ui.myIdentity.image.sprite = ResourcesManager:LoadSprite(path)
+		self.ui.myIdentity.transform.gameObject:SetActive(true)
+		self.ui.identity.Content.gameObject:SetActive(false)
+		card.transform.localScale = self.ui.identity.Choose.defaultLocalScale
+		EventManager:TriggerEvent(Global.Event.IdentityChooseComplete, nil)
+	end
+	--method
+	
+	Step1()
+end
+
+function IdentityChoose:OnBtnMyIdentityCard()
+	local Step1, Step2, Step3 = nil, nil, nil
+	Step1 = function()
+		self.ui.myIdentity.transform:DOLocalMove(Vector3.zero, 0.2)
+		self.ui.myIdentity.transform:DOScale(Vector3.one * 1.6, 0.2):OnComplete(Step2)
+	end
+	
+	Step2 = function()
+		self.ui.myIdentity.transform:DOLocalMove(self.ui.myIdentity.defaultPos, 0.2):SetDelay(1)
+		self.ui.myIdentity.transform:DOScale(self.ui.myIdentity.defaultScale, 0.2):SetDelay(1):OnComplete(Step3)
+	end
+	
+	Step3 = function()
+		self.ui.myIdentity.btn.interactable = true
+	end
+	
+	self.ui.myIdentity.btn.interactable = false
+	Step1()
+	
+end
+
+function IdentityChoose:AddUIEvent()
+	for i = 1, #self.ui.identity.Choose do
+		local index = i
+		UIEventManager:AddListener(self.ui.identity.Choose[i].btn, function() self:OnBtnIdentityCard(index) end, "lua.game.identityChoose.OnBtnIdentityCard")
+	end
+	UIEventManager:AddListener(self.ui.myIdentity.btn, self.OnBtnMyIdentityCard, self, "lua.game.identityChoose.OnBtnMyIdentityCard")
+end
+
+function IdentityChoose:RemoveUIEvent()
+	for i = 1, #self.ui.identity.Choose do
+		UIEventManager:RemoveAllListeners(self.ui.identity.Choose[i].btn)
+	end
+	UIEventManager:RemoveAllListeners(self.ui.myIdentity.btn)
+end
+
+function IdentityChoose:OnIdentityChoose(data)
+	--method
+	local Step1, Step2, Step3 = nil, nil, nil
+	Step1 = function()
+		self.ui.identity.Content.gameObject:SetActive(true)
+		self.ui.identity.Content:DOScale(Vector3.one, 0.35):OnComplete(Step2)
+	end
+	
+	Step2 = function()
+		self.ui.identity.Choose[1].transform:DOLocalMoveX(-345, 0.35):SetDelay(0.3)
+		self.ui.identity.Choose[3].transform:DOLocalMoveX(345, 0.35):SetDelay(0.3):OnComplete(Step3)
+	end
+	
+	Step3 = function()
+		for i = 1, #self.ui.identity.Choose do
+			self.ui.identity.Choose[i].btn.interactable = true;
+		end
+	end
+	--method
+	
+	self.identityType = data.identity
+
+	self.ui.identity.Content.localScale = Vector3.zero
+	for i = 1, #self.ui.identity.Choose do
+		self.ui.identity.Choose[i].transform.localPosition = Vector3.zero
+		self.ui.identity.Choose[i].btn.interactable = false;
+		self.ui.identity.Choose[i].image.sprite = ResourcesManager:LoadSprite(Global.Resources.Identity[IdentityType.None])
+	end
+	
+	Step1()
+end
+
+function IdentityChoose:OnGameComplete()
+	self.identityType = nil
+	self.gameObject:SetActive(false)
+end
+
+function IdentityChoose:AddListener()
+	EventManager:AddListener(Global.Event.IdentityChooseStart, function(data) self:OnIdentityChoose(data) end, "Lua.game.identityChoose.OnIdentityChoose")
+	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.identityChoose.OnGameComplete")
+end
+
+function IdentityChoose:RemoveListener()
+	EventManager:RemoveListener(Global.Event.IdentityChooseStart, "Lua.game.identityChoose.OnIdentityChoose")
+	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.identityChoose.OnGameComplete")
+end
+
+function IdentityChoose:Dispose()
+	self.identityType = nil
+end

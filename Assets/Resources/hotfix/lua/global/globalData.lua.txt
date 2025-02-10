@@ -2,6 +2,7 @@ Global.Data = {}
 
 --用户数据
 Global.Data.User = {}
+Global.Data.User.GameData = {}
 
 --房间数据
 Global.Data.RoomInfo = {}
@@ -14,6 +15,12 @@ end
 
 Global.Data.User.Clear = function()
 	Global.Data.User.UserName = nil
+	Global.Data.User.GameData.Clear()
+end
+
+Global.Data.User.GameData.Clear = function()
+	Global.Data.User.GameData.Identity = nil
+	Global.Data.User.GameData.Character = nil
 end
 
 Global.Data.RoomInfo.SetRoomInfo = function(roomInfo)

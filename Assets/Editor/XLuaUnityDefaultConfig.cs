@@ -58,7 +58,7 @@ static class XLuaUnityDefaultConfig
 
         "FengSheng.EventManagerEditor", "FengSheng.GameManagerEditor", "FengSheng.HotfixManagerEditor",
         "FengSheng.LuaManagerEditor", "FengSheng.NetManagerEditor", "FengSheng.ProtosManagerEditor",
-        "FengSheng.ResourcesManagerEditor", "FengSheng.UIManagerEditor"
+        "FengSheng.ResourcesManagerEditor", "FengSheng.UIManagerEditor", "FengSheng.UIEventManagerEditor"
     };
 
     static bool isExcluded(Type type)

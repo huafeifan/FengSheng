@@ -1,6 +1,7 @@
 tools/dump
 tools/queue
 global/globalConfig
+global/gameConfig
 global/uiConfig
 global/protoConfig
 global/protoMethods

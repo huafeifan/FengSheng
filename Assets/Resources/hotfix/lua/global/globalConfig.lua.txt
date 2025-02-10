@@ -25,6 +25,8 @@ EventManager = CS.FengSheng.EventManager.Instance
 ProtosManager = CS.FengSheng.ProtosManager.Instance
 ResourcesManager = CS.FengSheng.ResourcesManager.Instance
 LuaManager = CS.FengSheng.LuaManager.Instance
+GameManager = CS.FengSheng.GameManager.Instance
+DebugManager = CS.FengSheng.DebugManager.Instance
+UIEventManager = CS.FengSheng.UIEventManager.Instance
 GameObjectPool = CS.FengSheng.GameObjectPool
 Utils = CS.FengSheng.Utils
-

@@ -2,24 +2,24 @@
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/.lpproj/Apis/BuiltInTypes.lua" ModifyTime = "1737023306979"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/.lpproj/Apis/Lua/lua53.lua" ModifyTime = "1737023306979"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/.lpproj/Apis/LuaDebuggeeApi.lua" ModifyTime = "1737023306980"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/eventConfig.lua.txt" ModifyTime = "1737788118190"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/globalConfig.lua.txt" ModifyTime = "1738477475249"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/eventConfig.lua.txt" ModifyTime = "1738568089848"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/globalConfig.lua.txt" ModifyTime = "1738568026708"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/globalData.lua.txt" ModifyTime = "1738398002073"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/globalMethods.lua.txt" ModifyTime = "1737773484109"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/protoConfig.lua.txt" ModifyTime = "1738046579972"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/protoMethods.lua.txt" ModifyTime = "1737773411954"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/uiConfig.lua.txt" ModifyTime = "1737711442421"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/globalMethods.lua.txt" ModifyTime = "1738568096127"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/protoConfig.lua.txt" ModifyTime = "1738568098856"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/protoMethods.lua.txt" ModifyTime = "1738565382250"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/global/uiConfig.lua.txt" ModifyTime = "1738827878369"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/globalSet.lua.txt" ModifyTime = "1737370380588"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/main.lua.txt" ModifyTime = "1737525913908"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/main.lua.txt" ModifyTime = "1738572949087"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/tools/dump.lua.txt" ModifyTime = "1737524117773"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/tools/queue.lua.txt" ModifyTime = "1737529394997"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/game/chair.lua.txt" ModifyTime = "1738403078148"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/game/game.lua.txt" ModifyTime = "1738403541093"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/login/login.lua.txt" ModifyTime = "1738486527913"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/game/chair.lua.txt" ModifyTime = "1738563269490"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/game/game.lua.txt" ModifyTime = "1738563269491"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/login/login.lua.txt" ModifyTime = "1738828354003"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/login/userHead.lua.txt" ModifyTime = "1738387083616"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/room/createRoom.lua.txt" ModifyTime = "1737884247877"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/room/roomItemInfo.lua.txt" ModifyTime = "1738400778353"/>
-  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/room/roomList.lua.txt" ModifyTime = "1738403756856"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/room/roomList.lua.txt" ModifyTime = "1738563269491"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/tips/networkWaiting.lua.txt" ModifyTime = "1737786668378"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/tips/normalTip.lua.txt" ModifyTime = "1737786729703"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/XLua/Resources/perf/memory.lua.txt" ModifyTime = "1733829780000"/>
@@ -48,4 +48,44 @@
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/OutputABs/Release/lua/ui/room/roomList.lua.txt" ModifyTime = "1738403756856"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/OutputABs/Release/lua/ui/game/game.lua.txt" ModifyTime = "1738403541093"/>
   <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/OutputABs/Release/lua/ui/login/login.lua.txt" ModifyTime = "1738486527913"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/globalSet.lua.txt" ModifyTime = "1737370380588"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/globalMethods.lua.txt" ModifyTime = "1738563269489"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/eventConfig.lua.txt" ModifyTime = "1738563269488"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/globalData.lua.txt" ModifyTime = "1738398002073"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/networkWaiting.lua.txt" ModifyTime = "1737786668378"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/chair.lua.txt" ModifyTime = "1738563269490"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/globalConfig.lua.txt" ModifyTime = "1738563269488"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/main.lua.txt" ModifyTime = "1738565262555"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/userHead.lua.txt" ModifyTime = "1738387083616"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/normalTip.lua.txt" ModifyTime = "1737786729703"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/roomItemInfo.lua.txt" ModifyTime = "1738400778353"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/dump.lua.txt" ModifyTime = "1737524117773"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/createRoom.lua.txt" ModifyTime = "1737884247877"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/login.lua.txt" ModifyTime = "1738565119603"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/roomList.lua.txt" ModifyTime = "1738563269491"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/game.lua.txt" ModifyTime = "1738563269491"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/lua/ui/rule/rule.lua.txt" ModifyTime = "1738850761790"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/global/eventConfig.lua.txt" ModifyTime = "1739022315976"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/main.lua.txt" ModifyTime = "1738998027493"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/global/globalMethods.lua.txt" ModifyTime = "1738568096127"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/global/uiConfig.lua.txt" ModifyTime = "1738928947478"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/tools/queue.lua.txt" ModifyTime = "1737529394997"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/tools/dump.lua.txt" ModifyTime = "1737524117773"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/global/protoMethods.lua.txt" ModifyTime = "1738912265615"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/global/globalData.lua.txt" ModifyTime = "1738398002073"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/global/globalConfig.lua.txt" ModifyTime = "1739014738598"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/global/protoConfig.lua.txt" ModifyTime = "1739005069950"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/login/userHead.lua.txt" ModifyTime = "1738387083616"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/room/roomItemInfo.lua.txt" ModifyTime = "1739021012740"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/tips/networkWaiting.lua.txt" ModifyTime = "1737786668378"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/game/chair.lua.txt" ModifyTime = "1739023964777"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/tips/normalTip.lua.txt" ModifyTime = "1739023062168"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/room/roomList.lua.txt" ModifyTime = "1738563269491"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/room/createRoom.lua.txt" ModifyTime = "1738998447897"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/game/game.lua.txt" ModifyTime = "1739023471778"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/rule/rule.lua.txt" ModifyTime = "1738995347144"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/login/login.lua.txt" ModifyTime = "1739008064618"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/game/chairList.lua.txt" ModifyTime = "1739023998005"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/game/gameBtn.lua.txt" ModifyTime = "1739025009645"/>
+  <CheckedCodeItem Filename = "E:/FengSheng/FengSheng/Assets/Resources/hotfix/lua/ui/game/identity.lua.txt" ModifyTime = "1739025623901"/>
 </CheckedCodeList>

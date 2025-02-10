@@ -293,7 +293,6 @@
     <Compile Include="Assets\XLua\Gen\UnityEngine_ClusterSerializationWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_ComputeBufferWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_FixedJoint2DWrap.cs" />
-    <Compile Include="Assets\XLua\Gen\FengSheng_UIEventManagerEditorWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_PhysicsSceneWrap.cs" />
     <Compile Include="Assets\XLua\Gen\UnityEngine_AudioDistortionFilterWrap.cs" />
     <Compile Include="Assets\Scripts\Resources\ResourcesManager.cs" />
@@ -642,8 +641,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\hotfix\lua\ui\rule\rule.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\game\chairList.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\globalMethods.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\login\login.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\game\identityChoose.lua.txt" />
     <None Include="Assets\Resources\hotfix\protos\loginServer.login.bytes.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\globalData.lua.txt" />
     <None Include="Assets\XLua\Resources\xlua\util.lua.txt" />
@@ -656,12 +657,15 @@
     <None Include="Assets\Resources\hotfix\lua\ui\tips\normalTip.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\protoConfig.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\protoMethods.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\game\characterChoose.lua.txt" />
+    <None Include="Assets\Resources\hotfix\protos\loginServer.game.bytes.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\eventConfig.lua.txt" />
     <None Include="Assets\XLua\Resources\perf\profiler.lua.txt" />
     <None Include="Assets\DOTween\DOTween.dll" />
     <None Include="Assets\Resources\hotfix\lua\link.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\game.lua.txt" />
     <None Include="Assets\XLua\Resources\perf\memory.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\global\gameConfig.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\room\roomItemInfo.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\main.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\chair.lua.txt" />
@@ -669,6 +673,7 @@
     <None Include="Assets\DOTween\readme.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\tips\networkWaiting.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\room\createRoom.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\game\gameBtn.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\tools\dump.lua.txt" />
     <None Include="Assets\XLua\Resources\tdr\tdr.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\globalConfig.lua.txt" />

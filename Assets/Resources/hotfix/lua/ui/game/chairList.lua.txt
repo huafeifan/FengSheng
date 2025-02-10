@@ -1,0 +1,179 @@
+require "ui/game/chair"
+
+ChairList = {}
+ChairList.__index = ChairList
+
+local me = 1
+
+function ChairList:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+	item.chairs = {}
+
+	setmetatable(item, ChairList)
+	return item
+end
+
+function ChairList:InitUIReference()
+	self.ui.top1 = Chair:New(self.transform:Find("TopChairs/Chair1").gameObject)
+	self.ui.top1:InitUIReference()
+
+	self.ui.top2 = Chair:New(self.transform:Find("TopChairs/Chair2").gameObject)
+	self.ui.top2:InitUIReference()
+
+	self.ui.top3 = Chair:New(self.transform:Find("TopChairs/Chair3").gameObject)
+	self.ui.top3:InitUIReference()
+
+	self.ui.left = Chair:New(self.transform:Find("LeftChairs/Chair").gameObject)
+	self.ui.left:InitUIReference()
+
+	self.ui.right = Chair:New(self.transform:Find("RightChairs/Chair").gameObject)
+	self.ui.right:InitUIReference()
+
+	self.ui.bottom = Chair:New(self.transform:Find("BottomChairs/Chair").gameObject)
+	self.ui.bottom:InitUIReference()
+end
+
+function ChairList:InitUI()
+	self.chairs = {}
+
+	--自己
+	self.chairs[me] = self.ui.bottom
+	self.chairs[me]:InitUI()
+
+	--6人桌
+	if Global.Data.RoomInfo.ChairCount == 6 then
+		self.chairs[2] = self.ui.left
+		self.chairs[2]:InitUI()
+
+		self.chairs[3] = self.ui.top1
+		self.chairs[3]:InitUI()
+
+		self.chairs[4] = self.ui.top2
+		self.chairs[4]:InitUI()
+
+		self.chairs[5] = self.ui.top3
+		self.chairs[5]:InitUI()
+
+		self.chairs[6] = self.ui.right
+		self.chairs[6]:InitUI()
+		--5人桌
+	elseif Global.Data.RoomInfo.ChairCount == 5 then
+		self.chairs[2] = self.ui.left
+		self.chairs[2]:InitUI()
+
+		self.chairs[3] = self.ui.top1
+		self.chairs[3]:InitUI()
+
+		self.chairs[4] = self.ui.top2
+		self.chairs[4]:InitUI()
+
+		self.chairs[5] = self.ui.right
+		self.chairs[5]:InitUI()
+
+		self.ui.top3.gameObject:SetActive(false)
+		--4人桌
+	elseif Global.Data.RoomInfo.ChairCount == 4 then
+		self.chairs[2] = self.ui.left
+		self.chairs[2]:InitUI()
+
+		self.chairs[3] = self.ui.top1
+		self.chairs[3]:InitUI()
+
+		self.chairs[4] = self.ui.right
+		self.chairs[4]:InitUI()
+
+		self.ui.top2.gameObject:SetActive(false)
+		self.ui.top3.gameObject:SetActive(false)
+		--3人桌
+	else
+		self.chairs[2] = self.ui.left
+		self.chairs[2]:InitUI()
+
+		self.chairs[3] = self.ui.right
+		self.chairs[3]:InitUI()
+
+		self.ui.top1.gameObject:SetActive(false)
+		self.ui.top2.gameObject:SetActive(false)
+		self.ui.top3.gameObject:SetActive(false)
+	end
+end
+
+function ChairList:RefreshRoomInfo()
+	--服务端传来的座位信息
+	local chairsInfo = Global.Data.RoomInfo.ChairsInfo
+	--座位信息数量
+	local chairInfoCount = #chairsInfo
+	--座位数量
+	local chairCount = #self.chairs
+
+	--房主是1号座椅,找出自己是几号座椅
+	local index = 1
+	for i = 1, chairInfoCount do
+		if chairsInfo[i].isNull == false and chairsInfo[i].userData.name == Global.Data.User.UserName then
+			break
+		end
+		index = index + 1
+	end
+
+	--开始排座,从自己开始排
+	for j = 1, chairCount do
+		if index > chairInfoCount then
+			index = 1
+		end
+		self.chairs[j]:SetChairInfo(chairsInfo[index])
+		index = index + 1
+	end
+
+end
+
+function ChairList:GetMyChair()
+	return self.chairs[me]
+end
+
+function ChairList:AddUIEvent()
+	for i = 1, #self.chairs do
+		self.chairs[i]:AddUIEvent()
+	end
+end
+
+function ChairList:RemoveUIEvent()
+	for i = 1, #self.chairs do
+		self.chairs[i]:RemoveUIEvent()
+	end
+end
+
+function ChairList:OnGameStart()
+	for i = 1, #self.chairs do
+		self.chairs[i]:HideStatus()
+		self.chairs[i]:ShowCharacter()
+	end
+end
+
+function ChairList:OnGameComplete()
+	for i = 1, #self.chairs do
+		self.chairs[i]:ShowHead()
+	end
+end
+
+function ChairList:AddListener()
+	for i = 1, #self.chairs do
+		self.chairs[i]:AddListener()
+	end
+	EventManager:AddListener(Global.Event.GameStart, function() self:OnGameStart() end, "Lua.game.chairList.OnGameStart")
+	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.chairList.OnGameComplete")
+end
+
+function ChairList:RemoveListener()
+	for i = 1, #self.chairs do
+		self.chairs[i]:RemoveListener()
+	end
+	EventManager:RemoveListener(Global.Event.GameStart, "Lua.game.chairList.OnGameStart")
+	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.chairList.OnGameComplete")
+end
+
+function ChairList:Dispose()
+	
+end
