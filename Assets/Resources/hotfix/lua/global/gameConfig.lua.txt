@@ -43,3 +43,80 @@ CharacterType.ZhiYeShaShou = "CharacterType_ZhiYeShaShou"
 CharacterType.LaoGui = "CharacterType_LaoGui"
 CharacterType.QiBai = "CharacterType_QiBai"
 CharacterType.LaoQiang = "CharacterType_LaoQiang"
+
+GameCard = {}
+
+--传送方式
+GameCard.TransmitType = {}
+GameCard.TransmitType.None = "Card_TransmitType_None"
+GameCard.TransmitType.ZhiDa  ="Card_TransmitType_ZhiDa"
+GameCard.TransmitType.MiDian = "Card_TransmitType_MiDian"
+GameCard.TransmitType.WenBen = "Card_TransmitType_WenBen"
+GameCard.TransmitType.MiDianOrZhiDa ="Card_TransmitType_MiDianOrZhiDa"
+
+--传送方向
+GameCard.DirectionType = {}
+GameCard.DirectionType.None = "Card_DirectionType_None"
+GameCard.DirectionType.Shun = "Card_DirectionType_Shun"
+GameCard.DirectionType.Ni = "Card_DirectionType_Ni"
+GameCard.DirectionType.Choose = "Card_DirectionType_Choose"
+
+--情报类型
+GameCard.ColorType = {}
+GameCard.ColorType.None = "Card_ColorType_None"
+GameCard.ColorType.Gray = "Card_ColorType_Gray"
+GameCard.ColorType.Red = "Card_ColorType_Red"
+GameCard.ColorType.Blue = "Card_ColorType_Blue"
+GameCard.ColorType.RedBlue = "Card_ColorType_RedBlue"
+
+--锁定类型
+GameCard.LockType = {}
+GameCard.LockType.None = "Card_LockType_None"
+GameCard.LockType.Lock = "Card_LockType_Lock"
+GameCard.LockType.Unlock = "Card_LockType_Unlock"
+
+--特殊卡牌
+--公开文本
+GameCard.GongKaiWenBenType = {}
+GameCard.GongKaiWenBenType.None = "Card_GongKaiWenBenType_None"
+GameCard.GongKaiWenBenType.BlueSub = "Card_GongKaiWenBenType_BlueSub"
+GameCard.GongKaiWenBenType.RedSub = "Card_GongKaiWenBenType_RedSub"
+GameCard.GongKaiWenBenType.BlueAdd = "Card_GongKaiWenBenType_BlueAdd"
+GameCard.GongKaiWenBenType.RedAdd = "Card_GongKaiWenBenType_RedAdd"
+GameCard.GongKaiWenBenType.GreenAdd = "Card_GongKaiWenBenType_GreenAdd"
+
+--秘密下达
+GameCard.MiMiXiaDaType = {}
+GameCard.MiMiXiaDaType.None = "Card_MiMiXiaDaType_None"
+GameCard.MiMiXiaDaType.GrayRedBule = "Card_MiMiXiaDaType_GrayRedBule"
+GameCard.MiMiXiaDaType.BlueGrayRed = "Card_MiMiXiaDaType_BlueGrayRed"
+GameCard.MiMiXiaDaType.RedBlueGray = "Card_MiMiXiaDaType_RedBlueGray"
+
+--试探
+GameCard.ShiTanType = {}
+GameCard.ShiTanType.None = "Card_ShiTanType_None"
+GameCard.ShiTanType.BlueAdd = "Card_ShiTanType_BlueAdd"
+GameCard.ShiTanType.RedAdd = "Card_ShiTanType_RedAdd"
+GameCard.ShiTanType.GreenAdd = "Card_ShiTanType_GreenAdd"
+GameCard.ShiTanType.GuessHaoRen = "Card_ShiTanType_GuessHaoRen"
+GameCard.ShiTanType.GuessWoDi = "Card_ShiTanType_GuessWoDi"
+GameCard.ShiTanType.GuessJianDie = "Card_ShiTanType_GuessJianDie"
+
+--卡片效果类型
+GameCard.XiaoGuo = {}
+GameCard.XiaoGuo.None = "Card_XiaoGuoType_None"
+GameCard.XiaoGuo.GongKaiWenBen = "Card_XiaoGuoType_GongKaiWenBen"
+GameCard.XiaoGuo.MiMiXiaDa = "Card_XiaoGuoType_MiMiXiaDa"
+GameCard.XiaoGuo.ShiTan = "Card_XiaoGuoType_ShiTan"
+GameCard.XiaoGuo.DiaoBao = "Card_XiaoGuoType_DiaoBao"
+GameCard.XiaoGuo.JieHuo = "Card_XiaoGuoType_JieHuo"
+GameCard.XiaoGuo.LiJian = "Card_XiaoGuoType_LiJian"
+GameCard.XiaoGuo.PoYi = "Card_XiaoGuoType_PoYi"
+GameCard.XiaoGuo.DiaoHuLiShan = "Card_XiaoGuoType_DiaoHuLiShan"
+GameCard.XiaoGuo.ZengYuan = "Card_XiaoGuoType_ZengYuan"
+GameCard.XiaoGuo.ShaoHui = "Card_XiaoGuoType_ShaoHui"
+GameCard.XiaoGuo.SuoDing = "Card_XiaoGuoType_SuoDing"
+GameCard.XiaoGuo.WeiXianQinBao = "Card_XiaoGuoType_WeiXianQinBao"
+GameCard.XiaoGuo.ShiPo = "Card_XiaoGuoType_ShiPo"
+GameCard.XiaoGuo.ZhuanYi = "Card_XiaoGuoType_ZhuanYi"
+GameCard.XiaoGuo.JiMiWenJian = "Card_XiaoGuoType_JiMiWenJian"
