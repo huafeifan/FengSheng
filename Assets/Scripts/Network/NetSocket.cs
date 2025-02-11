@@ -79,6 +79,19 @@ namespace FengSheng
             mReceiver = new MessageReceiver();
         }
 
+        public void FixedUpdate()
+        {
+            if (mReceiver != null)
+            {
+                mReceiver.FixedUpdate();
+            }
+
+            if (mSender != null)
+            {
+                mSender.FixedUpdate();
+            }
+        }
+
         /// <summary>
         /// 连接准备
         /// </summary>

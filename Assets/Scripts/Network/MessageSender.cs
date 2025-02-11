@@ -29,6 +29,11 @@ namespace FengSheng
             Debug.Log("消息发送器已开启");
         }
 
+        public void FixedUpdate()
+        {
+            
+        }
+
         /// <summary>
         /// 发送消息
         /// </summary>

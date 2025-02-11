@@ -9,4 +9,3 @@ Global.Methods.ShowTips = function(msg)
 	tip.content = msg
 	EventManager:TriggerEvent(Global.Event.ShowTips, tip)
 end
-

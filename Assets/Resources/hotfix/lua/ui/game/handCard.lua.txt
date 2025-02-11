@@ -1,0 +1,136 @@
+HandCard = {}
+HandCard.__index = HandCard
+
+function HandCard:New(gameObject, dealCard)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+	item.dealCard = dealCard
+
+	setmetatable(item, HandCard)
+	return item
+end
+
+function HandCard:InitUIReference()
+	self.ui.cards = {}
+	for i = 1, 6 do
+		self.ui.cards[i] = {}
+		self.ui.cards[i].transform = self.transform:Find("CardList/Card"..i)
+		self.ui.cards[i].gameObject = self.ui.cards[i].transform.gameObject
+		self.ui.cards[i].defaultPos = self.ui.cards[i].transform.position
+		self.ui.cards[i].defaultScale = self.ui.cards[i].transform.localScale
+		self.ui.cards[i].targetPos = self.ui.cards[i].transform:Find("WorldPositionZero").position
+		self.ui.cards[i].btn = self.ui.cards[i].transform:GetComponent(typeof(Button))
+		self.ui.cards[i].image = self.ui.cards[i].transform:GetComponent(typeof(Image))
+		self.ui.cards[i].bigerBtn = self.ui.cards[i].transform:Find("BigerBtn"):GetComponent(typeof(Button))
+		self.ui.cards[i].highLight = self.transform:Find("CardList/HighLight/HighLight"..i)
+	end
+	self.ui.highLightContent = self.transform:Find("CardList/HighLight")
+
+end
+
+function HandCard:InitUI()
+	for i = 1, 6 do
+		self.ui.cards[i].btn.interactable = true
+		self.ui.cards[i].gameObject:SetActive(false)
+		self.ui.cards[i].image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+		self.ui.cards[i].cardType = nil
+		self.ui.cards[i].bigerBtn.gameObject:SetActive(false)
+		self.ui.cards[i].highLight.gameObject:SetActive(false)
+	end
+	self.ui.highLightContent.gameObject:SetActive(true)
+end
+
+function HandCard:OnBtnHandCard(index)
+	local activeSelf = self.ui.cards[index].highLight.gameObject.activeSelf
+	self.ui.cards[index].highLight.gameObject:SetActive(activeSelf == false)
+end
+
+function HandCard:OnBtnHandCardBiger(index)
+	if self.handCardBigerFlag == true then return end
+	self.handCardBigerFlag = true
+	
+	local Step1, Step2, Step3 = nil, nil, nil
+	local card = self.ui.cards[index]
+	Step1 = function()
+		card.transform:DOMove(card.targetPos, 0.2)
+		card.transform:DOScale(Vector3.one * 2.5, 0.2):OnComplete(Step2)
+	end
+
+	Step2 = function()
+		card.transform:DOMove(card.defaultPos, 0.2):SetDelay(1)
+		card.transform:DOScale(card.defaultScale, 0.2):SetDelay(1):OnComplete(Step3)
+	end
+
+	Step3 = function()
+		card.btn.interactable = true
+		self.ui.highLightContent.gameObject:SetActive(true)
+		card.bigerBtn.gameObject:SetActive(true)
+		self.handCardBigerFlag = false
+	end
+	
+	card.btn.interactable = false
+	self.ui.highLightContent.gameObject:SetActive(false)
+	card.bigerBtn.gameObject:SetActive(false)
+	Step1()
+end
+
+function HandCard:AddUIEvent()
+	for i = 1, 6 do
+		local index = i
+		UIEventManager:AddListener(self.ui.cards[i].btn, function() self:OnBtnHandCard(index) end, "lua.game.handCard.OnBtnHandCard")
+		UIEventManager:AddListener(self.ui.cards[i].bigerBtn, function() self:OnBtnHandCardBiger(index) end, "lua.game.handCard.OnBtnHandCardBiger")
+	end
+end
+
+function HandCard:RemoveUIEvent()
+	for i = 1, 6 do
+		UIEventManager:RemoveAllListeners(self.ui.cards[i].btn)
+		UIEventManager:RemoveAllListeners(self.ui.cards[i].bigerBtn)
+	end
+end
+
+function HandCard:OnDealCards(data)
+	local myDealCards = nil
+	for i = 1, #data.dealCards do
+		if data.dealCards[i].userName == Global.Data.User.UserName then
+			myDealCards = data.dealCards[i]
+			break
+		end
+	end
+	
+	local delay = 0
+	for i = 1, #myDealCards.cards do
+		self.ui.cards[i].cardType = myDealCards.cards[i]
+		
+		local card = self.ui.cards[i]
+		card.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[card.cardType.cardName])
+		self.dealCard:DealOneCard(card.defaultPos, delay, card.cardType.cardName, function()
+			card.gameObject:SetActive(true)
+			card.bigerBtn.gameObject:SetActive(true)
+		end)
+		delay = delay + 0.1
+	end
+end
+
+function HandCard:OnGameComplete()
+	for i = 1, 6 do
+		self.ui.cards[i].gameObject:SetActive(false)
+		self.ui.cards[i].image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+	end
+end
+
+function HandCard:AddListener()
+	EventManager:AddListener(Global.Event.DealCards, function(data) self:OnDealCards(data) end, "Lua.game.handCard.OnDealCards")
+	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.handCard.OnGameComplete")
+end
+
+function HandCard:RemoveListener()
+	EventManager:RemoveListener(Global.Event.DealCards, "Lua.game.handCard.OnDealCards")
+	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.handCard.OnGameComplete")
+end
+
+function HandCard:Dispose()
+	self.handCardBigerFlag = false
+end

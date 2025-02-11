@@ -70,6 +70,7 @@ Global.Resources.Character[CharacterType.EMeiFeng] = "ui/character/character_eme
 Global.Resources.Character[CharacterType.LaoJin] = "ui/character/character_laojin"
 
 Global.Resources.Card = {}
+Global.Resources.Card.None = "ui/gameCard/cardbg"
 Global.Resources.Card["card_gongkaiwenben1"] = "ui/gameCard/card_gongkaiwenben1"
 Global.Resources.Card["card_gongkaiwenben2"] = "ui/gameCard/card_gongkaiwenben2"
 Global.Resources.Card["card_gongkaiwenben3"] = "ui/gameCard/card_gongkaiwenben3"

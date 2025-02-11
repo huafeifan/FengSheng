@@ -16,20 +16,12 @@ function CharacterChoose:InitUIReference()
 	self.ui.character.Content = self.transform:Find("Choose")
 	self.ui.character.Choose = {}
 
-	self.ui.character.Choose[1] = {}
-	self.ui.character.Choose[1].transform = self.ui.character.Content:Find("Character1")
-	self.ui.character.Choose[1].btn = self.ui.character.Choose[1].transform:GetComponent(typeof(Button))
-	self.ui.character.Choose[1].image = self.ui.character.Choose[1].transform:GetComponent(typeof(Image))
-
-	self.ui.character.Choose[2] = {}
-	self.ui.character.Choose[2].transform = self.ui.character.Content:Find("Character2")
-	self.ui.character.Choose[2].btn = self.ui.character.Choose[2].transform:GetComponent(typeof(Button))
-	self.ui.character.Choose[2].image = self.ui.character.Choose[2].transform:GetComponent(typeof(Image))
-
-	self.ui.character.Choose[3] = {}
-	self.ui.character.Choose[3].transform = self.ui.character.Content:Find("Character3")
-	self.ui.character.Choose[3].btn = self.ui.character.Choose[3].transform:GetComponent(typeof(Button))
-	self.ui.character.Choose[3].image = self.ui.character.Choose[3].transform:GetComponent(typeof(Image))
+	for i = 1, 3 do
+		self.ui.character.Choose[i] = {}
+		self.ui.character.Choose[i].transform = self.ui.character.Content:Find("Character"..i)
+		self.ui.character.Choose[i].btn = self.ui.character.Choose[i].transform:GetComponent(typeof(Button))
+		self.ui.character.Choose[i].image = self.ui.character.Choose[i].transform:GetComponent(typeof(Image))
+	end
 	
 	self.ui.affirmBtn = self.ui.character.Content:Find("AffirmBtn"):GetComponent(typeof(Button))
 	self.ui.highLight = self.ui.character.Content:Find("HighLight")
@@ -71,7 +63,7 @@ function CharacterChoose:OnBtnAffirm()
 	self.ui.affirmBtn.gameObject:SetActive(false)
 	self.ui.highLight.gameObject:SetActive(false)
 	self.ui.tip.gameObject:SetActive(true)
-	EventManager:TriggerEvent(Global.Event.CharacterChooseComplete, nil)
+	EventManager:TriggerEvent(Global.Event.CharacterChooseComplete, data)
 end
 
 function CharacterChoose:AddUIEvent()

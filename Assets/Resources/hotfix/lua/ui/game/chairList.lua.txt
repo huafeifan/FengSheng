@@ -5,12 +5,13 @@ ChairList.__index = ChairList
 
 local me = 1
 
-function ChairList:New(gameObject)
+function ChairList:New(gameObject, dealCard)
 	local item = {}
 	item.gameObject = gameObject
 	item.transform = gameObject.transform
 	item.ui = {}
 	item.chairs = {}
+	item.dealCard = dealCard
 
 	setmetatable(item, ChairList)
 	return item
@@ -158,12 +159,39 @@ function ChairList:OnGameComplete()
 	end
 end
 
+function ChairList:OnCharacterChooseComplete(data)
+	if data.userName == Global.Data.User.UserName then
+		self.chairs[me]:SetCharacter(data.character)
+	end
+end
+
+function ChairList:OnDealCards(data)
+	for i = 1, #data.dealCards do
+		if i > #self.chairs then
+			return 
+		end
+		
+		local userData = self.chairs[i]:GetUserData()
+		local dealCards = data.dealCards[i]
+		if dealCards.userName == userData.name then
+			local delay = 0
+			for j = 1, #dealCards.cards do
+				self.dealCard:DealOneCard(self.chairs[i]:GetCharacterPos(), delay)
+				delay = delay + 0.1
+			end
+		end
+	end
+	
+end
+
 function ChairList:AddListener()
 	for i = 1, #self.chairs do
 		self.chairs[i]:AddListener()
 	end
 	EventManager:AddListener(Global.Event.GameStart, function() self:OnGameStart() end, "Lua.game.chairList.OnGameStart")
 	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.chairList.OnGameComplete")
+	EventManager:AddListener(Global.Event.CharacterChooseComplete, function(data) self:OnCharacterChooseComplete(data) end, "Lua.game.chairList.OnCharacterChooseComplete")
+	EventManager:AddListener(Global.Event.DealCards, function(data) self:OnDealCards(data) end, "Lua.game.chairList.OnDealCards")
 end
 
 function ChairList:RemoveListener()
@@ -172,6 +200,8 @@ function ChairList:RemoveListener()
 	end
 	EventManager:RemoveListener(Global.Event.GameStart, "Lua.game.chairList.OnGameStart")
 	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.chairList.OnGameComplete")
+	EventManager:RemoveListener(Global.Event.CharacterChooseComplete, "Lua.game.chairList.OnCharacterChooseComplete")
+	EventManager:RemoveListener(Global.Event.DealCards, "Lua.game.chairList.OnDealCards")
 end
 
 function ChairList:Dispose()

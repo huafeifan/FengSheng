@@ -1,32 +1,47 @@
-require "ui/game/chairList"
+require "ui/game/dealCard"
 require "ui/game/gameBtn"
+require "ui/game/chairList"
 require "ui/game/identityChoose"
 require "ui/game/characterChoose"
+require "ui/game/handCard"
 
 local ui = {}
 local cacheData = {}
 local gameStage = GameStage.WaitStart
                         
 local InitUIReference = function()
+	--发牌器托管
+	ui.dealCard = DealCard:New(self.transform:Find("CardPool").gameObject)
+	ui.dealCard:InitUIReference()
+	
+	--按钮托管
 	ui.gameBtn = GameBtn:New(self.gameObject, ui)
 	ui.gameBtn:InitUIReference()
 	
-	ui.chairList = ChairList:New(self.transform:Find("ChairList").gameObject)
+	--椅子托管
+	ui.chairList = ChairList:New(self.transform:Find("ChairList").gameObject, ui.dealCard)
 	ui.chairList:InitUIReference()
 		
+	--身份选择托管
 	ui.identityChoose = IdentityChoose:New(self.transform:Find("Identity").gameObject)
 	ui.identityChoose:InitUIReference()
 	
+	--角色选择托管
 	ui.characterChoose = CharacterChoose:New(self.transform:Find("CharacterChoose").gameObject)
 	ui.characterChoose:InitUIReference()
 	
+	--手牌托管
+	ui.handCard = HandCard:New(self.transform:Find("Bottom/CardContent").gameObject, ui.dealCard)
+	ui.handCard:InitUIReference()
 end
 	
 local InitUI = function()
+	ui.dealCard:InitUI()
 	ui.gameBtn:InitUI()
 	ui.chairList:InitUI()
 	ui.identityChoose:InitUI()
 	ui.characterChoose:InitUI()
+	ui.handCard:InitUI()
 end
 
 local RefreshRoomInfo = function()
@@ -35,17 +50,21 @@ local RefreshRoomInfo = function()
 end
 
 local AddUIEvent = function()
+	ui.dealCard:AddUIEvent()
 	ui.gameBtn:AddUIEvent()
 	ui.chairList:AddUIEvent()
 	ui.identityChoose:AddUIEvent()
 	ui.characterChoose:AddUIEvent()
+	ui.handCard:AddUIEvent()
 end
 
 local RemoveUIEvent = function()
+	ui.dealCard:RemoveUIEvent()
 	ui.gameBtn:RemoveUIEvent()
 	ui.chairList:RemoveUIEvent()
 	ui.identityChoose:RemoveUIEvent()
 	ui.characterChoose:RemoveUIEvent()
+	ui.handCard:RemoveUIEvent()
 end
 
 local OnReceiveRoomInfoChange = function(bytes)
@@ -167,10 +186,12 @@ local OnReceiveGameComplete = function()
 end
 
 local AddListener = function()
+	ui.dealCard:AddListener()
 	ui.gameBtn:AddListener()
 	ui.chairList:AddListener()
 	ui.identityChoose:AddListener()
 	ui.characterChoose:AddListener()
+	ui.handCard:AddListener()
 	EventManager:AddListener(Global.Event.IdentityChooseComplete, OnIdentityChooseComplete, "Lua.game.OnIdentityChooseComplete")
 	EventManager:AddListener(Global.Event.CharacterChooseComplete, OnCharacterChooseComplete, "Lua.game.OnCharacterChooseComplete")
 	ProtosManager:AddListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom, "Lua.game.OnReceiveExitRoom")
@@ -185,10 +206,12 @@ local AddListener = function()
 end
 
 local RemoveListener = function()
+	ui.dealCard:RemoveListener()
 	ui.gameBtn:RemoveListener()
 	ui.chairList:RemoveListener()
 	ui.identityChoose:RemoveListener()
 	ui.characterChoose:RemoveListener()
+	ui.handCard:RemoveListener()
 	EventManager:RemoveListener(Global.Event.IdentityChooseComplete, OnIdentityChooseComplete)
 	EventManager:RemoveListener(Global.Event.CharacterChooseComplete, OnCharacterChooseComplete)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom)
@@ -210,10 +233,12 @@ local RequestRoomInfo = function()
 end
 
 local Dispose = function()
+	ui.dealCard:Dispose()
 	ui.gameBtn:Dispose()
 	ui.chairList:Dispose()
 	ui.identityChoose:Dispose()
 	ui.characterChoose:Dispose()
+	ui.handCard:Dispose()
 	
 	cacheData = {}
 	Global.Data.User.GameData.Clear()

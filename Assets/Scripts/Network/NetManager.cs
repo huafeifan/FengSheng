@@ -21,9 +21,12 @@ namespace FengSheng
         [SerializeField]
         private List<NetSocket> mNetList = new List<NetSocket>();
 
-        private void Update()
+        private void FixedUpdate()
         {
-
+            for (int i = 0; i < mNetList.Count; i++)
+            {
+                mNetList[i].FixedUpdate();
+            }
         }
 
         public override IEnumerator Register()

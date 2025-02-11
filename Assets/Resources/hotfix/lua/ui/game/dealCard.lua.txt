@@ -1,0 +1,75 @@
+DealCard = {}
+DealCard.__index = DealCard
+
+function DealCard:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, DealCard)
+	return item
+end
+
+function DealCard:InitUIReference()
+	self.ui.cardPool = self.transform:GetComponent(typeof(GameObjectPool))
+end
+
+function DealCard:InitUI()
+	self.ui.cardPool:Dispose()
+end
+
+function DealCard:DealOneCard(targetPos, delay, path, onComplete)
+	local card = self.ui.cardPool:Get(true)
+	card.transform.localPosition = Vector3.zero
+	local image = card:GetComponent(typeof(Image))
+	image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+	
+	if path == nil then
+		card.transform:DOMove(targetPos, 0.25):SetDelay(delay):OnComplete(function()
+				self.ui.cardPool:Dispose(card)
+			end)
+		return
+	end
+	
+	--method
+	local Step1, Step2, Step3 = nil, nil, nil
+	Step1 = function()
+		card.transform:DOLocalRotate(Vector3(0, 90, 0), 0.1):SetEase(Ease.Linear):OnComplete(Step2)
+	end
+	Step2 = function()
+		image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[path])
+		card.transform:DOLocalRotate(Vector3.zero, 0.1):SetEase(Ease.Linear):OnComplete(Step3)
+	end
+	Step3 = function()
+		onComplete()
+		self.ui.cardPool:Dispose(card)
+	end
+	--method
+	
+	card.transform:DOMove(targetPos, 0.25):SetDelay(delay):OnComplete(Step1)
+end
+
+function DealCard:AddUIEvent()
+	
+end
+
+function DealCard:RemoveUIEvent()
+	
+end
+
+function DealCard:OnGameComplete()
+	self.ui.cardPool:Dispose()
+end
+
+function DealCard:AddListener()
+	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.dealCard.OnGameComplete")
+end
+
+function DealCard:RemoveListener()
+	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.dealCard.OnGameComplete")
+end
+
+function DealCard:Dispose()
+	self.ui.cardPool:Dispose()
+end

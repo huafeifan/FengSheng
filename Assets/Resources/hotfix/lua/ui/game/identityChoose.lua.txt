@@ -16,21 +16,13 @@ function IdentityChoose:InitUIReference()
 	self.ui.identity.Content = self.transform:Find("Choose")
 	self.ui.identity.Choose = {}
 
-	self.ui.identity.Choose[1] = {}
-	self.ui.identity.Choose[1].transform = self.ui.identity.Content:Find("Identity1")
-	self.ui.identity.Choose[1].btn = self.ui.identity.Choose[1].transform:GetComponent(typeof(Button))
-	self.ui.identity.Choose[1].image = self.ui.identity.Choose[1].transform:GetComponent(typeof(Image))
+	for i = 1, 3 do
+		self.ui.identity.Choose[i] = {}
+		self.ui.identity.Choose[i].transform = self.ui.identity.Content:Find("Identity" .. i)
+		self.ui.identity.Choose[i].btn = self.ui.identity.Choose[i].transform:GetComponent(typeof(Button))
+		self.ui.identity.Choose[i].image = self.ui.identity.Choose[i].transform:GetComponent(typeof(Image))
+	end
 	self.ui.identity.Choose.defaultLocalScale = self.ui.identity.Choose[1].transform.localScale
-
-	self.ui.identity.Choose[2] = {}
-	self.ui.identity.Choose[2].transform = self.ui.identity.Content:Find("Identity2")
-	self.ui.identity.Choose[2].btn = self.ui.identity.Choose[2].transform:GetComponent(typeof(Button))
-	self.ui.identity.Choose[2].image = self.ui.identity.Choose[2].transform:GetComponent(typeof(Image))
-
-	self.ui.identity.Choose[3] = {}
-	self.ui.identity.Choose[3].transform = self.ui.identity.Content:Find("Identity3")
-	self.ui.identity.Choose[3].btn = self.ui.identity.Choose[3].transform:GetComponent(typeof(Button))
-	self.ui.identity.Choose[3].image = self.ui.identity.Choose[3].transform:GetComponent(typeof(Image))
 	
 	self.ui.myIdentity = {}
 	self.ui.myIdentity.transform = self.transform:Find("Identity")
