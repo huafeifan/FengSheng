@@ -16,14 +16,15 @@ function GameBtn:InitUIReference()
 	self.ui.startBtn = self.transform:Find("StartBtn"):GetComponent(typeof(Button))
 	self.ui.exitBtn = self.transform:Find("ExitBtn"):GetComponent(typeof(Button))
 	self.ui.readyBtn = self.transform:Find("ReadyBtn"):GetComponent(typeof(Button))
+	self.ui.ruleBtn = self.transform:Find("RuleBtn"):GetComponent(typeof(Button))
 end
 
 function GameBtn:InitUI()
 	self.ui.startBtn.gameObject:SetActive(false)
 	self.ui.exitBtn.gameObject:SetActive(true)
 	self.ui.readyBtn.gameObject:SetActive(false)
+	self.ui.ruleBtn.gameObject:SetActive(true)
 end
-
 
 function GameBtn:RefreshRoomInfo()
 	local myChair = self.main.chairList:GetMyChair()
@@ -66,16 +67,23 @@ function GameBtn:OnBtnReady()
 	end
 end
 
+function GameBtn:OnBtnRule()
+	Global.Methods.PlayBtnAnimation(self.ui.ruleBtn)
+	UIManager:OpenUI(Global.RulePrefab_Path)
+end
+
 function GameBtn:AddUIEvent()
 	UIEventManager:AddListener(self.ui.startBtn, self.OnBtnStart, self, "lua.game.gameBtn.OnBtnStart")
 	UIEventManager:AddListener(self.ui.exitBtn, self.OnBtnExit, self, "lua.game.gameBtn.OnBtnExit")
 	UIEventManager:AddListener(self.ui.readyBtn, self.OnBtnReady, self, "lua.game.gameBtn.OnBtnReady")
+	UIEventManager:AddListener(self.ui.ruleBtn, self.OnBtnRule, self, "lua.game.gameBtn.OnBtnRule")
 end
 
 function GameBtn:RemoveUIEvent()
 	UIEventManager:RemoveAllListeners(self.ui.startBtn)
 	UIEventManager:RemoveAllListeners(self.ui.exitBtn)
 	UIEventManager:RemoveAllListeners(self.ui.readyBtn)
+	UIEventManager:RemoveAllListeners(self.ui.ruleBtn)
 end
 
 function GameBtn:OnGameStart()
@@ -92,5 +100,5 @@ function GameBtn:RemoveListener()
 end
 
 function GameBtn:Dispose()
-
+	UIManager:CloseUI(Global.RulePrefab_Path)
 end

@@ -3,9 +3,45 @@ Global.Methods = {}
 Global.Methods.PlayBtnAnimation = function(btn)
 	btn.transform:DOScale(1.1, 0.1):SetLoops(2, LoopType.Yoyo)
 end
+	Global.Data.RoomInfo.GameStage = GameStage.WaitGameStart
 
 Global.Methods.ShowTips = function(msg)
 	local tip = {}
 	tip.content = msg
 	EventManager:TriggerEvent(Global.Event.ShowTips, tip)
+end
+
+Global.Methods.SetGameStage = function(stage, data)
+	Debug.Log(stage)
+	if stage == GameStage.WaitCharacterChoose then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitCharacterChoose
+		EventManager:TriggerEvent(Global.Event.WaitCharacterChoose, data)
+	elseif stage == GameStage.WaitDealCards then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitDealCards
+		EventManager:TriggerEvent(Global.Event.WaitDealCards, data)
+	elseif stage == GameStage.WaitGameTurn then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitGameTurn
+		EventManager:TriggerEvent(Global.Event.WaitGameTurn, data)
+	elseif stage == GameStage.WaitGameTurnOpertateEnd then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitGameTurnOpertateEnd
+		EventManager:TriggerEvent(Global.Event.WaitGameTurnOpertateEnd, data)
+	elseif stage == GameStage.WaitIdentityChoose then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitIdentityChoose
+		EventManager:TriggerEvent(Global.Event.WaitIdentityChoose, data)
+	elseif stage == GameStage.WaitGameStart then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitGameStart
+		EventManager:TriggerEvent(Global.Event.WaitGameStart, data)
+	elseif stage == GameStage.WaitGameTurnStart then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitGameTurnStart
+		EventManager:TriggerEvent(Global.Event.WaitGameTurnStart, data)
+	elseif stage == GameStage.WaitGameTurnDealCards then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitGameTurnDealCards
+		EventManager:TriggerEvent(Global.Event.WaitGameTurnDealCards, data)
+	elseif stage == GameStage.WaitGameTurnDisCard then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitGameTurnDisCard
+		EventManager:TriggerEvent(Global.Event.WaitGameTurnDisCard, data)
+	elseif stage == GameStage.WaitGameTurnEnd then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitGameTurnEnd
+		EventManager:TriggerEvent(Global.Event.WaitGameTurnEnd, nil)
+	end
 end

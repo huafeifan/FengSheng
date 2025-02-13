@@ -2,12 +2,18 @@ Global.Data = {}
 
 --用户数据
 Global.Data.User = {}
-Global.Data.User.GameData = {}
+Global.Data.User.UserName = nil
 
 --房间数据
 Global.Data.RoomInfo = {}
-
-
+Global.Data.RoomInfo.RoomNub = nil
+Global.Data.RoomInfo.RoomName = nil
+Global.Data.RoomInfo.ChairCount = nil
+Global.Data.RoomInfo.UserCount = nil
+Global.Data.RoomInfo.RobotCount = nil
+Global.Data.RoomInfo.ChairsInfo = nil
+Global.Data.RoomInfo.GameStage = nil
+Global.Data.RoomInfo.CurrentGameTurnUserName = nil
 
 Global.Data.User.SetData = function(user)
 	Global.Data.User.UserName = user.name
@@ -15,12 +21,6 @@ end
 
 Global.Data.User.Clear = function()
 	Global.Data.User.UserName = nil
-	Global.Data.User.GameData.Clear()
-end
-
-Global.Data.User.GameData.Clear = function()
-	Global.Data.User.GameData.Identity = nil
-	Global.Data.User.GameData.Character = nil
 end
 
 Global.Data.RoomInfo.SetRoomInfo = function(roomInfo)
@@ -46,9 +46,6 @@ Global.Data.RoomInfo.Clear = function()
 	Global.Data.RoomInfo.UserCount = nil
 	Global.Data.RoomInfo.RobotCount = nil
 	Global.Data.RoomInfo.ChairsInfo = nil
+	Global.Data.RoomInfo.GameStage = nil
+	Global.Data.RoomInfo.CurrentGameTurnUserName = nil
 end
-
-
-Global.Data.User.Clear()
-
-Global.Data.RoomInfo.Clear()

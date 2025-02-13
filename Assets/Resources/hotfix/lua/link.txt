@@ -4,8 +4,8 @@ global/globalConfig
 global/gameConfig
 global/uiConfig
 global/protoConfig
+global/globalData
 global/protoMethods
 global/eventConfig
 global/globalMethods
-global/globalData
 main

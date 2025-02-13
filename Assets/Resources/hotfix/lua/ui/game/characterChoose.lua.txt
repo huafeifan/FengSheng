@@ -115,20 +115,20 @@ function CharacterChoose:OnGameComplete()
 	self.gameObject:SetActive(false)
 end
 
-function CharacterChoose:OnDealCards(data)
+function CharacterChoose:OnDealCardsStart(data)
 	self.ui.tip.gameObject:SetActive(false)
 end
 
 function CharacterChoose:AddListener()
 	EventManager:AddListener(Global.Event.CharacterChooseStart, function(data) self:OnCharacterChoose(data) end, "Lua.game.characterChoose.OnCharacterChoose")
 	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.characterChoose.OnGameComplete")
-	EventManager:AddListener(Global.Event.DealCards, function() self:OnDealCards() end, "Lua.game.characterChoose.OnDealCards")
+	EventManager:AddListener(Global.Event.DealCardsStart, function() self:OnDealCardsStart() end, "Lua.game.characterChoose.OnDealCardsStart")
 end
 
 function CharacterChoose:RemoveListener()
 	EventManager:RemoveListener(Global.Event.CharacterChooseStart, "Lua.game.characterChoose.OnCharacterChoose")
 	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.characterChoose.OnGameComplete")
-	EventManager:RemoveListener(Global.Event.DealCards, "Lua.game.characterChoose.OnDealCards")
+	EventManager:RemoveListener(Global.Event.DealCardsStart, "Lua.game.characterChoose.OnDealCardsStart")
 end
 
 function CharacterChoose:Dispose()

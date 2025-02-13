@@ -156,6 +156,7 @@ end
 function ChairList:OnGameComplete()
 	for i = 1, #self.chairs do
 		self.chairs[i]:ShowHead()
+		self.chairs[i]:SetGameTurnText("")
 	end
 end
 
@@ -165,23 +166,90 @@ function ChairList:OnCharacterChooseComplete(data)
 	end
 end
 
-function ChairList:OnDealCards(data)
+function ChairList:OnDealCardsStart(data)
 	for i = 1, #data.dealCards do
-		if i > #self.chairs then
-			return 
-		end
-		
-		local userData = self.chairs[i]:GetUserData()
 		local dealCards = data.dealCards[i]
-		if dealCards.userName == userData.name then
-			local delay = 0
-			for j = 1, #dealCards.cards do
-				self.dealCard:DealOneCard(self.chairs[i]:GetCharacterPos(), delay)
-				delay = delay + 0.1
+		for j = 2, #self.chairs do
+			local userData = self.chairs[j]:GetUserData()
+			if userData ~= nil and userData.name == dealCards.userName then
+				for k = 1, #dealCards.cards do
+					self.dealCard:AddDealCard(self.chairs[j]:GetCharacterPos(), nil, nil)
+				end
 			end
 		end
 	end
-	
+end
+
+function ChairList:OnGameTurn(data)
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == data.userName then
+			self.chairs[i]:SetGameTurn(true)
+		else
+			self.chairs[i]:SetGameTurn(false)
+		end
+	end
+end
+
+function ChairList:OnWaitGameTurnStart()
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName then
+			self.chairs[i]:SetGameTurnText("等待回合开始")
+		end
+	end
+end
+
+function ChairList:OnWaitGameTurnDealCards()
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName then
+			self.chairs[i]:SetGameTurnText("抽牌中...")
+		end
+	end
+end
+
+function ChairList:OnWaitGameTurnOpertateEnd()
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName then
+			self.chairs[i]:SetGameTurnText("回合中...")
+		end
+	end
+end
+
+function ChairList:OnWaitGameTurnDisCard()
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName then
+			self.chairs[i]:SetGameTurnText("弃牌中...")
+		end
+	end
+end
+
+function ChairList:OnWaitGameTurnEnd()
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName then
+			self.chairs[i]:SetGameTurnText("等待玩家结束回合")
+		end
+	end
+end
+
+function ChairList:OnGameTurnDisCardStart(data)
+	if #data.cards > 0 then
+		for i = 2, #self.chairs do
+			local userData = self.chairs[i]:GetUserData()
+			if userData ~= nil and userData.name == data.userName then
+				local delay = 0
+				for j = 1, #data.cards do
+					local startPos = self.chairs[i]:GetCharacterPos()
+					self.dealCard:DisOneCard(startPos, Global.Resources.Card.None, delay, nil)
+					delay = delay + 0.2
+				end
+			end
+		end
+	end
 end
 
 function ChairList:AddListener()
@@ -191,7 +259,14 @@ function ChairList:AddListener()
 	EventManager:AddListener(Global.Event.GameStart, function() self:OnGameStart() end, "Lua.game.chairList.OnGameStart")
 	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.chairList.OnGameComplete")
 	EventManager:AddListener(Global.Event.CharacterChooseComplete, function(data) self:OnCharacterChooseComplete(data) end, "Lua.game.chairList.OnCharacterChooseComplete")
-	EventManager:AddListener(Global.Event.DealCards, function(data) self:OnDealCards(data) end, "Lua.game.chairList.OnDealCards")
+	EventManager:AddListener(Global.Event.DealCardsStart, function(data) self:OnDealCardsStart(data) end, "Lua.game.chairList.OnDealCardsStart")
+	EventManager:AddListener(Global.Event.GameTurn, function(data) self:OnGameTurn(data) end, "Lua.game.chairList.OnGameTurn")
+	EventManager:AddListener(Global.Event.WaitGameTurnStart, function() self:OnWaitGameTurnStart() end, "Lua.game.chairList.OnWaitGameTurnStart")
+	EventManager:AddListener(Global.Event.WaitGameTurnDealCards, function() self:OnWaitGameTurnDealCards() end, "Lua.game.chairList.OnWaitGameTurnDealCards")
+	EventManager:AddListener(Global.Event.WaitGameTurnOpertateEnd, function() self:OnWaitGameTurnOpertateEnd() end, "Lua.game.chairList.OnWaitGameTurnOpertateEnd")
+	EventManager:AddListener(Global.Event.WaitGameTurnDisCard, function() self:OnWaitGameTurnDisCard() end, "Lua.game.chairList.OnWaitGameTurnDisCard")
+	EventManager:AddListener(Global.Event.WaitGameTurnEnd, function() self:OnWaitGameTurnEnd() end, "Lua.game.chairList.OnWaitGameTurnEnd")
+	EventManager:AddListener(Global.Event.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.chairList.OnGameTurnDisCardStart")
 end
 
 function ChairList:RemoveListener()
@@ -201,7 +276,14 @@ function ChairList:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStart, "Lua.game.chairList.OnGameStart")
 	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.chairList.OnGameComplete")
 	EventManager:RemoveListener(Global.Event.CharacterChooseComplete, "Lua.game.chairList.OnCharacterChooseComplete")
-	EventManager:RemoveListener(Global.Event.DealCards, "Lua.game.chairList.OnDealCards")
+	EventManager:RemoveListener(Global.Event.DealCardsStart, "Lua.game.chairList.OnDealCardsStart")
+	EventManager:RemoveListener(Global.Event.GameTurn, "Lua.game.chairList.OnGameTurn")
+	EventManager:RemoveListener(Global.Event.WaitGameTurnStart, "Lua.game.chairList.OnWaitGameTurnStart")
+	EventManager:RemoveListener(Global.Event.WaitGameTurnDealCards, "Lua.game.chairList.OnWaitGameTurnDealCards")
+	EventManager:RemoveListener(Global.Event.WaitGameTurnOpertateEnd, "Lua.game.chairList.OnWaitGameTurnOpertateEnd")
+	EventManager:RemoveListener(Global.Event.WaitGameTurnDisCard, "Lua.game.chairList.OnWaitGameTurnDisCard")
+	EventManager:RemoveListener(Global.Event.WaitGameTurnEnd, "Lua.game.chairList.OnWaitGameTurnEnd")
+	EventManager:RemoveListener(Global.Event.GameTurnDisCardStart, "Lua.game.chairList.OnGameTurnDisCardStart")
 end
 
 function ChairList:Dispose()

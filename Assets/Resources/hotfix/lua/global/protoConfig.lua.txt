@@ -79,6 +79,36 @@ Global.Protos.Class.CharacterChooseList_S2C = "loginServer.game.CharacterChooseL
 Global.Protos.Cmd.GameComplete_S2C = 0x0204
 Global.Protos.Class.GameComplete_S2C = "loginServer.game.GameComplete_S2C"
 
+Global.Protos.Cmd.DealCards_C2S = 0x0205
+Global.Protos.Class.DealCards_C2S = "loginServer.game.DealCards_C2S"
+
 Global.Protos.Cmd.DealCards_S2C = 0x0205
 Global.Protos.Class.DealCards_S2C = "loginServer.game.DealCards_S2C"
+
+Global.Protos.Cmd.GameTurn_S2C = 0x0206
+Global.Protos.Class.GameTurn_S2C = "loginServer.game.GameTurn_S2C"
+
+Global.Protos.Cmd.GameTurnEnd_C2S = 0x0207
+Global.Protos.Class.GameTurnEnd_C2S = "loginServer.game.GameTurnEnd_C2S"
+
+Global.Protos.Cmd.GameTurnEnd_S2C = 0x0207
+Global.Protos.Class.GameTurnEnd_S2C = "loginServer.game.GameTurnEnd_S2C"
+
+Global.Protos.Cmd.GameTurnStart_C2S = 0x0208
+Global.Protos.Class.GameTurnStart_C2S = "loginServer.game.GameTurnStart_C2S"
+
+Global.Protos.Cmd.GameTurnStart_S2C = 0x0208
+Global.Protos.Class.GameTurnStart_S2C = "loginServer.game.GameTurnStart_S2C"
+
+Global.Protos.Cmd.GameTurnOpertateEnd_C2S = 0x0209
+Global.Protos.Class.GameTurnOpertateEnd_C2S = "loginServer.game.GameTurnOpertateEnd_C2S"
+
+Global.Protos.Cmd.GameTurnOpertateEnd_S2C = 0x0209
+Global.Protos.Class.GameTurnOpertateEnd_S2C = "loginServer.game.GameTurnOpertateEnd_S2C"
+
+Global.Protos.Cmd.GameTurnDisCard_C2S = 0x020A
+Global.Protos.Class.GameTurnDisCard_C2S = "loginServer.game.GameTurnDisCard_C2S"
+
+Global.Protos.Cmd.GameTurnDisCard_S2C = 0x020A
+Global.Protos.Class.GameTurnDisCard_S2C = "loginServer.game.GameTurnDisCard_S2C"
 --game end

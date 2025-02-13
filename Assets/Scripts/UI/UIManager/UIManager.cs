@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.UI;
 
 namespace FengSheng
 {
@@ -23,6 +24,8 @@ namespace FengSheng
         /// UI根节点
         /// </summary>
         public Transform UIRoot;
+
+        public Camera UICamera;
 
         /// <summary>
         /// UI层级
@@ -63,7 +66,7 @@ namespace FengSheng
             mUILayerRootConfig.Add(UILayer.NormalUI_Level1, UIRoot.Find("Normal/NormalUI_Level1"));
             mUILayerRootConfig.Add(UILayer.NormalParticle_Level1, UIRoot.Find("Normal/NormalParticle_Level1"));
             mUILayerRootConfig.Add(UILayer.NormalTempLayer, UIRoot.Find("Normal/NormalTempLayer"));
-
+            
             mUILayerRootConfig.Add(UILayer.SpecialUI_Level1, UIRoot.Find("Special/SpecialUI_Level1"));
             mUILayerRootConfig.Add(UILayer.SpecialParticle_Level1, UIRoot.Find("Special/SpecialParticle_Level1"));
             mUILayerRootConfig.Add(UILayer.SpecialTempLayer, UIRoot.Find("Special/SpecialTempLayer"));
@@ -190,7 +193,7 @@ namespace FengSheng
             SetUILayer(path);
             uiCache.gameObject.SetActive(isActive);
             uiCache.FlashTime(Time.time);
-
+            
             return uiCache.gameObject;
         }
 

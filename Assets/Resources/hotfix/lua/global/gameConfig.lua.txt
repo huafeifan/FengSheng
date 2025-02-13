@@ -1,14 +1,21 @@
+--整把游戏的状态
 GameStage = {}
-GameStage.WaitStart = 1
+GameStage.WaitGameStart = "GameStage_WaitStart"
 
-GameStage.WaitIdentityChoose = 2
-GameStage.IdentityChoose = 3
+GameStage.WaitIdentityChoose = "GameStage_WaitIdentityChoose" --等待身份选择
+GameStage.WaitCharacterChoose = "GameStage_WaitCharacterChoose"  --等待角色选择
+GameStage.WaitDealCards = "GameStage_WaitDealCards"  --等待发牌
+GameStage.WaitGameTurn = "GameStage_WaitGameTurn"  --等待切换到某人回合
+GameStage.WaitGameTurnStart = "GameStage_WaitGameTurnStart" --等待回合开始
+GameStage.WaitGameTurnDealCards = "GameStage_WaitGameTurnDealCards" --等待回合抽卡
+GameStage.WaitGameTurnOpertateEnd = "GameStage_WaitGameTurnOpertateEnd" --等待回合操作结束
+GameStage.WaitGameTurnDisCard = "GameStage_WaitGameTurnDisCard" --等待弃牌
+GameStage.WaitGameTurnEnd = "GameStage_WaitGameTurnEnd" --等待回合结束
 
-GameStage.WaitCharacterChoose = 4
-GameStage.CharacterChoose = 5
-
-GameStage.WaitDealCards = 6
-GameStage.DealCards = 6
+--个人回合的状态
+GameTurn = {}
+GameTurn.WaitDisCard = "GameTurn_WaitDisCard" --等待弃牌
+GameTurn.WaitPlayHand = "GameTurn_WaitPlayHand" --等待出牌
 
 IdentityType = {}
 IdentityType.None = "IdentityType_None"

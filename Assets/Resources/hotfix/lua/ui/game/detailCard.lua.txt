@@ -1,0 +1,50 @@
+DetailCard = {}
+DetailCard.__index = DetailCard
+
+function DetailCard:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, DetailCard)
+	return item
+end
+
+function DetailCard:InitUIReference()
+	self.ui.image = self.transform:Find("Image"):GetComponent(typeof(Image))
+	self.ui.closeBtn = self.transform:Find("Mask"):GetComponent(typeof(Button))
+end
+
+function DetailCard:InitUI()
+	self.gameObject:SetActive(false)
+end
+
+function DetailCard:OnBtnClose()
+	self.gameObject:SetActive(false)
+end
+
+function DetailCard:AddUIEvent()
+	UIEventManager:AddListener(self.ui.closeBtn, self.OnBtnClose, self, "lua.game.detailCard.OnBtnClose")
+end
+
+function DetailCard:RemoveUIEvent()
+	UIEventManager:RemoveAllListeners(self.ui.closeBtn)
+end
+
+function DetailCard:OnDetailCard(data)
+	self.gameObject:SetActive(true)
+	self.ui.image.sprite = ResourcesManager:LoadSprite(data.path)
+end
+
+function DetailCard:AddListener()
+	EventManager:AddListener(Global.Event.DetailCard, function(data) self:OnDetailCard(data) end, "Lua.game.detailCard.OnDetailCard")
+end
+
+function DetailCard:RemoveListener()
+	EventManager:RemoveListener(Global.Event.DetailCard, "Lua.game.detailCard.OnDetailCard")
+end
+
+function DetailCard:Dispose()
+	
+end

@@ -16,14 +16,15 @@ end
 function Chair:InitUIReference()
 	self.ui.ready = self.transform:Find("Ready")
 	self.ui.owener = self.transform:Find("Owener")
+	self.ui.gameTurn = {}
+	self.ui.gameTurn.transform = self.transform:Find("GameTurn")
+	self.ui.gameTurn.highLight = self.ui.gameTurn.transform:Find("HighLight")
+	self.ui.gameTurn.text = self.ui.gameTurn.transform:Find("Text"):GetComponent(typeof(Text))
 	self.ui.character = {}
 	self.ui.character.transform = self.transform:Find("User/Character")
 	self.ui.character.btn = self.ui.character.transform:GetComponent(typeof(Button))
 	self.ui.character.image = self.ui.character.transform:GetComponent(typeof(Image))
 	self.ui.character.bigerBtn = self.ui.character.transform:Find("BigerBtn"):GetComponent(typeof(Button))
-	self.ui.character.defaultLocalPos = self.ui.character.transform.localPosition
-	self.ui.character.defaultScale = self.ui.character.transform.localScale
-	self.ui.character.worldPosZero = self.ui.character.transform:Find("WorldPositionZero").localPosition
 	
 	self.ui.head = UserHead:New(self.transform:Find("User").gameObject)
 	self.ui.head:InitUIReference()
@@ -33,6 +34,7 @@ function Chair:InitUI()
 	self.gameObject:SetActive(true)
 	self.ui.ready.gameObject:SetActive(false)
 	self.ui.owener.gameObject:SetActive(false)
+	self.ui.gameTurn.transform.gameObject:SetActive(false)
 	self.ui.character.bigerBtn.gameObject:SetActive(false)
 	self:ShowHead()
 	self.ui.head:SetData("")
@@ -58,6 +60,7 @@ end
 
 function Chair:SetCharacter(character)
 	self.ui.character.bigerBtn.gameObject:SetActive(true)
+	self.character = character
 	self.ui.character.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Character[character])
 end
 
@@ -90,6 +93,14 @@ function Chair:GetCharacterPos()
 	return self.ui.character.transform.position
 end
 
+function Chair:SetGameTurn(b)
+	self.ui.gameTurn.transform.gameObject:SetActive(b)
+end
+
+function Chair:SetGameTurnText(tips)
+	self.ui.gameTurn.text.text = tips
+end
+
 function Chair:IsOwner()
 	if self.chairInfo == nil then
 		return false
@@ -119,25 +130,9 @@ function Chair:OnBtnCharacter()
 end
 
 function Chair:OnBtnCharacterBiger()
-	local Step1, Step2, Step3 = nil, nil, nil
-	Step1 = function()
-		self.ui.character.transform:DOLocalMove(self.ui.character.worldPosZero, 0.2)
-		self.ui.character.transform:DOScale(Vector3.one * 2.5, 0.2):OnComplete(Step2)
-	end
-
-	Step2 = function()
-		self.ui.character.transform:DOLocalMove(self.ui.character.defaultLocalPos, 0.2):SetDelay(1)
-		self.ui.character.transform:DOScale(self.ui.character.defaultScale, 0.2):SetDelay(1):OnComplete(Step3)
-	end
-
-	Step3 = function()
-		self.ui.character.bigerBtn.gameObject:SetActive(true)
-	end
-	
-	self.ui.character.bigerBtn.gameObject:SetActive(false)
-	self.ui.character.transform.localPosition = self.ui.character.defaultLocalPos
-	self.ui.character.transform.localScale = self.ui.character.defaultScale
-	Step1()
+	local data = {}
+	data.path = Global.Resources.Character[self.character]
+	EventManager:TriggerEvent(Global.Event.DetailCard, data)
 end
 
 function Chair:AddUIEvent()

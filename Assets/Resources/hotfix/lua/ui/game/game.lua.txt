@@ -4,17 +4,27 @@ require "ui/game/chairList"
 require "ui/game/identityChoose"
 require "ui/game/characterChoose"
 require "ui/game/handCard"
+require "ui/game/detailCard"
 
 local ui = {}
 local cacheData = {}
-local gameStage = GameStage.WaitStart
+
+local OnReceiveGameStart = nil
+local OnReceiveIdentity = nil
+local OnReceiveCharacterChooseList = nil
+local OnReceiveDealCards = nil
+local OnReceiveGameTurn = nil
+local OnReceiveGameTurnStart = nil
+local OnReceiveGameTurnOpertateEnd = nil
+local OnReceiveGameTurnDisCard = nil
+local OnReceiveGameTurnEnd = nil
                         
 local InitUIReference = function()
 	--发牌器托管
 	ui.dealCard = DealCard:New(self.transform:Find("CardPool").gameObject)
 	ui.dealCard:InitUIReference()
 	
-	--按钮托管
+	--场景按钮托管
 	ui.gameBtn = GameBtn:New(self.gameObject, ui)
 	ui.gameBtn:InitUIReference()
 	
@@ -33,6 +43,10 @@ local InitUIReference = function()
 	--手牌托管
 	ui.handCard = HandCard:New(self.transform:Find("Bottom/CardContent").gameObject, ui.dealCard)
 	ui.handCard:InitUIReference()
+	
+	--卡牌详情
+	ui.detailCard = DetailCard:New(self.transform:Find("Detail").gameObject)
+	ui.detailCard:InitUIReference()
 end
 	
 local InitUI = function()
@@ -42,6 +56,7 @@ local InitUI = function()
 	ui.identityChoose:InitUI()
 	ui.characterChoose:InitUI()
 	ui.handCard:InitUI()
+	ui.detailCard:InitUI()
 end
 
 local RefreshRoomInfo = function()
@@ -56,6 +71,7 @@ local AddUIEvent = function()
 	ui.identityChoose:AddUIEvent()
 	ui.characterChoose:AddUIEvent()
 	ui.handCard:AddUIEvent()
+	ui.detailCard:AddUIEvent()
 end
 
 local RemoveUIEvent = function()
@@ -65,6 +81,39 @@ local RemoveUIEvent = function()
 	ui.identityChoose:RemoveUIEvent()
 	ui.characterChoose:RemoveUIEvent()
 	ui.handCard:RemoveUIEvent()
+	ui.detailCard:RemoveUIEvent()
+end
+
+local OnIdentityChooseComplete = function()
+	Global.Methods.SetGameStage(GameStage.WaitCharacterChoose, nil)
+	
+	if cacheData.CharacterChoose ~= nil then
+		OnReceiveCharacterChooseList(cacheData.CharacterChoose)
+	end
+end
+
+local OnCharacterChooseComplete = function()
+	Global.Methods.SetGameStage(GameStage.WaitDealCards, nil)
+	
+	if cacheData.DealCards ~= nil then
+		OnReceiveDealCards(cacheData.DealCards)
+	end
+end
+
+local OnDealCardsComplete = function()
+	if Global.Data.RoomInfo.GameStage == GameStage.WaitDealCards then
+		Global.Methods.SetGameStage(GameStage.WaitGameTurn, nil)
+
+		if cacheData.GameTurn ~= nil then
+			OnReceiveGameTurn(cacheData.GameTurn)
+		end
+	elseif Global.Data.RoomInfo.GameStage == GameStage.WaitGameTurnDealCards then
+		Global.Methods.SetGameStage(GameStage.WaitGameTurnOpertateEnd, nil)
+		
+		if cacheData.GameTurnOpertateEnd ~= nil then
+			OnReceiveGameTurnOpertateEnd(cacheData.GameTurnOpertateEnd)
+		end
+	end
 end
 
 local OnReceiveRoomInfoChange = function(bytes)
@@ -108,38 +157,8 @@ local OnReceiveReadyStatus = function(bytes)
 	end
 end
 
-local OnReceiveCharacterChooseList = function(bytes)
-	if gameStage ~= GameStage.WaitCharacterChoose then
-		cacheData.CharacterChoose = bytes
-		return
-	end
-	
-	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.CharacterChooseList_S2C, bytes)
-	gameStage = GameStage.CharacterChoose
-	EventManager:TriggerEvent(Global.Event.CharacterChooseStart, data)
-end
-
-local OnIdentityChooseComplete = function()
-	gameStage = GameStage.WaitCharacterChoose
-	if cacheData.CharacterChoose ~= nil then
-		OnReceiveCharacterChooseList(cacheData.CharacterChoose)
-	end
-end
-
-local OnReceiveIdentity = function(bytes)
-	if gameStage ~= GameStage.WaitIdentityChoose then
-		cacheData.IdentityChoose = bytes
-		return
-	end
-	cacheData.IdentityChoose = nil
-	
-	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.Identity_S2C, bytes)
-	gameStage = GameStage.IdentityChoose
-	EventManager:TriggerEvent(Global.Event.IdentityChooseStart, data)
-end
-
-local OnReceiveGameStart = function(bytes)
-	if gameStage ~= GameStage.WaitStart then 
+OnReceiveGameStart = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitGameStart then 
 		Debug.LogError("lua.game.OnReceiveGameStart 游戏未初始化")
 		return 
 	end
@@ -148,8 +167,10 @@ local OnReceiveGameStart = function(bytes)
 	
 	if data.code == "Success" then
 		--Global.Methods.ShowTips("游戏开始")
-		gameStage = GameStage.WaitIdentityChoose
-		EventManager:TriggerEvent(Global.Event.GameStart, nil)
+		EventManager:TriggerEvent(Global.Event.GameStart, data)
+		
+		Global.Methods.SetGameStage(GameStage.WaitIdentityChoose, nil)
+		
 		if cacheData.IdentityChoose ~= nil then
 			OnReceiveIdentity(cacheData.IdentityChoose)
 		end
@@ -158,31 +179,137 @@ local OnReceiveGameStart = function(bytes)
 	end
 end
 
-local OnReceiveDealCards = function(bytes)
-	if gameStage ~= GameStage.WaitDealCards then
-		cacheData.DealCards = bytes
+OnReceiveIdentity = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitIdentityChoose then
+		cacheData.IdentityChoose = bytes
 		return
 	end
-	cacheData.DealCards = nil
+	cacheData.IdentityChoose = nil
 
-	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_S2C, bytes)
-	gameStage = GameStage.DealCards
-	EventManager:TriggerEvent(Global.Event.DealCards, data)
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.Identity_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.IdentityChooseStart, data)
 end
 
-local OnCharacterChooseComplete = function()
-	gameStage = GameStage.WaitDealCards
-	if cacheData.DealCards ~= nil then
-		OnReceiveDealCards(cacheData.DealCards)
+OnReceiveCharacterChooseList = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitCharacterChoose then
+		cacheData.CharacterChoose = bytes
+		return
 	end
+
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.CharacterChooseList_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.CharacterChooseStart, data)
 end
 
 local OnReceiveGameComplete = function()
 	cacheData = {}
-	gameStage = GameStage.WaitStart
-	Global.Data.User.GameData.Clear()
 	EventManager:TriggerEvent(Global.Event.GameComplete, nil)
+	Global.Data.RoomInfo.CurrentGameTurnUserName = nil
+	Global.Methods.SetGameStage(GameStage.WaitGameStart, nil)
 	--服务端会发送一个桌子信息变更的消息
+end
+
+OnReceiveDealCards = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitDealCards and
+		Global.Data.RoomInfo.GameStage ~= GameStage.WaitGameTurnDealCards then
+		cacheData.DealCards = bytes
+		return
+	end
+	
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.DealCardsStart, data)
+end
+
+OnReceiveGameTurn = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitGameTurn then
+		cacheData.GameTurn = bytes
+		return
+	end
+	cacheData.GameTurn = nil
+	
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameTurn_S2C, bytes)
+	Global.Data.RoomInfo.CurrentGameTurnUserName = data.userName
+	EventManager:TriggerEvent(Global.Event.GameTurn, data)
+	
+	Global.Methods.SetGameStage(GameStage.WaitGameTurnStart, nil)
+	
+	if Global.Data.RoomInfo.CurrentGameTurnUserName == Global.Data.User.UserName then
+		local sendData = {}
+		sendData.userName = data.userName
+		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnStart_C2S, sendData)
+		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnStart_C2S, dataBytes)
+	end
+	
+	if cacheData.GameTurnStart ~= nil then
+		OnReceiveGameTurnStart(cacheData.GameTurnStart)
+	end
+end
+
+OnReceiveGameTurnStart = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitGameTurnStart then
+		cacheData.GameTurnStart = bytes
+		return
+	end
+	cacheData.GameTurnStart = nil
+	
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnStart_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.GameTurnStart, data)
+	
+	Global.Methods.SetGameStage(GameStage.WaitGameTurnDealCards, nil)
+	
+	if cacheData.GameTurnDealCards ~= nil then
+		OnReceiveDealCards(cacheData.GameTurnDealCards)
+	end
+end
+
+OnReceiveGameTurnOpertateEnd = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitGameTurnOpertateEnd then
+		cacheData.GameTurnOpertateEnd = bytes
+		return
+	end
+	cacheData.GameTurnOpertateEnd = nil
+	
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnOpertateEnd_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.GameTurnOpertateEnd, data)
+
+	Global.Methods.SetGameStage(GameStage.WaitGameTurnDisCard, nil)
+	
+	if cacheData.GameTurnDisCard ~= nil then
+		OnReceiveGameTurnDisCard(cacheData.GameTurnDisCard)
+	end
+end
+
+OnReceiveGameTurnDisCard = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitGameTurnDisCard then
+		cacheData.GameTurnDisCard = bytes
+		return
+	end
+	cacheData.GameTurnDisCard = nil
+	
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnDisCard_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.GameTurnDisCardStart, data)
+
+	Global.Methods.SetGameStage(GameStage.WaitGameTurnEnd, nil)
+	
+	if cacheData.GameTurnEnd ~= nil then
+		OnReceiveGameTurnEnd(cacheData.GameTurnEnd)
+	end
+end
+
+OnReceiveGameTurnEnd = function(bytes)
+	if Global.Data.RoomInfo.GameStage ~= GameStage.WaitGameTurnEnd then
+		cacheData.GameTurnEnd = bytes
+		return
+	end
+	cacheData.GameTurnEnd = nil
+	
+	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnEnd_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.GameTurnEnd, data)
+	
+	Global.Methods.SetGameStage(GameStage.WaitGameTurn, nil)
+	
+	if cacheData.GameTurn ~= nil then
+		OnReceiveGameTurn(cacheData.GameTurn)
+	end
 end
 
 local AddListener = function()
@@ -192,8 +319,10 @@ local AddListener = function()
 	ui.identityChoose:AddListener()
 	ui.characterChoose:AddListener()
 	ui.handCard:AddListener()
+	ui.detailCard:AddListener()
 	EventManager:AddListener(Global.Event.IdentityChooseComplete, OnIdentityChooseComplete, "Lua.game.OnIdentityChooseComplete")
 	EventManager:AddListener(Global.Event.CharacterChooseComplete, OnCharacterChooseComplete, "Lua.game.OnCharacterChooseComplete")
+	EventManager:AddListener(Global.Event.DealCardsComplete, OnDealCardsComplete, "Lua.game.OnDealCardsComplete")
 	ProtosManager:AddListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom, "Lua.game.OnReceiveExitRoom")
 	ProtosManager:AddListener(Global.Protos.Cmd.RoomInfoChange_S2C, OnReceiveRoomInfoChange, "Lua.game.OnReceiveRoomInfoChange")
 	ProtosManager:AddListener(Global.Protos.Cmd.RequestRoomInfo_S2C, OnReceiveRequestRoomInfo, "Lua.game.OnReceiveRequestRoomInfo")
@@ -203,6 +332,11 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.CharacterChooseList_S2C, OnReceiveCharacterChooseList, "Lua.game.OnReceiveCharacterChooseList")
 	ProtosManager:AddListener(Global.Protos.Cmd.GameComplete_S2C, OnReceiveGameComplete, "Lua.game.OnReceiveGameComplete")
 	ProtosManager:AddListener(Global.Protos.Cmd.DealCards_S2C, OnReceiveDealCards, "Lua.game.OnReceiveDealCards")
+	ProtosManager:AddListener(Global.Protos.Cmd.GameTurn_S2C, OnReceiveGameTurn, "Lua.game.OnReceiveGameTurn")
+	ProtosManager:AddListener(Global.Protos.Cmd.GameTurnStart_S2C, OnReceiveGameTurnStart, "Lua.game.OnReceiveGameTurnStart")
+	ProtosManager:AddListener(Global.Protos.Cmd.GameTurnOpertateEnd_S2C, OnReceiveGameTurnOpertateEnd, "Lua.game.OnReceiveGameTurnOpertateEnd")
+	ProtosManager:AddListener(Global.Protos.Cmd.GameTurnDisCard_S2C, OnReceiveGameTurnDisCard, "Lua.game.OnReceiveGameTurnDisCard")
+	ProtosManager:AddListener(Global.Protos.Cmd.GameTurnEnd_S2C, OnReceiveGameTurnEnd, "Lua.game.OnReceiveGameTurnEnd")
 end
 
 local RemoveListener = function()
@@ -212,8 +346,10 @@ local RemoveListener = function()
 	ui.identityChoose:RemoveListener()
 	ui.characterChoose:RemoveListener()
 	ui.handCard:RemoveListener()
+	ui.detailCard:RemoveListener()
 	EventManager:RemoveListener(Global.Event.IdentityChooseComplete, OnIdentityChooseComplete)
 	EventManager:RemoveListener(Global.Event.CharacterChooseComplete, OnCharacterChooseComplete)
+	EventManager:RemoveListener(Global.Event.DealCardsComplete, OnDealCardsComplete)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.RoomInfoChange_S2C, OnReceiveRoomInfoChange)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.RequestRoomInfo_S2C, OnReceiveRequestRoomInfo)
@@ -223,6 +359,11 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.CharacterChooseList_S2C, OnReceiveCharacterChooseList)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.GameComplete_S2C, OnReceiveGameComplete)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.DealCards_S2C, OnReceiveDealCards)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.GameTurn_S2C, OnReceiveGameTurn)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.GameTurnStart_S2C, OnReceiveGameTurnStart)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.GameTurnOpertateEnd_S2C, OnReceiveGameTurnOpertateEnd)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.GameTurnDisCard_S2C, OnReceiveGameTurnDisCard)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.GameTurnEnd_S2C, OnReceiveGameTurnEnd)
 end
 
 local RequestRoomInfo = function()
@@ -239,9 +380,9 @@ local Dispose = function()
 	ui.identityChoose:Dispose()
 	ui.characterChoose:Dispose()
 	ui.handCard:Dispose()
+	ui.detailCard:Dispose()
 	
 	cacheData = {}
-	Global.Data.User.GameData.Clear()
 end
 
 function awake()
@@ -254,7 +395,7 @@ function onenable()
 	AddListener()
 	
 	RequestRoomInfo()
-	gameStage = GameStage.WaitStart
+	Global.Methods.SetGameStage(GameStage.WaitGameStart, nil)
 end
 
 function ondisable()
