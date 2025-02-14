@@ -1,67 +1,79 @@
-function PreLoadSprite(list, index, onComplete)
-	ResourcesManager:LoadSpriteAsync(list[index], function()
-		if index == #list then
-			local data = {}
-			data.tips = "success"
-			data.progress = 1
-			EventManager:TriggerEvent(CS.FengSheng.EventManager.Event_LoadingProgress, data);
-			onComplete()
-		else
-			index = index + 1
-			local data = {}
-			data.tips = "正在加载资源..."
-			data.progress = index / (#list)
-			EventManager:TriggerEvent(CS.FengSheng.EventManager.Event_LoadingProgress, data);
-			PreLoadSprite(list, index, onComplete)
-		end
-	end)
-end
+local loadPrefabs = {}
+local loadSpritesAsync = {}
+local loadPrefabsAsync = {}
 
 function PreLoad(onComplete)
-	local data = {}
-	data.tips = "正在加载资源..."
-	data.progress = 0
-	EventManager:TriggerEvent(CS.FengSheng.EventManager.Event_LoadingProgress, data);
-	
-	local loadPrefabs = { }
+	SetProgress(0, "正在加载资源...")
+
+	--同步创建的prefab
 	table.insert(loadPrefabs, Global.NormalTipPrefab_Path)
 	table.insert(loadPrefabs, Global.NetworkWaitingPrefab_Path)
-	
-	local loadSprites = { } 
+	--异步加载的图片
 	for i = 1, #Global.Resources.Rule_Introduce do
-		table.insert(loadSprites, Global.Resources.Rule_Introduce[i])
+		table.insert(loadSpritesAsync, Global.Resources.Rule_Introduce[i])
 	end
 	for i = 1, #Global.Resources.Rule_Base do
-		table.insert(loadSprites, Global.Resources.Rule_Base[i])
+		table.insert(loadSpritesAsync, Global.Resources.Rule_Base[i])
 	end
 	for i = 1, #Global.Resources.Rule_Base do
-		table.insert(loadSprites, Global.Resources.Rule_Role[i])
+		table.insert(loadSpritesAsync, Global.Resources.Rule_Role[i])
 	end
 	for key, value in pairs(Global.Resources.Identity) do
-		table.insert(loadSprites, value)
+		table.insert(loadSpritesAsync, value)
 	end
 	for key, value in pairs(Global.Resources.Character) do
-		table.insert(loadSprites, value)
+		table.insert(loadSpritesAsync, value)
 	end
 	for key, value in pairs(Global.Resources.Card) do
-		table.insert(loadSprites, value)
+		table.insert(loadSpritesAsync, value)
 	end
-	
-	local loadedCount = 0--已加载资源数量
-	local loadSunCount = (#loadPrefabs) + (#loadSprites)
-	for i = 1, #loadPrefabs do
-		UIManager:LoadUI(loadPrefabs[i], true)
-		
-		loadedCount = loadedCount + 1
-		data.progress = loadedCount / loadSunCount
-		EventManager:TriggerEvent(CS.FengSheng.EventManager.Event_LoadingProgress, data);
-	end
-	
-	PreLoadSprite(loadSprites, 1, onComplete)
-	
+	--异步加载的prefab
+	table.insert(loadPrefabsAsync, Global.GamePrefab_Path)
+
+	PreLoadAsync(1, function()
+		for i = 1, #loadPrefabs do
+			UIManager:LoadUI(loadPrefabs[i], true)
+		end
+		SetProgress(1, "success")
+		onComplete()
+	end)
+
 end
 
+function PreLoadAsync(index, onComplete)
+	local sum = GetPreloadSum()
+	if index <= #loadPrefabsAsync then
+		local path = loadPrefabsAsync[index]
+		ResourcesManager:LoadGameObjectAsync(path, function()
+			index = index + 1
+			SetProgress(index / sum, "正在加载资源...")
+			PreLoadAsync(index, onComplete)
+		end)
+	elseif index <= sum then
+		local path = loadSpritesAsync[index - #loadPrefabsAsync]
+		ResourcesManager:LoadSpriteAsync(path, function()
+			index = index + 1
+			SetProgress(index / sum, "正在加载资源...")
+			PreLoadAsync(index, onComplete)
+		end)
+	else
+		onComplete()
+	end
+end
 
-PreLoad(function()
+function SetProgress(progress, tips)
+	local data = {}
+	data.tips = tips
+	data.progress = progress
+	EventManager:TriggerEvent(CS.FengSheng.EventManager.Event_LoadingProgress, data);
+end
+
+function GetPreloadSum()
+	return ((#loadPrefabsAsync) + (#loadSpritesAsync))
+end
+
+local Start = function()
 	UIManager:OpenUI(Global.LoginPrefab_Path)
-end)
+end
+
+PreLoad(Start)
