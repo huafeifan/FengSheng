@@ -92,11 +92,11 @@ function GameBtn:OnGameStart()
 end
 
 function GameBtn:AddListener()
-	EventManager:AddListener(Global.Event.GameStart, function() self:OnGameStart() end, "Lua.game.gameBtn.OnGameStart")
+	EventManager:AddListener(Global.Event.GameStage.GameStart, function() self:OnGameStart() end, "Lua.game.gameBtn.OnGameStart")
 end
 
 function GameBtn:RemoveListener()
-	EventManager:RemoveListener(Global.Event.GameStart, "Lua.game.gameBtn.OnGameStart")
+	EventManager:RemoveListener(Global.Event.GameStage.GameStart, "Lua.game.gameBtn.OnGameStart")
 end
 
 function GameBtn:Dispose()

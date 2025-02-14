@@ -63,7 +63,7 @@ function CharacterChoose:OnBtnAffirm()
 	self.ui.affirmBtn.gameObject:SetActive(false)
 	self.ui.highLight.gameObject:SetActive(false)
 	self.ui.tip.gameObject:SetActive(true)
-	EventManager:TriggerEvent(Global.Event.CharacterChooseComplete, data)
+	EventManager:TriggerEvent(Global.Event.GameStage.CharacterChooseComplete, data)
 end
 
 function CharacterChoose:AddUIEvent()
@@ -120,15 +120,15 @@ function CharacterChoose:OnDealCardsStart(data)
 end
 
 function CharacterChoose:AddListener()
-	EventManager:AddListener(Global.Event.CharacterChooseStart, function(data) self:OnCharacterChoose(data) end, "Lua.game.characterChoose.OnCharacterChoose")
-	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.characterChoose.OnGameComplete")
-	EventManager:AddListener(Global.Event.DealCardsStart, function() self:OnDealCardsStart() end, "Lua.game.characterChoose.OnDealCardsStart")
+	EventManager:AddListener(Global.Event.GameStage.CharacterChooseStart, function(data) self:OnCharacterChoose(data) end, "Lua.game.characterChoose.OnCharacterChoose")
+	EventManager:AddListener(Global.Event.GameStage.GameComplete, function() self:OnGameComplete() end, "Lua.game.characterChoose.OnGameComplete")
+	EventManager:AddListener(Global.Event.GameStage.DealCardsStart, function() self:OnDealCardsStart() end, "Lua.game.characterChoose.OnDealCardsStart")
 end
 
 function CharacterChoose:RemoveListener()
-	EventManager:RemoveListener(Global.Event.CharacterChooseStart, "Lua.game.characterChoose.OnCharacterChoose")
-	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.characterChoose.OnGameComplete")
-	EventManager:RemoveListener(Global.Event.DealCardsStart, "Lua.game.characterChoose.OnDealCardsStart")
+	EventManager:RemoveListener(Global.Event.GameStage.CharacterChooseStart, "Lua.game.characterChoose.OnCharacterChoose")
+	EventManager:RemoveListener(Global.Event.GameStage.GameComplete, "Lua.game.characterChoose.OnGameComplete")
+	EventManager:RemoveListener(Global.Event.GameStage.DealCardsStart, "Lua.game.characterChoose.OnDealCardsStart")
 end
 
 function CharacterChoose:Dispose()

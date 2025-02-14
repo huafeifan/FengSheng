@@ -3,35 +3,32 @@ Global.Event.Connect = "Event_Connect"
 Global.Event.Exit = "Event_Exit"
 Global.Event.Restart = "Event_Restart"
 Global.Event.ShowTips = "Event_ShowTips"
-
-Global.Event.WaitGameStart = "Event_WaitGameStart"
-Global.Event.GameStart = "Event_GameStart"
-
-Global.Event.GameComplete = "Event_GameComplete"
-
-Global.Event.WaitIdentityChoose = "Event_WaitIdentityChoose"
-Global.Event.IdentityChooseStart = "Event_IdentityChooseStart"
-Global.Event.IdentityChooseComplete = "Event_IdentityChooseComplete"
-
-Global.Event.WaitCharacterChoose = "Event_WaitCharacterChoose"
-Global.Event.CharacterChooseStart = "Event_CharacterChooseStart"
-Global.Event.CharacterChooseComplete = "Event_CharacterChooseComplete"
-
-Global.Event.WaitDealCards = "Event_WaitDealCards"
-Global.Event.DealCardsStart = "Event_DealCardsStart"
-Global.Event.DealCardsComplete = "Event_DealCardsComplete"
-
-Global.Event.WaitGameTurn = "Event_WaitGameTurn"
-Global.Event.GameTurn = "Event_GameTurn"
-
-Global.Event.WaitGameTurnOpertateEnd = "Event_WaitGameTurnOpertateEnd"
-Global.Event.WaitGameTurnStart = "Event_WaitGameTurnStart"
-Global.Event.WaitGameTurnDealCards = "Event_WaitGameTurnDealCards"
-
-Global.Event.WaitGameTurnDisCard = "Event_WaitGameTurnDisCard"
-Global.Event.GameTurnDisCardStart = "Event_GameTurnDisCardStart"
-Global.Event.GameTurnDisCardComplete = "Event_GameTurnDisCardComplete"
-
-Global.Event.WaitGameTurnEnd = "Event_WaitGameTurnEnd"
-
 Global.Event.DetailCard = "Event_DetailCard"
+
+
+Global.Event.GameStage = {}
+Global.Event.GameStage.WaitGameStart = "Event_GameStage_WaitGameStart"
+Global.Event.GameStage.GameStart = "Event_GameStage_GameStart"
+Global.Event.GameStage.GameComplete = "Event_GameStage_GameComplete"
+Global.Event.GameStage.WaitIdentityChoose = "Event_GameStage_WaitIdentityChoose"
+Global.Event.GameStage.IdentityChooseStart = "Event_GameStage_IdentityChooseStart"
+Global.Event.GameStage.IdentityChooseComplete = "Event_GameStage_IdentityChooseComplete"
+Global.Event.GameStage.WaitCharacterChoose = "Event_GameStage_WaitCharacterChoose"
+Global.Event.GameStage.CharacterChooseStart = "Event_GameStage_CharacterChooseStart"
+Global.Event.GameStage.CharacterChooseComplete = "Event_GameStage_CharacterChooseComplete"
+Global.Event.GameStage.WaitDealCards = "Event_GameStage_WaitDealCards"
+Global.Event.GameStage.DealCardsStart = "Event_GameStage_DealCardsStart"
+Global.Event.GameStage.DealCardsComplete = "Event_GameStage_DealCardsComplete"
+Global.Event.GameStage.WaitGameTurn = "Event_GameStage_WaitGameTurn"
+Global.Event.GameStage.GameTurn = "Event_GameStage_GameTurn"
+Global.Event.GameStage.WaitGameTurnOpertateEnd = "Event_GameStage_WaitGameTurnOpertateEnd"
+Global.Event.GameStage.WaitGameTurnStart = "Event_GameStage_WaitGameTurnStart"
+Global.Event.GameStage.WaitGameTurnDealCards = "Event_GameStage_WaitGameTurnDealCards"
+Global.Event.GameStage.WaitGameTurnDisCard = "Event_GameStage_WaitGameTurnDisCard"
+Global.Event.GameStage.GameTurnDisCardStart = "Event_GameStage_GameTurnDisCardStart"
+Global.Event.GameStage.GameTurnDisCardComplete = "Event_GameStage_GameTurnDisCardComplete"
+Global.Event.GameStage.WaitGameTurnEnd = "Event_GameStage_WaitGameTurnEnd"
+
+
+
+

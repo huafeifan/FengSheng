@@ -69,7 +69,7 @@ function IdentityChoose:OnBtnIdentityCard(index)
 		self.ui.myIdentity.transform.gameObject:SetActive(true)
 		self.ui.identity.Content.gameObject:SetActive(false)
 		card.transform.localScale = self.ui.identity.Choose.defaultLocalScale
-		EventManager:TriggerEvent(Global.Event.IdentityChooseComplete, nil)
+		EventManager:TriggerEvent(Global.Event.GameStage.IdentityChooseComplete, nil)
 	end
 	--method
 	
@@ -150,13 +150,13 @@ function IdentityChoose:OnGameComplete()
 end
 
 function IdentityChoose:AddListener()
-	EventManager:AddListener(Global.Event.IdentityChooseStart, function(data) self:OnIdentityChoose(data) end, "Lua.game.identityChoose.OnIdentityChoose")
-	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.identityChoose.OnGameComplete")
+	EventManager:AddListener(Global.Event.GameStage.WaitIdentityChoose, function(data) self:OnIdentityChoose(data) end, "Lua.game.identityChoose.OnIdentityChoose")
+	EventManager:AddListener(Global.Event.GameStage.GameComplete, function() self:OnGameComplete() end, "Lua.game.identityChoose.OnGameComplete")
 end
 
 function IdentityChoose:RemoveListener()
-	EventManager:RemoveListener(Global.Event.IdentityChooseStart, "Lua.game.identityChoose.OnIdentityChoose")
-	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.identityChoose.OnGameComplete")
+	EventManager:RemoveListener(Global.Event.GameStage.WaitIdentityChoose, "Lua.game.identityChoose.OnIdentityChoose")
+	EventManager:RemoveListener(Global.Event.GameStage.GameComplete, "Lua.game.identityChoose.OnGameComplete")
 end
 
 function IdentityChoose:Dispose()

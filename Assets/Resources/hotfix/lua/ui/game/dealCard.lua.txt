@@ -57,7 +57,7 @@ function DealCard:DealOneCard(targetPos, path, onComplete)
 			else
 				self.isDealing = false
 				self.ui.cardPool:Dispose(card)
-				EventManager:TriggerEvent(Global.Event.DealCardsComplete, nil)
+				EventManager:TriggerEvent(Global.Event.GameStage.DealCardsComplete, nil)
 			end
 		else
 			card.transform:DOLocalRotate(Vector3(0, 90, 0), 0.2):SetEase(Ease.Linear):OnComplete(Step2)
@@ -76,7 +76,7 @@ function DealCard:DealOneCard(targetPos, path, onComplete)
 		else
 			self.isDealing = false
 			self.ui.cardPool:Dispose(card)
-			EventManager:TriggerEvent(Global.Event.DealCardsComplete, nil)
+			EventManager:TriggerEvent(Global.Event.GameStage.DealCardsComplete, nil)
 		end
 	end
 	--method
@@ -137,17 +137,17 @@ function DealCard:OnGameTurnDisCardStart(data)
 end
 
 function DealCard:AddListener()                              
-	EventManager:AddListener(Global.Event.GameStart, function(data) self:OnGameStart(data) end, "Lua.game.dealCard.OnGameStart")
-	EventManager:AddListener(Global.Event.GameComplete, function() self:OnGameComplete() end, "Lua.game.dealCard.OnGameComplete")
-	EventManager:AddListener(Global.Event.DealCardsStart, function(data) self:OnDealCardsStart(data) end, "Lua.game.dealCard.OnDealCardsStart")
-	EventManager:AddListener(Global.Event.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.dealCard.OnGameTurnDisCardStart")
+	EventManager:AddListener(Global.Event.GameStage.GameStart, function(data) self:OnGameStart(data) end, "Lua.game.dealCard.OnGameStart")
+	EventManager:AddListener(Global.Event.GameStage.GameComplete, function() self:OnGameComplete() end, "Lua.game.dealCard.OnGameComplete")
+	EventManager:AddListener(Global.Event.GameStage.DealCardsStart, function(data) self:OnDealCardsStart(data) end, "Lua.game.dealCard.OnDealCardsStart")
+	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.dealCard.OnGameTurnDisCardStart")
 end
 
 function DealCard:RemoveListener()
-	EventManager:RemoveListener(Global.Event.GameStart, "Lua.game.dealCard.OnGameStart")
-	EventManager:RemoveListener(Global.Event.GameComplete, "Lua.game.dealCard.OnGameComplete")
-	EventManager:RemoveListener(Global.Event.DealCardsStart, "Lua.game.dealCard.OnDealCardsStart")
-	EventManager:RemoveListener(Global.Event.GameTurnDisCardStart, "Lua.game.dealCard.OnGameTurnDisCardStart")
+	EventManager:RemoveListener(Global.Event.GameStage.GameStart, "Lua.game.dealCard.OnGameStart")
+	EventManager:RemoveListener(Global.Event.GameStage.GameComplete, "Lua.game.dealCard.OnGameComplete")
+	EventManager:RemoveListener(Global.Event.GameStage.DealCardsStart, "Lua.game.dealCard.OnDealCardsStart")
+	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardStart, "Lua.game.dealCard.OnGameTurnDisCardStart")
 end
 
 function DealCard:Dispose()
