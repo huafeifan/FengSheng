@@ -150,12 +150,12 @@ function IdentityChoose:OnGameComplete()
 end
 
 function IdentityChoose:AddListener()
-	EventManager:AddListener(Global.Event.GameStage.WaitIdentityChoose, function(data) self:OnIdentityChoose(data) end, "Lua.game.identityChoose.OnIdentityChoose")
+	EventManager:AddListener(Global.Event.GameStage.IdentityChooseStart, function(data) self:OnIdentityChoose(data) end, "Lua.game.identityChoose.OnIdentityChoose")
 	EventManager:AddListener(Global.Event.GameStage.GameComplete, function() self:OnGameComplete() end, "Lua.game.identityChoose.OnGameComplete")
 end
 
 function IdentityChoose:RemoveListener()
-	EventManager:RemoveListener(Global.Event.GameStage.WaitIdentityChoose, "Lua.game.identityChoose.OnIdentityChoose")
+	EventManager:RemoveListener(Global.Event.GameStage.IdentityChooseStart, "Lua.game.identityChoose.OnIdentityChoose")
 	EventManager:RemoveListener(Global.Event.GameStage.GameComplete, "Lua.game.identityChoose.OnGameComplete")
 end
 

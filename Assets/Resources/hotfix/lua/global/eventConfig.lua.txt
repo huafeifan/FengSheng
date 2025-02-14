@@ -4,7 +4,7 @@ Global.Event.Exit = "Event_Exit"
 Global.Event.Restart = "Event_Restart"
 Global.Event.ShowTips = "Event_ShowTips"
 Global.Event.DetailCard = "Event_DetailCard"
-
+Global.Event.ReceiveHandCardCount = "Event_ReceiveHandCardCount"
 
 Global.Event.GameStage = {}
 Global.Event.GameStage.WaitGameStart = "Event_GameStage_WaitGameStart"

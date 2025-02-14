@@ -175,6 +175,7 @@ function ChairList:OnDealCardsStart(data)
 				for k = 1, #dealCards.cards do
 					self.dealCard:AddDealCard(self.chairs[j]:GetCharacterPos(), nil, nil)
 				end
+				self.chairs[j]:SetHandCardCount()
 			end
 		end
 	end
@@ -252,6 +253,16 @@ function ChairList:OnGameTurnDisCardStart(data)
 	end
 end
 
+function ChairList:OnReceiveHandCardCount(data)
+	for i = 2, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == data.userName then
+			self.chairs[i]:SetHandCardCount(data.count)
+			break
+		end
+	end
+end
+
 function ChairList:AddListener()
 	for i = 1, #self.chairs do
 		self.chairs[i]:AddListener()
@@ -267,6 +278,7 @@ function ChairList:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnDisCard, function() self:OnWaitGameTurnDisCard() end, "Lua.game.chairList.OnWaitGameTurnDisCard")
 	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnEnd, function() self:OnWaitGameTurnEnd() end, "Lua.game.chairList.OnWaitGameTurnEnd")
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.chairList.OnGameTurnDisCardStart")
+	EventManager:AddListener(Global.Event.ReceiveHandCardCount, function(data) self:OnReceiveHandCardCount(data) end, "Lua.game.chairList.OnReceiveHandCardCount")
 end
 
 function ChairList:RemoveListener()
@@ -284,6 +296,7 @@ function ChairList:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnDisCard, "Lua.game.chairList.OnWaitGameTurnDisCard")
 	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnEnd, "Lua.game.chairList.OnWaitGameTurnEnd")
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardStart, "Lua.game.chairList.OnGameTurnDisCardStart")
+	EventManager:RemoveListener(Global.Event.ReceiveHandCardCount, "Lua.game.chairList.OnReceiveHandCardCount")
 end
 
 function ChairList:Dispose()

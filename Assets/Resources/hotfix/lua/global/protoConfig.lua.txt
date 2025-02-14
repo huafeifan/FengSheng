@@ -111,4 +111,10 @@ Global.Protos.Class.GameTurnDisCard_C2S = "loginServer.game.GameTurnDisCard_C2S"
 
 Global.Protos.Cmd.GameTurnDisCard_S2C = 0x020A
 Global.Protos.Class.GameTurnDisCard_S2C = "loginServer.game.GameTurnDisCard_S2C"
+
+Global.Protos.Cmd.HandCardCount_C2S = 0x020B
+Global.Protos.Class.HandCardCount_C2S = "loginServer.game.HandCardCount_C2S"
+
+Global.Protos.Cmd.HandCardCount_S2C = 0x020B
+Global.Protos.Class.HandCardCount_S2C = "loginServer.game.HandCardCount_S2C"
 --game end

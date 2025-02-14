@@ -113,10 +113,10 @@ local OnDealCardsComplete = function()
 		end
 	elseif RoomInfo.GameStage == GameStage.WaitGameTurnDealCards then
 		SetGameStage(GameStage.WaitGameTurnOpertateEnd, nil)
-		
-		if cacheData.GameTurnOpertateEnd ~= nil then
-			OnReceiveGameTurnOpertateEnd(cacheData.GameTurnOpertateEnd)
-		end
+		SetInformationStage(InformationStage.WaitStart, nil)
+		--if cacheData.GameTurnOpertateEnd ~= nil then
+			--OnReceiveGameTurnOpertateEnd(cacheData.GameTurnOpertateEnd)
+		--end
 	end
 end
 
@@ -191,7 +191,7 @@ OnReceiveIdentity = function(bytes)
 	cacheData.IdentityChoose = nil
 
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.Identity_S2C, bytes)
-	EventManager:TriggerEvent(Global.Event.GameStage.WaitIdentityChoose, data)
+	EventManager:TriggerEvent(Global.Event.GameStage.IdentityChooseStart, data)
 end
 
 OnReceiveCharacterChooseList = function(bytes)
@@ -316,6 +316,13 @@ OnReceiveGameTurnEnd = function(bytes)
 	end
 end
 
+local OnReceiveHandCardCount = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.HandCardCount_S2C, bytes)
+	if data.userName ~= Global.Data.User.UserName then
+		EventManager:TriggerEvent(Global.Event.ReceiveHandCardCount, data)
+	end
+end
+
 local AddListener = function()
 	ui.dealCard:AddListener()
 	ui.gameBtn:AddListener()
@@ -341,6 +348,7 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.GameTurnOpertateEnd_S2C, OnReceiveGameTurnOpertateEnd, "Lua.game.OnReceiveGameTurnOpertateEnd")
 	ProtosManager:AddListener(Global.Protos.Cmd.GameTurnDisCard_S2C, OnReceiveGameTurnDisCard, "Lua.game.OnReceiveGameTurnDisCard")
 	ProtosManager:AddListener(Global.Protos.Cmd.GameTurnEnd_S2C, OnReceiveGameTurnEnd, "Lua.game.OnReceiveGameTurnEnd")
+	ProtosManager:AddListener(Global.Protos.Cmd.HandCardCount_S2C, OnReceiveHandCardCount, "Lua.game.OnReceiveHandCardCount")
 end
 
 local RemoveListener = function()
@@ -368,6 +376,7 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.GameTurnOpertateEnd_S2C, OnReceiveGameTurnOpertateEnd)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.GameTurnDisCard_S2C, OnReceiveGameTurnDisCard)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.GameTurnEnd_S2C, OnReceiveGameTurnEnd)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.HandCardCount_S2C, OnReceiveHandCardCount)
 end
 
 local RequestRoomInfo = function()
