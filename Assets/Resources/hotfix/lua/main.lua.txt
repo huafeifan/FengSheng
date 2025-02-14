@@ -29,6 +29,8 @@ function PreLoad(onComplete)
 	end
 	--异步加载的prefab
 	table.insert(loadPrefabsAsync, Global.GamePrefab_Path)
+	table.insert(loadPrefabsAsync, Global.NormalTipPrefab_Path)
+	table.insert(loadPrefabsAsync, Global.NetworkWaitingPrefab_Path)
 
 	PreLoadAsync(1, function()
 		for i = 1, #loadPrefabs do
