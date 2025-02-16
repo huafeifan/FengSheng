@@ -5,6 +5,7 @@ Global.Event.Restart = "Event_Restart"
 Global.Event.ShowTips = "Event_ShowTips"
 Global.Event.DetailCard = "Event_DetailCard"
 Global.Event.ReceiveHandCardCount = "Event_ReceiveHandCardCount"
+Global.Event.ReceiveInformationCount = "Event_ReceiveInformationCount"
 
 Global.Event.GameStage = {}
 Global.Event.GameStage.WaitGameStart = "Event_GameStage_WaitGameStart"
@@ -29,6 +30,16 @@ Global.Event.GameStage.GameTurnDisCardStart = "Event_GameStage_GameTurnDisCardSt
 Global.Event.GameStage.GameTurnDisCardComplete = "Event_GameStage_GameTurnDisCardComplete"
 Global.Event.GameStage.WaitGameTurnEnd = "Event_GameStage_WaitGameTurnEnd"
 
-
-
-
+Global.Event.InformationStage = {}
+Global.Event.InformationStage.WaitStart = "Event_InformationStage_WaitStart"
+Global.Event.InformationStage.WaitInformationDeclaration = "Event_InformationStage_WaitInformationDeclaration"
+Global.Event.InformationStage.WaitInformationDeclarationResponse = "Event_InformationStage_WaitInformationDeclarationResponse"
+Global.Event.InformationStage.WaitInformationTransmit = "Event_InformationStage_WaitInformationTransmit"
+Global.Event.InformationStage.InformationTransmitReady = "Event_InformationStage_InformationTransmitReady"
+Global.Event.InformationStage.InformationTransmitStart = "Event_InformationStage_InformationTransmitStart"
+Global.Event.InformationStage.WaitInformationReceive = "Event_InformationStage_WaitInformationReceive"
+Global.Event.InformationStage.WaitInformationReceiveResponse = "Event_InformationStage_WaitInformationReceiveResponse"
+Global.Event.InformationStage.WaitEnd = "Event_InformationStage_WaitEnd"
+Global.Event.InformationStage.ZhiDaChoose = "Event_InformationStage_ZhiDaChoose"
+Global.Event.InformationStage.ZhiDaChooseComplete = "Event_InformationStage_ZhiDaChooseComplete"
+Global.Event.InformationStage.InfomationCardReceiveComplete = "Event_InformationStage_InfomationCardReceiveComplete"

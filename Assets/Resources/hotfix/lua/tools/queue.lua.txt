@@ -33,3 +33,7 @@ end
 function Queue:length()
 	return #self.items
 end
+
+function Queue:Clear()
+	self.items = {}
+end

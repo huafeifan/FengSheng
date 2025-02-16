@@ -1,0 +1,102 @@
+WaitResponse = {}
+WaitResponse.__index = WaitResponse
+
+local waitTime = 30
+
+function WaitResponse:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, WaitResponse)
+	return item
+end
+
+function WaitResponse:InitUIReference()
+	self.ui.slider = self.transform:Find("Slider"):GetComponent(typeof(Image))
+end
+
+function WaitResponse:InitUI()
+	self.gameObject:SetActive(false)
+end
+
+function WaitResponse:AddUIEvent()
+	
+end
+
+function WaitResponse:RemoveUIEvent()
+	
+end
+
+function WaitResponse:Update()
+	if self.gameObject.activeSelf == true then
+		if self.remainTime > Time.time then
+			self.ui.slider.fillAmount = (self.remainTime - Time.time) / waitTime
+		else
+			self.ui.slider.fillAmount = 0
+			self.gameObject:SetActive(false)
+			if Global.Data.RoomInfo.InformationStage == InformationStage.WaitInformationDeclarationResponse then
+				self:SendInformationDeclarationResponseEnd()
+			elseif Global.Data.RoomInfo.InformationStage == InformationStage.WaitInformationReceiveResponse then
+				self:SendInformationReceiveResponseEnd()
+			end
+		end
+	end
+end
+	
+function WaitResponse:SendInformationDeclarationResponseEnd()
+	if Global.Data.User.UserName == Global.Data.RoomInfo.CurrentGameTurnUserName then
+		local data = {}
+		data.roomNub = Global.Data.RoomInfo.RoomNub
+		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.InformationDeclarationResponseEnd_C2S, data)
+		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationDeclarationResponseEnd_C2S, dataBytes)
+	end
+end
+	
+function WaitResponse:SendInformationReceiveResponseEnd()
+	if Global.Data.User.UserName == Global.Data.RoomInfo.CurrentGameTurnUserName then
+		local data = {}
+		data.roomNub = Global.Data.RoomInfo.RoomNub
+		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.InformationReceiveResponseEnd_C2S, data)
+		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationReceiveResponseEnd_C2S, dataBytes)
+	end
+end
+
+function WaitResponse:OnWaitInformationDeclarationResponse()
+	self.gameObject:SetActive(true)
+	self.ui.slider.fillAmount = 1
+	self.remainTime = Time.time + waitTime
+end
+
+function WaitResponse:OnWaitInformationTransmit()
+	self.gameObject:SetActive(false)
+end
+
+function WaitResponse:OnWaitInformationReceiveResponse()
+	self.gameObject:SetActive(true)
+	self.ui.slider.fillAmount = 1
+	self.remainTime = Time.time + waitTime
+end
+
+function WaitResponse:OnWaitInformationReceiveResponseEnd()
+	self.gameObject:SetActive(false)
+end
+
+function WaitResponse:AddListener()
+	EventManager:AddListener(Global.Event.InformationStage.WaitInformationDeclarationResponse, function() self:OnWaitInformationDeclarationResponse() end, "Lua.game.waitResponse.OnWaitInformationDeclarationResponse")
+	EventManager:AddListener(Global.Event.InformationStage.WaitInformationTransmit, function() self:OnWaitInformationTransmit() end, "Lua.game.waitResponse.OnWaitInformationTransmit")
+	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceiveResponse, function() self:OnWaitInformationReceiveResponse() end, "Lua.game.waitResponse.OnWaitInformationReceiveResponse")
+	EventManager:AddListener(Global.Event.InformationStage.WaitEnd, function() self:OnWaitInformationReceiveResponseEnd() end, "Lua.game.waitResponse.OnWaitInformationReceiveResponseEnd")
+end
+
+function WaitResponse:RemoveListener()
+	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationDeclarationResponse, "Lua.game.waitResponse.OnWaitInformationDeclarationResponse")
+	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationTransmit, "Lua.game.waitResponse.OnWaitInformationTransmit")
+	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceiveResponse, "Lua.game.waitResponse.OnWaitInformationReceiveResponse")
+	EventManager:RemoveListener(Global.Event.InformationStage.WaitEnd, "Lua.game.waitResponse.OnWaitInformationReceiveResponseEnd")
+end
+
+function WaitResponse:Dispose()
+	self.remainTime = 0
+end

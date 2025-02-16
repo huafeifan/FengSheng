@@ -5,8 +5,9 @@ Global.Methods.PlayBtnAnimation = function(btn)
 end
 	Global.Data.RoomInfo.GameStage = GameStage.WaitGameStart
 
-Global.Methods.ShowTips = function(msg)
+Global.Methods.ShowTips = function(msg, onComplete)
 	local tip = {}
 	tip.content = msg
+	tip.onComplete = onComplete
 	EventManager:TriggerEvent(Global.Event.ShowTips, tip)
 end

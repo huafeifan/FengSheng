@@ -5,13 +5,14 @@ ChairList.__index = ChairList
 
 local me = 1
 
-function ChairList:New(gameObject, dealCard)
+function ChairList:New(gameObject, dealCard, informationCard)
 	local item = {}
 	item.gameObject = gameObject
 	item.transform = gameObject.transform
 	item.ui = {}
 	item.chairs = {}
 	item.dealCard = dealCard
+	item.informationCard = informationCard
 
 	setmetatable(item, ChairList)
 	return item
@@ -263,6 +264,65 @@ function ChairList:OnReceiveHandCardCount(data)
 	end
 end
 
+function ChairList:OnInformationTransmitReady(data)
+	for i = 2, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == data.fromUserName then
+			local startPos = self.chairs[i]:GetCharacterPos()
+			self.informationCard:InformationDeclarationStart(startPos, data, false, nil)
+			break
+		end
+	end
+end
+
+function ChairList:OnWaitInformationReceive()
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil then
+			local isHisGameTurn = userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName
+			local isHisAskReceive = userData.name == Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName
+			if isHisAskReceive then
+				self.chairs[i]:SetGameTurn(true)
+				self.chairs[i]:SetGameTurnText("等待接收情报")
+			elseif isHisGameTurn then
+				self.chairs[i]:SetGameTurn(true)
+				self.chairs[i]:SetGameTurnText("回合中...")
+			else
+				self.chairs[i]:SetGameTurn(false)
+			end
+		else
+			self.chairs[i]:SetGameTurn(false)
+		end
+	end
+end
+
+function ChairList:OnInformationReceiveSuccess(data)
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == data.userName then
+			local tagetPos = self.chairs[i]:GetCharacterPos()
+			self.informationCard:InformationReceiveSuccessAnimation(tagetPos)
+			local isHisGameTurn = userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName
+			if isHisGameTurn then
+				self.chairs[i]:SetGameTurn(true)
+			else
+				self.chairs[i]:SetGameTurn(false)
+			end
+		end
+	end
+end
+
+function ChairList:OnReceiveInformationCount(data)
+	for i = 1, #data.infos do
+		for j = 1, #self.chairs do
+			local userData = self.chairs[j]:GetUserData()
+			if userData ~= nil and userData.name == data.infos[i].userName then
+				self.chairs[j]:SetInformationCount(data.infos[i])
+			end
+		end
+	end
+end
+
 function ChairList:AddListener()
 	for i = 1, #self.chairs do
 		self.chairs[i]:AddListener()
@@ -279,6 +339,10 @@ function ChairList:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnEnd, function() self:OnWaitGameTurnEnd() end, "Lua.game.chairList.OnWaitGameTurnEnd")
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.chairList.OnGameTurnDisCardStart")
 	EventManager:AddListener(Global.Event.ReceiveHandCardCount, function(data) self:OnReceiveHandCardCount(data) end, "Lua.game.chairList.OnReceiveHandCardCount")
+	EventManager:AddListener(Global.Event.InformationStage.InformationTransmitReady, function(data) self:OnInformationTransmitReady(data) end, "Lua.game.chairList.OnInformationTransmitReady")
+	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.chairList.OnWaitInformationReceive")
+	EventManager:AddListener(Global.Event.InformationStage.WaitEnd, function(data) self:OnInformationReceiveSuccess(data) end, "Lua.game.chairList.OnInformationReceiveSuccess")
+	EventManager:AddListener(Global.Event.ReceiveInformationCount, function(data) self:OnReceiveInformationCount(data) end, "Lua.game.chairList.OnReceiveInformationCount")
 end
 
 function ChairList:RemoveListener()
@@ -297,6 +361,10 @@ function ChairList:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnEnd, "Lua.game.chairList.OnWaitGameTurnEnd")
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardStart, "Lua.game.chairList.OnGameTurnDisCardStart")
 	EventManager:RemoveListener(Global.Event.ReceiveHandCardCount, "Lua.game.chairList.OnReceiveHandCardCount")
+	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmitReady, "Lua.game.chairList.OnInformationTransmitReady")
+	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceive, "Lua.game.chairList.OnWaitInformationReceive")
+	EventManager:RemoveListener(Global.Event.InformationStage.WaitEnd, "Lua.game.chairList.OnInformationReceiveSuccess")
+	EventManager:RemoveListener(Global.Event.ReceiveInformationCount, "Lua.game.chairList.OnReceiveInformationCount")
 end
 
 function ChairList:Dispose()

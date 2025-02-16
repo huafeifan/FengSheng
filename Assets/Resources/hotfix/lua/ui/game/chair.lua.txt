@@ -28,6 +28,12 @@ function Chair:InitUIReference()
 	self.ui.handCard = {}
 	self.ui.handCard.transform = self.transform:Find("HandCardCount")
 	self.ui.handCard.count = self.ui.handCard.transform:Find("Text"):GetComponent(typeof(Text))
+	self.ui.informationDetail = {}
+	self.ui.informationDetail.transform = self.transform:Find("InformationDetail")
+	self.ui.informationDetail.redCount = self.ui.informationDetail.transform:Find("Red/Count"):GetComponent(typeof(Text))
+	self.ui.informationDetail.blueCount = self.ui.informationDetail.transform:Find("Blue/Count"):GetComponent(typeof(Text))
+	self.ui.informationDetail.grayCount = self.ui.informationDetail.transform:Find("Gray/Count"):GetComponent(typeof(Text))
+	self.ui.informationDetail.redBlueCount = self.ui.informationDetail.transform:Find("RedBlue/Count"):GetComponent(typeof(Text))
 	
 	self.ui.head = UserHead:New(self.transform:Find("User").gameObject)
 	self.ui.head:InitUIReference()
@@ -39,6 +45,8 @@ function Chair:InitUI()
 	self.ui.owener.gameObject:SetActive(false)
 	self.ui.gameTurn.transform.gameObject:SetActive(false)
 	self.ui.character.bigerBtn.gameObject:SetActive(false)
+	self.ui.handCard.transform.gameObject:SetActive(false)
+	self.ui.informationDetail.transform.gameObject:SetActive(false)
 	self:ShowHead()
 	self.ui.head:SetData("")
 end
@@ -75,6 +83,15 @@ function Chair:SetHandCardCount(count)
 	end
 end
 
+function Chair:SetInformationCount(data)
+	if data ~= nil then
+		self.ui.informationDetail.redCount.text = tostring(data.redCount)
+		self.ui.informationDetail.blueCount.text = tostring(data.blueCount)
+		self.ui.informationDetail.grayCount.text = tostring(data.grayCount)
+		self.ui.informationDetail.redBlueCount.text = tostring(data.redBlueCount)
+	end
+end
+
 function Chair:HideStatus()
 	self.ui.ready.gameObject:SetActive(false)
 	self.ui.owener.gameObject:SetActive(false)
@@ -84,6 +101,7 @@ function Chair:ShowCharacter()
 	self.ui.head:SetHeadActive(false)
 	self.ui.character.transform.gameObject:SetActive(true)
 	self.ui.handCard.transform.gameObject:SetActive(true)
+	self.ui.informationDetail.transform.gameObject:SetActive(true)
 	self.ui.character.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Character[CharacterType.None])
 	self.ui.character.bigerBtn.gameObject:SetActive(false)
 end
@@ -92,6 +110,7 @@ function Chair:ShowHead()
 	self.ui.head:SetHeadActive(true)
 	self.ui.character.transform.gameObject:SetActive(false)
 	self.ui.handCard.transform.gameObject:SetActive(false)
+	self.ui.informationDetail.transform.gameObject:SetActive(false)
 end
 
 function Chair:GetUserData()
@@ -139,6 +158,10 @@ function Chair:IsReady()
 end
 
 function Chair:OnBtnCharacter()
+	if self.zhiDaCallBack ~= nil then
+		self.zhiDaCallBack()
+		return
+	end
 	
 end
 
@@ -165,12 +188,38 @@ function Chair:OnReceiveGameStart()
 	self.ui.owener.gameObject:SetActive(false)
 end
 
+function Chair:OnZhiDaChoose()
+	self.zhiDaCallBack = function()
+		local userName = nil
+		if self:GetUserData() ~= nil then
+			userName = self:GetUserData().name
+		else
+			userName = "xxx"
+		end
+		if userName == Global.Data.User.UserName then
+			Global.Methods.ShowTips("情报不能以自己为目标")
+		else
+			Global.Methods.ShowTips("情报将传递给"..userName, function()
+				EventManager:TriggerEvent(Global.Event.InformationStage.ZhiDaChooseComplete, userName)
+			end)
+		end
+	end
+end
+
+function Chair:OnZhiDaChooseComplete()
+	self.zhiDaCallBack = nil
+end
+
 function Chair:AddListener()
 	self.ui.head:AddListener()
+	EventManager:AddListener(Global.Event.InformationStage.ZhiDaChoose, function() self:OnZhiDaChoose() end, "Lua.game.chair.OnZhiDaChoose")
+	EventManager:AddListener(Global.Event.InformationStage.ZhiDaChooseComplete, function() self:OnZhiDaChooseComplete() end, "Lua.game.chair.OnZhiDaChooseComplete")
 end
 
 function Chair:RemoveListener()
 	self.ui.head:RemoveListener()
+	EventManager:RemoveListener(Global.Event.InformationStage.ZhiDaChoose, "Lua.game.chair.OnZhiDaChoose")
+	EventManager:RemoveListener(Global.Event.InformationStage.ZhiDaChooseComplete, "Lua.game.chair.OnZhiDaChooseComplete")
 end
 
 function Chair:Dispose()

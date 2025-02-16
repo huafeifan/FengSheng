@@ -643,6 +643,8 @@
     <None Include="Assets\Resources\hotfix\lua\ui\rule\rule.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\chairList.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\globalMethods.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\game\waitResponse.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\game\informationCard.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\login\login.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\identityChoose.lua.txt" />
     <None Include="Assets\Resources\hotfix\protos\loginServer.login.bytes.txt" />
@@ -651,6 +653,7 @@
     <None Include="Assets\Resources\hotfix\lua\ui\room\roomList.lua.txt" />
     <None Include="Assets\DOTween\DOTween.XML" />
     <None Include="Assets\Resources\hotfix\lua\tools\queue.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\game\gameComplete.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\uiConfig.lua.txt" />
     <None Include="Assets\Resources\hotfix\protos\loginServer.room.bytes.txt" />
     <None Include="Assets\XLua\Gen\link.xml" />
@@ -663,6 +666,7 @@
     <None Include="Assets\XLua\Resources\perf\profiler.lua.txt" />
     <None Include="Assets\DOTween\DOTween.dll" />
     <None Include="Assets\Resources\hotfix\lua\link.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\game\handCardBtn.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\game.lua.txt" />
     <None Include="Assets\XLua\Resources\perf\memory.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\dealCard.lua.txt" />

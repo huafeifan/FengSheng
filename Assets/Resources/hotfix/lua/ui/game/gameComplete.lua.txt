@@ -1,0 +1,94 @@
+GameComplete = {}
+GameComplete.__index = GameComplete
+
+function GameComplete:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, GameComplete)
+	return item
+end
+
+function GameComplete:InitUIReference()
+	self.ui.itemList = self.transform:Find("ItemList")
+	self.ui.itemPool = self.transform:Find("ItemPool"):GetComponent(typeof(GameObjectPool))
+	self.ui.closeBtn = self.transform:Find("Mask"):GetComponent(typeof(Button))
+end
+
+function GameComplete:InitUI()
+	self.gameObject:SetActive(false)
+end
+
+function GameComplete:OnBtnClose()
+	self.gameObject:SetActive(false)
+	self.ui.itemPool:Dispose()
+end
+
+function GameComplete:OnGameComplete(data)
+	self.gameObject:SetActive(true)
+	for i = 1, #data.victoryList do
+		local item = self.ui.itemPool:Get(true)
+		item.transform:SetParent(self.ui.itemList)
+		item.transform:Find("Name"):GetComponent(typeof(Text)).text = data.victoryList[i].userName
+		
+		local identity = item.transform:Find("Identity"):GetComponent(typeof(Text))
+		if data.victoryList[i].identity == IdentityType.JunQing then
+			identity.text = "军情"
+			identity.color = Color(0, 0.35, 1, 1)
+		elseif data.victoryList[i].identity == IdentityType.QianFu then
+			identity.text = "潜伏"
+			identity.color = Color(1, 0.33, 0, 1)
+		elseif data.victoryList[i].identity == IdentityType.TeGong then
+			identity.text = "特工"
+			identity.color = Color.green
+		end
+		
+		local result = item.transform:Find("Result"):GetComponent(typeof(Text))
+		result.text = "胜利"
+		result.color = Color.green
+	end
+	
+	for i = 1, #data.defeateList do
+		local item = self.ui.itemPool:Get(true)
+		item.transform:SetParent(self.ui.itemList)
+		item.transform:Find("Name"):GetComponent(typeof(Text)).text = data.defeateList[i].userName
+
+		local identity = item.transform:Find("Identity"):GetComponent(typeof(Text))
+		if data.defeateList[i].identity == IdentityType.JunQing then
+			identity.text = "军情"
+			identity.color = Color(0, 0.35, 1, 1)
+		elseif data.defeateList[i].identity == IdentityType.QianFu then
+			identity.text = "潜伏"
+			identity.color = Color(1, 0.33, 0, 1)
+		elseif data.defeateList[i].identity == IdentityType.TeGong then
+			identity.text = "特工"
+			identity.color = Color.green
+		end
+
+		local result = item.transform:Find("Result"):GetComponent(typeof(Text))
+		result.text = "失败"
+		result.color = Color.grey
+	end
+end
+
+function GameComplete:AddUIEvent()
+	UIEventManager:AddListener(self.ui.closeBtn, self.OnBtnClose, self, "lua.game.gameComplete.OnBtnClose")
+end
+
+function GameComplete:RemoveUIEvent()
+	UIEventManager:RemoveAllListeners(self.ui.closeBtn)
+end
+
+function GameComplete:AddListener()
+	EventManager:AddListener(Global.Event.GameStage.GameComplete, function(data) self:OnGameComplete(data) end, "Lua.game.gameComplete.OnGameComplete")
+end
+
+function GameComplete:RemoveListener()
+	EventManager:RemoveListener(Global.Event.GameStage.GameComplete, "Lua.game.gameComplete.OnGameComplete")
+end
+
+function GameComplete:Dispose()
+	self.ui.itemPool:Dispose()
+end

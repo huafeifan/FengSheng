@@ -17,6 +17,7 @@ WaitForSeconds = CS.UnityEngine.WaitForSecond
 Screen = CS.UnityEngine.Screen
 HorizontalLayoutGroup = CS.UnityEngine.UI.HorizontalLayoutGroup
 RectTransform = CS.UnityEngine.RectTransform
+Time = CS.UnityEngine.Time
 
 LoopType = CS.DG.Tweening.LoopType
 Ease = CS.DG.Tweening.Ease

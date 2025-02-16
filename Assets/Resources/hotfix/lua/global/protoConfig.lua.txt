@@ -117,4 +117,49 @@ Global.Protos.Class.HandCardCount_C2S = "loginServer.game.HandCardCount_C2S"
 
 Global.Protos.Cmd.HandCardCount_S2C = 0x020B
 Global.Protos.Class.HandCardCount_S2C = "loginServer.game.HandCardCount_S2C"
+
+Global.Protos.Cmd.InformationDeclaration_C2S = 0x020C
+Global.Protos.Class.InformationDeclaration_C2S = "loginServer.game.InformationDeclaration_C2S"
+
+Global.Protos.Cmd.InformationDeclaration_S2C = 0x020C
+Global.Protos.Class.InformationDeclaration_S2C = "loginServer.game.InformationDeclaration_S2C"
+
+Global.Protos.Cmd.InformationDeclarationResponse_C2S = 0x020D
+Global.Protos.Class.InformationDeclarationResponse_C2S = "loginServer.game.InformationDeclarationResponse_C2S"
+
+Global.Protos.Cmd.WaitInformationTransmit_S2C = 0x020E
+Global.Protos.Class.WaitInformationTransmit_S2C = "loginServer.game.WaitInformationTransmit_S2C"
+
+Global.Protos.Cmd.InformationTransmit_C2S = 0x020F
+Global.Protos.Class.InformationTransmit_C2S = "loginServer.game.InformationTransmit_C2S"
+
+Global.Protos.Cmd.InformationTransmit_S2C = 0x020F
+Global.Protos.Class.InformationTransmit_S2C = "loginServer.game.InformationTransmit_S2C"
+
+Global.Protos.Cmd.WaitInformationReceive_C2S = 0x0210
+Global.Protos.Class.WaitInformationReceive_C2S = "loginServer.game.WaitInformationReceive_C2S"
+
+Global.Protos.Cmd.WaitInformationReceive_S2C = 0x0210
+Global.Protos.Class.WaitInformationReceive_S2C = "loginServer.game.WaitInformationReceive_S2C"
+
+Global.Protos.Cmd.InformationDeclarationResponseEnd_C2S = 0x0211
+Global.Protos.Class.InformationDeclarationResponseEnd_C2S = "loginServer.game.InformationDeclarationResponseEnd_C2S"
+
+Global.Protos.Cmd.InformationDeclarationResponseEnd_S2C = 0x0211
+Global.Protos.Class.InformationDeclarationResponseEnd_S2C = "loginServer.game.InformationDeclarationResponseEnd_S2C"
+
+Global.Protos.Cmd.InformationReceive_S2C = 0x0212
+Global.Protos.Class.InformationReceive_S2C = "loginServer.game.InformationReceive_S2C"
+
+Global.Protos.Cmd.InformationReceiveResponse_C2S = 0x0213
+Global.Protos.Class.InformationReceiveResponse_C2S = "loginServer.game.InformationReceiveResponse_C2S"
+
+Global.Protos.Cmd.InformationReceiveSuccess_S2C = 0x0214
+Global.Protos.Class.InformationReceiveSuccess_S2C = "loginServer.game.InformationReceiveSuccess_S2C"
+
+Global.Protos.Cmd.InformationReceiveResponseEnd_C2S = 0x0215
+Global.Protos.Class.InformationReceiveResponseEnd_C2S = "loginServer.game.InformationReceiveResponseEnd_C2S"
+
+Global.Protos.Cmd.InformationCount_S2C = 0x0216
+Global.Protos.Class.InformationCount_S2C = "loginServer.game.InformationCount_S2C"
 --game end

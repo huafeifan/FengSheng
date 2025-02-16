@@ -1,0 +1,147 @@
+InformationCard = {}
+InformationCard.__index = InformationCard
+
+function InformationCard:New(gameObject, main)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+	item.main = main
+
+	setmetatable(item, InformationCard)
+	return item
+end
+
+function InformationCard:InitUIReference()
+	self.ui.image = self.transform:Find("Card"):GetComponent(typeof(Image))
+	self.ui.btn = self.transform:Find("Card"):GetComponent(typeof(Button))
+	self.ui.tip = self.transform:Find("Tips"):GetComponent(typeof(Text))
+	self.ui.name = self.transform:Find("Name"):GetComponent(typeof(Text))
+	self.ui.defaultPos = self.ui.image.transform.position
+end
+
+function InformationCard:InitUI()
+	self.gameObject:SetActive(true)
+	self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+	self.ui.tip.text = ""
+	self.ui.name.text = ""
+	self.ui.image.gameObject:SetActive(false)
+	self.card = nil
+	self.isShow = false
+end
+
+function InformationCard:InformationDeclarationStart(startPos, data, isSelf, onComplete)
+	self.ui.image.transform.position = startPos
+	self.ui.image.gameObject:SetActive(true)
+	self.ui.tip.text = ""
+	self.ui.name.text = ""
+	self.card = data.card
+	self.isShow = data.transmit == GameCard.TransmitType.WenBen
+
+	--method
+	local Step0, Step1, Step2, Step3, Step4, Step5 = nil, nil, nil, nil, nil, nil
+	if isSelf then
+		Step0 = function()
+			self.ui.image.transform:DOLocalRotate(Vector3(0, 90, 0), 0.2):SetEase(Ease.Linear):OnComplete(Step1)
+		end
+		Step1 = function()
+			self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+			self.ui.image.transform:DOLocalRotate(Vector3.zero, 0.2):SetEase(Ease.Linear):OnComplete(Step2)
+		end
+	end
+	Step2 = function()
+		self.ui.image.transform:DOMove(self.ui.defaultPos, 0.3):OnComplete(Step3)
+	end
+	Step3 = function()
+		self.ui.name.text = "玩家:"..data.fromUserName.."送出的情报"
+		if self.isShow then
+			self.ui.image.transform:DOLocalRotate(Vector3(0, 90, 0), 0.2):SetEase(Ease.Linear):OnComplete(Step4)
+		else
+			if onComplete ~= nil then
+				onComplete()
+			end
+			EventManager:TriggerEvent(Global.Event.InformationStage.InformationTransmitStart, nil)
+		end
+	end
+	Step4 = function()
+		self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
+		self.ui.image.transform:DOLocalRotate(Vector3.zero, 0.2):SetEase(Ease.Linear):OnComplete(Step5)
+	end
+	Step5 = function()
+		if onComplete ~= nil then
+			onComplete()
+		end
+		EventManager:TriggerEvent(Global.Event.InformationStage.InformationTransmitStart, nil)
+	end
+	--method
+
+	if isSelf then
+		self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
+		Step0()
+	else
+		self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+		Step2()
+	end
+end
+
+function InformationCard:InformationReceiveSuccessAnimation(targetPos)
+	--method
+	local Step1, Step2, Step3, Step4 = nil, nil, nil, nil
+	Step1 = function()
+		self.ui.image.transform:DOLocalRotate(Vector3(0, 90, 0), 0.2):SetEase(Ease.Linear):OnComplete(Step2)
+	end
+	Step2 = function()
+		self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[self.card.cardName])
+		self.ui.image.transform:DOLocalRotate(Vector3.zero, 0.2):SetEase(Ease.Linear):OnComplete(Step3)
+	end
+	Step3 = function()
+		self.ui.image.transform:DOMove(targetPos, 0.3):SetDelay(1.5):OnComplete(Step4)
+	end
+	Step4 = function()
+		self.ui.tip.text = ""
+		self.ui.name.text = ""
+		self.ui.image.gameObject:SetActive(false)
+		self.ui.image.transform.position = self.ui.defaultPos
+		self.card = nil
+		EventManager:TriggerEvent(Global.Event.InformationStage.InfomationCardReceiveComplete, nil)
+	end
+	--method
+	if self.isShow then
+		Step3()
+	else
+		Step1()
+	end
+end
+
+function InformationCard:OnBtnCard()
+	if self.card ~= nil then
+		local data = {}
+		data.path = Global.Resources.Card[self.card.cardName]
+		EventManager:TriggerEvent(Global.Event.DetailCard, data)
+	end
+end
+
+function InformationCard:AddUIEvent()
+	UIEventManager:AddListener(self.ui.btn, self.OnBtnCard, self, "lua.game.informationCard.OnBtnCard")
+end
+
+function InformationCard:RemoveUIEvent()
+	UIEventManager:RemoveAllListeners(self.ui.btn)
+end
+
+function InformationCard:OnWaitInformationReceive()
+	self.ui.tip.text = "等待玩家:"..Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName.."接收情报"
+end
+
+function InformationCard:AddListener()
+	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.informationCard.OnWaitInformationReceive")
+end
+
+function InformationCard:RemoveListener()
+	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceive, "Lua.game.informationCard.OnWaitInformationReceive")
+end
+
+function InformationCard:Dispose()
+	self.card = nil
+	self.isShow = false
+end

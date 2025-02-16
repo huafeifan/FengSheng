@@ -36,6 +36,9 @@ function IdentityChoose:InitUI()
 	self.gameObject:SetActive(true)
 	self.ui.identity.Content.gameObject:SetActive(false)
 	self.ui.myIdentity.transform.gameObject:SetActive(false)
+	for i = 1, 3 do
+		self.ui.identity.Choose[i].image.sprite = ResourcesManager:LoadSprite(Global.Resources.Identity[IdentityType.None])
+	end
 end
 
 function IdentityChoose:OnBtnIdentityCard(index)
@@ -146,7 +149,7 @@ end
 
 function IdentityChoose:OnGameComplete()
 	self.identityType = nil
-	self.gameObject:SetActive(false)
+	self:InitUI()
 end
 
 function IdentityChoose:AddListener()

@@ -29,11 +29,16 @@ function CharacterChoose:InitUIReference()
 end
 
 function CharacterChoose:InitUI()
+	self.charactersInfo = nil
+	self.affirmCharacter = nil
 	self.gameObject:SetActive(true)
 	self.ui.character.Content.gameObject:SetActive(false)
 	self.ui.affirmBtn.gameObject:SetActive(false)
 	self.ui.highLight.gameObject:SetActive(false)
 	self.ui.tip.gameObject:SetActive(false)
+	for i = 1, 3 do
+		self.ui.character.Choose[i].image.sprite = ResourcesManager:LoadSprite(Global.Resources.Character[CharacterType.None])
+	end
 end
 
 function CharacterChoose:OnBtnCharacterCard(index)
@@ -109,10 +114,7 @@ function CharacterChoose:OnCharacterChoose(data)
 end
 
 function CharacterChoose:OnGameComplete()
-	self.charactersInfo = nil
-	self.affirmCharacter = nil
-	self.ui.tip.gameObject:SetActive(false)
-	self.gameObject:SetActive(false)
+	self:InitUI()
 end
 
 function CharacterChoose:OnDealCardsStart(data)

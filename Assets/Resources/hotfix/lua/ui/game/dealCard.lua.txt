@@ -117,6 +117,8 @@ function DealCard:OnGameComplete()
 	self.ui.cardPool.gameObject:SetActive(false)
 	self.ui.remainCardCount.text = ""
 	self.ui.disCardCount.text = ""
+	self.list = Queue:Clear()
+	self.isDealing = false
 end
 
 function DealCard:OnDealCardsStart(data)

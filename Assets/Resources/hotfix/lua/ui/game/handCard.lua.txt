@@ -1,12 +1,15 @@
+require "ui/game/handCardBtn"
+
 HandCard = {}
 HandCard.__index = HandCard
 
-function HandCard:New(gameObject, dealCard)
+function HandCard:New(gameObject, dealCard, informationCard)
 	local item = {}
 	item.gameObject = gameObject
 	item.transform = gameObject.transform
 	item.ui = {}
 	item.dealCard = dealCard
+	item.informationCard = informationCard
 
 	setmetatable(item, HandCard)
 	return item
@@ -24,11 +27,13 @@ function HandCard:InitUIReference()
 		self.ui.cards[i].highLight = self.ui.cards[i].transform:Find("HighLight")
 	end
 	self.ui.cardsWidth = self.ui.cards[1].transform:GetComponent(typeof(RectTransform)).rect.width
-	self.ui.getCardBtn = self.transform:Find("BtnList/GetCardBtn"):GetComponent(typeof(Button))
-	self.ui.playHandBtn = self.transform:Find("BtnList/PlayHandBtn"):GetComponent(typeof(Button))
-	self.ui.operateEndBtn = self.transform:Find("BtnList/OperateEndBtn"):GetComponent(typeof(Button))
-	self.ui.disCardBtn = self.transform:Find("BtnList/DisCardBtn"):GetComponent(typeof(Button))
-	self.ui.endTurnBtn = self.transform:Find("BtnList/EndTurnBtn"):GetComponent(typeof(Button))
+	self.ui.myInformationCard = {}
+	self.ui.myInformationCard.transform = self.transform:Find("MyInformationCard")
+	self.ui.myInformationCard.image = self.transform:Find("MyInformationCard/Card"):GetComponent(typeof(Image))
+	self.ui.myInformationCard.btn = self.transform:Find("MyInformationCard/Card"):GetComponent(typeof(Button))
+	
+	self.ui.btnList = HandCardBtn:New(self.transform:Find("BtnList").gameObject, self)
+	self.ui.btnList:InitUIReference()
 end
 
 function HandCard:InitUI()
@@ -41,12 +46,10 @@ function HandCard:InitUI()
 	end
 	self.handCards = {}
 	self.chooseCards = {}
-	self.ui.getCardBtn.gameObject:SetActive(false)
-	self.ui.playHandBtn.gameObject:SetActive(false)
-	self.ui.operateEndBtn.gameObject:SetActive(false)
-	self.ui.disCardBtn.gameObject:SetActive(false)
-	self.ui.endTurnBtn.gameObject:SetActive(false)
+	self.myInformationCard = nil
+	self.ui.myInformationCard.transform.gameObject:SetActive(false)
 	self:SetCardListGroup()
+	self.ui.btnList:InitUI()
 end
 
 function HandCard:OnBtnHandCard(index)
@@ -68,100 +71,31 @@ function HandCard:OnBtnHandCardBiger(index)
 	EventManager:TriggerEvent(Global.Event.DetailCard, data)
 end
 
-function HandCard:OnGetCardBtn()
-	--Global.Methods.PlayBtnAnimation(self.ui.getCardBtn)
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	data.count = 2
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.DealCards_C2S, dataBytes)
-	self.ui.getCardBtn.gameObject:SetActive(false)
-end
-
-function HandCard:OnPlayHandBtn()
-	Global.Methods.PlayBtnAnimation(self.ui.playHandBtn)
-end
-
-function HandCard:OnOperateEndBtn()
-	Global.Methods.PlayBtnAnimation(self.ui.operateEndBtn)
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnOpertateEnd_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnOpertateEnd_C2S, dataBytes)
-end
-
-function HandCard:OnDisCardBtn()
-	Global.Methods.PlayBtnAnimation(self.ui.disCardBtn)
-	if #self.handCards <= 6 then
-		Global.Methods.ShowTips("不需要弃牌")
-		
+function HandCard:OnMyInformationCard()
+	if self.myInformationCard ~= nil then
 		local data = {}
-		data.userName = Global.Data.User.UserName
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnDisCard_C2S, data)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnDisCard_C2S, dataBytes)
-		return
+		data.path = Global.Resources.Card[self.myInformationCard.cardName]
+		EventManager:TriggerEvent(Global.Event.DetailCard, data)
 	end
-	
-	local count = #self.handCards
-	if self.chooseCards ~= nil then
-		for key, value in pairs(self.chooseCards) do
-			if value ~= nil then
-				count = count - 1
-			end
-		end
-	end
-	
-	if count ~= 6 then
-		Global.Methods.ShowTips("需要弃至剩余6张牌,请选择"..tostring(#self.handCards - 6).."张丢弃")
-	else
-		local data = {}
-		data.userName = Global.Data.User.UserName
-		data.cards = {}
-		data.indexs = {}
-		if self.chooseCards ~= nil then
-			for key, value in pairs(self.chooseCards) do
-				if value ~= nil then
-					table.insert(data.cards, value)
-					table.insert(data.indexs, key)
-				end
-			end
-		end
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnDisCard_C2S, data)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnDisCard_C2S, dataBytes)
-	end
-end
-
-function HandCard:OnEndTurnBtn()
-	Global.Methods.PlayBtnAnimation(self.ui.endTurnBtn)
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnEnd_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnEnd_C2S, dataBytes)
 end
 
 function HandCard:AddUIEvent()
+	self.ui.btnList:AddUIEvent()
 	for i = 1, 12 do
 		local index = i
 		UIEventManager:AddListener(self.ui.cards[i].btn, function() self:OnBtnHandCard(index) end, "lua.game.handCard.OnBtnHandCard")
 		UIEventManager:AddListener(self.ui.cards[i].bigerBtn, function() self:OnBtnHandCardBiger(index) end, "lua.game.handCard.OnBtnHandCardBiger")
 	end
-	UIEventManager:AddListener(self.ui.getCardBtn, self.OnGetCardBtn, self, "lua.game.handCard.OnGetCardBtn")
-	UIEventManager:AddListener(self.ui.playHandBtn, self.OnPlayHandBtn, self, "lua.game.handCard.OnPlayHandBtn")
-	UIEventManager:AddListener(self.ui.operateEndBtn, self.OnOperateEndBtn, self, "lua.game.handCard.OnOperateEndBtn")
-	UIEventManager:AddListener(self.ui.disCardBtn, self.OnDisCardBtn, self, "lua.game.handCard.OnDisCardBtn")
-	UIEventManager:AddListener(self.ui.endTurnBtn, self.OnEndTurnBtn, self, "lua.game.handCard.OnEndTurnBtn")
+	UIEventManager:AddListener(self.ui.myInformationCard.btn, self.OnMyInformationCard, self, "lua.game.handCard.OnMyInformationCard")
 end
 
 function HandCard:RemoveUIEvent()
+	self.ui.btnList:RemoveUIEvent()
 	for i = 1, 12 do
 		UIEventManager:RemoveAllListeners(self.ui.cards[i].btn)
 		UIEventManager:RemoveAllListeners(self.ui.cards[i].bigerBtn)
 	end
-	UIEventManager:RemoveAllListeners(self.ui.getCardBtn)
-	UIEventManager:RemoveAllListeners(self.ui.playHandBtn)
-	UIEventManager:RemoveAllListeners(self.ui.operateEndBtn)
-	UIEventManager:RemoveAllListeners(self.ui.disCardBtn)
-	UIEventManager:RemoveAllListeners(self.ui.endTurnBtn)
+	UIEventManager:RemoveAllListeners(self.ui.myInformationCard.btn)
 end
 
 function HandCard:OnDealCardsStart(data)
@@ -218,69 +152,7 @@ function HandCard:SetCardListGroup()
 end
 
 function HandCard:OnGameComplete()
-	for i = 1, 12 do
-		self.ui.cards[i].gameObject:SetActive(false)
-		self.ui.cards[i].image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
-	end
-	self.handCards = {}
-	self:SetCardListGroup()
-end
-
-function HandCard:OnWaitGameTurnDealCards()
-	self.ui.getCardBtn.gameObject:SetActive(false)
-	self.ui.playHandBtn.gameObject:SetActive(false)
-	self.ui.operateEndBtn.gameObject:SetActive(false)
-	self.ui.disCardBtn.gameObject:SetActive(false)
-	self.ui.endTurnBtn.gameObject:SetActive(false)
-	
-	if Global.Data.RoomInfo.CurrentGameTurnUserName == Global.Data.User.UserName then
-		self.ui.getCardBtn.gameObject:SetActive(true)
-	end
-end
-
-function HandCard:OnWaitGameTurnOpertateEnd()
-	self.ui.getCardBtn.gameObject:SetActive(false)
-	self.ui.playHandBtn.gameObject:SetActive(false)
-	self.ui.operateEndBtn.gameObject:SetActive(false)
-	self.ui.disCardBtn.gameObject:SetActive(false)
-	self.ui.endTurnBtn.gameObject:SetActive(false)
-
-	if Global.Data.RoomInfo.CurrentGameTurnUserName == Global.Data.User.UserName then
-		self.ui.playHandBtn.gameObject:SetActive(true)
-		self.ui.operateEndBtn.gameObject:SetActive(true)
-	end
-end
-
-function HandCard:OnWaitGameTurnDisCard()
-	self.ui.getCardBtn.gameObject:SetActive(false)
-	self.ui.playHandBtn.gameObject:SetActive(false)
-	self.ui.operateEndBtn.gameObject:SetActive(false)
-	self.ui.disCardBtn.gameObject:SetActive(false)
-	self.ui.endTurnBtn.gameObject:SetActive(false)
-
-	if Global.Data.RoomInfo.CurrentGameTurnUserName == Global.Data.User.UserName then
-		if #self.handCards > 6 then
-			self.ui.disCardBtn.gameObject:SetActive(true)
-		else
-			local data = {}
-			data.userName = Global.Data.User.UserName
-			local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnDisCard_C2S, data)
-			NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnDisCard_C2S, dataBytes)
-		end
-	end
-
-end
-
-function HandCard:OnWaitGameTurnEnd()
-	self.ui.getCardBtn.gameObject:SetActive(false)
-	self.ui.playHandBtn.gameObject:SetActive(false)
-	self.ui.operateEndBtn.gameObject:SetActive(false)
-	self.ui.disCardBtn.gameObject:SetActive(false)
-	self.ui.endTurnBtn.gameObject:SetActive(false)
-
-	if Global.Data.RoomInfo.CurrentGameTurnUserName == Global.Data.User.UserName then
-		self.ui.endTurnBtn.gameObject:SetActive(true)
-	end
+	self:InitUI()
 end
 
 function HandCard:OnGameTurnDisCardStart(data)
@@ -306,7 +178,7 @@ function HandCard:OnGameTurnDisCardStart(data)
 	end
 end
 
-function HandCard:OnGameTurnDisCardComplete()
+function HandCard:ArrangeHandCard()
 	if #self.handCards > 0 then
 		local j = 1
 		local handCards = {}
@@ -333,29 +205,63 @@ function HandCard:OnGameTurnDisCardComplete()
 	end
 end
 
+function HandCard:OnGameTurnDisCardComplete()
+	self:ArrangeHandCard()
+end
+
+function HandCard:OnInformationTransmitReady(data)
+	if Global.Data.User.UserName == data.fromUserName then
+		self.ui.cards[data.handCardIndex].transform.gameObject:SetActive(false)
+		local startPos = self.ui.cards[data.handCardIndex].transform.position
+		self.myInformationCard = data.card
+		self.informationCard:InformationDeclarationStart(startPos, data, true, function()
+				self.ui.myInformationCard.transform.gameObject:SetActive(true)
+				self.ui.myInformationCard.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
+				self:ArrangeHandCard()
+			end)
+		self.handCards[data.handCardIndex] = nil
+	end
+end
+
+function HandCard:OnInformationReceiveSuccess()
+	if Global.Data.User.UserName == Global.Data.RoomInfo.CurrentGameTurnUserName then
+		self.chooseCards = {}
+		for i = 1, 12 do
+			self.ui.cards[i].highLight.gameObject:SetActive(false)
+		end
+	end
+end
+
+function HandCard:OnGameTurnOpertateEnd(data)
+	if Global.Data.User.UserName == data.userName then
+		self.ui.myInformationCard.transform.gameObject:SetActive(false)
+	end
+end
+
 function HandCard:AddListener()
+	self.ui.btnList:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.DealCardsStart, function(data) self:OnDealCardsStart(data) end, "Lua.game.handCard.OnDealCardsStart")
 	EventManager:AddListener(Global.Event.GameStage.GameComplete, function() self:OnGameComplete() end, "Lua.game.handCard.OnGameComplete")
-	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnDealCards, function() self:OnWaitGameTurnDealCards() end, "Lua.game.handCard.OnWaitGameTurnDealCards")
-	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnOpertateEnd, function() self:OnWaitGameTurnOpertateEnd() end, "Lua.game.handCard.OnWaitGameTurnOpertateEnd")
-	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnDisCard, function() self:OnWaitGameTurnDisCard() end, "Lua.game.handCard.OnWaitGameTurnDisCard")
-	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnEnd, function() self:OnWaitGameTurnEnd() end, "Lua.game.handCard.OnWaitGameTurnEnd")
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.handCard.OnGameTurnDisCardStart")
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardComplete, function() self:OnGameTurnDisCardComplete() end, "Lua.game.handCard.OnGameTurnDisCardComplete")
+	EventManager:AddListener(Global.Event.InformationStage.InformationTransmitReady, function(data) self:OnInformationTransmitReady(data) end, "Lua.game.handCard.OnInformationTransmitReady")
+	EventManager:AddListener(Global.Event.InformationStage.WaitEnd, function(data) self:OnInformationReceiveSuccess(data) end, "Lua.game.handCard.OnInformationReceiveSuccess")
+	EventManager:AddListener(Global.Event.GameTurnOpertateEnd, function(data) self:OnGameTurnOpertateEnd(data) end, "Lua.game.handCard.OnGameTurnOpertateEnd")
 end
 
 function HandCard:RemoveListener()
+	self.ui.btnList:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStage.DealCardsStart, "Lua.game.handCard.OnDealCardsStart")
 	EventManager:RemoveListener(Global.Event.GameStage.GameComplete, "Lua.game.handCard.OnGameComplete")
-	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnDealCards, "Lua.game.handCard.OnWaitGameTurnDealCards")
-	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnOpertateEnd, "Lua.game.handCard.OnWaitGameTurnOpertateEnd")
-	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnDisCard, "Lua.game.handCard.OnWaitGameTurnDisCard")
-	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnEnd, "Lua.game.handCard.OnWaitGameTurnEnd")
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardStart, "Lua.game.handCard.OnGameTurnDisCardStart")
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardComplete, "Lua.game.handCard.OnGameTurnDisCardComplete")
+	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmitReady, "Lua.game.handCard.OnInformationTransmitReady")
+	EventManager:RemoveListener(Global.Event.InformationStage.WaitEnd, "Lua.game.handCard.OnInformationReceiveSuccess")
+	EventManager:RemoveListener(Global.Event.GameTurnOpertateEnd, "Lua.game.handCard.OnGameTurnOpertateEnd")
 end
 
 function HandCard:Dispose()
+	self.ui.btnList:Dispose()
 	self.handCards = {}
 	self.chooseCards = {}
 end
