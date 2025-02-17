@@ -86,7 +86,10 @@ Global.Data.RoomInfo.SetGameStage = function(stage, data)
 		EventManager:TriggerEvent(Global.Event.GameStage.WaitGameTurnDisCard, data)
 	elseif stage == GameStage.WaitGameTurnEnd then
 		Global.Data.RoomInfo.GameStage = GameStage.WaitGameTurnEnd
-		EventManager:TriggerEvent(Global.Event.GameStage.WaitGameTurnEnd, nil)
+		EventManager:TriggerEvent(Global.Event.GameStage.WaitGameTurnEnd, data)
+	elseif stage == GameStage.WaitOtherPlayHandCard then
+		Global.Data.RoomInfo.GameStage = GameStage.WaitOtherPlayHandCard
+		EventManager:TriggerEvent(Global.Event.GameStage.WaitOtherPlayHandCard, data)
 	end
 end
 
@@ -98,18 +101,12 @@ Global.Data.RoomInfo.SetInformationStage = function(stage, data)
 	elseif stage == InformationStage.WaitInformationDeclaration then
 		Global.Data.RoomInfo.InformationStage = InformationStage.WaitInformationDeclaration
 		EventManager:TriggerEvent(Global.Event.InformationStage.WaitInformationDeclaration, data)
-	elseif stage == InformationStage.WaitInformationDeclarationResponse then
-		Global.Data.RoomInfo.InformationStage = InformationStage.WaitInformationDeclarationResponse
-		EventManager:TriggerEvent(Global.Event.InformationStage.WaitInformationDeclarationResponse, data)
 	elseif stage == InformationStage.WaitInformationTransmit then
 		Global.Data.RoomInfo.InformationStage = InformationStage.WaitInformationTransmit
 		EventManager:TriggerEvent(Global.Event.InformationStage.WaitInformationTransmit, data)
 	elseif stage == InformationStage.WaitInformationReceive then
 		Global.Data.RoomInfo.InformationStage = InformationStage.WaitInformationReceive
 		EventManager:TriggerEvent(Global.Event.InformationStage.WaitInformationReceive, data)
-	elseif stage == InformationStage.WaitInformationReceiveResponse then
-		Global.Data.RoomInfo.InformationStage = InformationStage.WaitInformationReceiveResponse
-		EventManager:TriggerEvent(Global.Event.InformationStage.WaitInformationReceiveResponse, data)
 	elseif stage == InformationStage.WaitEnd then
 		Global.Data.RoomInfo.InformationStage = InformationStage.WaitEnd
 		EventManager:TriggerEvent(Global.Event.InformationStage.WaitEnd, data)

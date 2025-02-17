@@ -197,7 +197,7 @@ function Chair:OnZhiDaChoose()
 			userName = "xxx"
 		end
 		if userName == Global.Data.User.UserName then
-			Global.Methods.ShowTips("情报不能以自己为目标")
+			Global.Methods.ShowTips2("情报不能以自己为目标")
 		else
 			Global.Methods.ShowTips("情报将传递给"..userName, function()
 				EventManager:TriggerEvent(Global.Event.InformationStage.ZhiDaChooseComplete, userName)

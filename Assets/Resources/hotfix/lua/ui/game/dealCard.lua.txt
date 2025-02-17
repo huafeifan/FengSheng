@@ -108,8 +108,9 @@ end
 
 function DealCard:OnGameStart(data)
 	self.ui.cardPool.gameObject:SetActive(true)
-	self.ui.remainCardCount.text = tostring(data.gameCardCount)
-	self.ui.disCardCount.text = "0"
+	self.remainGameCardCount = data.gameCardCount
+	self:SetRemainGameCardCount()
+	self:SetDisCardCount()
 end
 
 function DealCard:OnGameComplete()
@@ -121,21 +122,38 @@ function DealCard:OnGameComplete()
 	self.isDealing = false
 end
 
-function DealCard:OnDealCardsStart(data)
-	self.ui.remainCardCount.text = tostring(data.remainGameCardCount)
-	if data.disCardCount == nil then
-		self.ui.disCardCount.text = "0"
+function DealCard:SetRemainGameCardCount()
+	if self.remainGameCardCount == nil then
+		self.ui.remainCardCount.text = ""
 	else
-		tostring(data.disCardCount)
+		self.ui.remainCardCount.text = tostring(self.remainGameCardCount)
 	end
 end
 
-function DealCard:OnGameTurnDisCardStart(data)
-	if data.disCardCount == nil then
+function DealCard:SetDisCardCount()
+	if self.disCardCount == nil then
 		self.ui.disCardCount.text = "0"
 	else
-		self.ui.disCardCount.text = tostring(data.disCardCount)
+		self.ui.disCardCount.text = tostring(self.disCardCount)
 	end
+end
+
+function DealCard:OnDealCardsStart(data)
+	self.remainGameCardCount = data.remainGameCardCount
+	self:SetRemainGameCardCount()
+	self.disCardCount = data.disCardCount
+	self:SetDisCardCount()
+end
+
+function DealCard:OnGameTurnDisCardStart(data)
+	self.disCardCount = data.disCardCount
+	self:SetDisCardCount()
+end
+
+function DealCard:OnPlayHandCard(data)
+	if self.disCardCount == nil then return end
+	self.disCardCount = self.disCardCount + 1
+	self:SetDisCardCount()
 end
 
 function DealCard:AddListener()                              
@@ -143,6 +161,7 @@ function DealCard:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.GameComplete, function() self:OnGameComplete() end, "Lua.game.dealCard.OnGameComplete")
 	EventManager:AddListener(Global.Event.GameStage.DealCardsStart, function(data) self:OnDealCardsStart(data) end, "Lua.game.dealCard.OnDealCardsStart")
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.dealCard.OnGameTurnDisCardStart")
+	EventManager:AddListener(Global.Event.InformationStage.PlayHandCard, function(data) self:OnPlayHandCard(data) end, "Lua.game.dealCard.OnPlayHandCard")
 end
 
 function DealCard:RemoveListener()
@@ -150,6 +169,7 @@ function DealCard:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStage.GameComplete, "Lua.game.dealCard.OnGameComplete")
 	EventManager:RemoveListener(Global.Event.GameStage.DealCardsStart, "Lua.game.dealCard.OnDealCardsStart")
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardStart, "Lua.game.dealCard.OnGameTurnDisCardStart")
+	EventManager:RemoveListener(Global.Event.InformationStage.PlayHandCard, "Lua.game.dealCard.OnPlayHandCard")
 end
 
 function DealCard:Dispose()

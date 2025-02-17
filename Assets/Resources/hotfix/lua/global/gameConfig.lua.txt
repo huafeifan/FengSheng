@@ -16,10 +16,8 @@ GameStage.WaitGameTurnEnd = "GameStage_WaitGameTurnEnd" --等待回合结束
 InformationStage = {}
 InformationStage.WaitStart = "InformationStage_WaitStart"  --等待本轮情报传递开始
 InformationStage.WaitInformationDeclaration = "InformationStage_WaitInformationDeclaration" --等待玩家回合情报宣言发出
-InformationStage.WaitInformationDeclarationResponse = "InformationStage_WaitInformationDeclarationResponse"  --等待情报宣言响应点
 InformationStage.WaitInformationTransmit = "InformationStage_WaitInformationTransmit"  --等待情报传递
 InformationStage.WaitInformationReceive = "InformationStage_WaitInformationReceive"  --等待情报接收
-InformationStage.WaitInformationReceiveResponse = "InformationStage_WaitInformationReceiveResponse"  --等待情报接收响应点
 InformationStage.WaitEnd = "InformationStage_WaitEnd"  --等待本轮情报传递结束
 
 IdentityType = {}

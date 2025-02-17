@@ -28,19 +28,20 @@ end
 
 function GameComplete:OnGameComplete(data)
 	self.gameObject:SetActive(true)
-	for i = 1, #data.victoryList do
+	
+	for key, value in pairs(data.victoryList) do
 		local item = self.ui.itemPool:Get(true)
 		item.transform:SetParent(self.ui.itemList)
-		item.transform:Find("Name"):GetComponent(typeof(Text)).text = data.victoryList[i].userName
+		item.transform:Find("Name"):GetComponent(typeof(Text)).text = value.userName
 		
 		local identity = item.transform:Find("Identity"):GetComponent(typeof(Text))
-		if data.victoryList[i].identity == IdentityType.JunQing then
+		if value.identity == IdentityType.JunQing then
 			identity.text = "军情"
 			identity.color = Color(0, 0.35, 1, 1)
-		elseif data.victoryList[i].identity == IdentityType.QianFu then
+		elseif value.identity == IdentityType.QianFu then
 			identity.text = "潜伏"
 			identity.color = Color(1, 0.33, 0, 1)
-		elseif data.victoryList[i].identity == IdentityType.TeGong then
+		elseif value.identity == IdentityType.TeGong then
 			identity.text = "特工"
 			identity.color = Color.green
 		end
@@ -50,19 +51,19 @@ function GameComplete:OnGameComplete(data)
 		result.color = Color.green
 	end
 	
-	for i = 1, #data.defeateList do
+	for key, value in pairs(data.defeateList) do
 		local item = self.ui.itemPool:Get(true)
 		item.transform:SetParent(self.ui.itemList)
-		item.transform:Find("Name"):GetComponent(typeof(Text)).text = data.defeateList[i].userName
+		item.transform:Find("Name"):GetComponent(typeof(Text)).text = value.userName
 
 		local identity = item.transform:Find("Identity"):GetComponent(typeof(Text))
-		if data.defeateList[i].identity == IdentityType.JunQing then
+		if value.identity == IdentityType.JunQing then
 			identity.text = "军情"
 			identity.color = Color(0, 0.35, 1, 1)
-		elseif data.defeateList[i].identity == IdentityType.QianFu then
+		elseif value.identity == IdentityType.QianFu then
 			identity.text = "潜伏"
 			identity.color = Color(1, 0.33, 0, 1)
-		elseif data.defeateList[i].identity == IdentityType.TeGong then
+		elseif value.identity == IdentityType.TeGong then
 			identity.text = "特工"
 			identity.color = Color.green
 		end

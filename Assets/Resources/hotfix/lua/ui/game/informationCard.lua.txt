@@ -1,12 +1,11 @@
 InformationCard = {}
 InformationCard.__index = InformationCard
 
-function InformationCard:New(gameObject, main)
+function InformationCard:New(gameObject)
 	local item = {}
 	item.gameObject = gameObject
 	item.transform = gameObject.transform
 	item.ui = {}
-	item.main = main
 
 	setmetatable(item, InformationCard)
 	return item

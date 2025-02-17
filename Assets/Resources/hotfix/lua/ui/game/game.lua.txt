@@ -8,6 +8,8 @@ require "ui/game/detailCard"
 require "ui/game/informationCard"
 require "ui/game/waitResponse"
 require "ui/game/gameComplete"
+require "ui/game/playHandCard"
+
 local SetGameStage = Global.Data.RoomInfo.SetGameStage
 local SetInformationStage = Global.Data.RoomInfo.SetInformationStage
 local Bytes2Lua = Global.Protos.Methods.Bytes2Lua
@@ -28,8 +30,6 @@ local OnReceiveGameTurnOpertateEnd = nil
 local OnReceiveGameTurnDisCard = nil
 local OnReceiveGameTurnEnd = nil
 local OnReceiveWaitInformationReceive = nil
-local OnReceiveInformationReceive = nil
-local OnReceiveInformationReceiveSuccess = nil
                         
 local InitUIReference = function()
 	--发牌器托管
@@ -40,12 +40,16 @@ local InitUIReference = function()
 	ui.informationCard = InformationCard:New(self.transform:Find("InformationCard").gameObject)
 	ui.informationCard:InitUIReference()
 	
+	--作为效果打出的卡牌托管
+	ui.playHandCard = PlayHandCard:New(self.transform:Find("PlayHandCard").gameObject)
+	ui.playHandCard:InitUIReference()
+	
 	--场景按钮托管
 	ui.gameBtn = GameBtn:New(self.gameObject, ui)
 	ui.gameBtn:InitUIReference()
 	
 	--椅子托管
-	ui.chairList = ChairList:New(self.transform:Find("ChairList").gameObject, ui.dealCard, ui.informationCard)
+	ui.chairList = ChairList:New(self.transform:Find("ChairList").gameObject, ui.dealCard, ui.informationCard, ui.playHandCard)
 	ui.chairList:InitUIReference()
 		
 	--身份选择托管
@@ -57,7 +61,7 @@ local InitUIReference = function()
 	ui.characterChoose:InitUIReference()
 	
 	--手牌托管
-	ui.handCard = HandCard:New(self.transform:Find("Bottom/CardContent").gameObject, ui.dealCard, ui.informationCard)
+	ui.handCard = HandCard:New(self.transform:Find("Bottom/CardContent").gameObject, ui.dealCard, ui.informationCard, ui.playHandCard)
 	ui.handCard:InitUIReference()
 	
 	--卡牌详情
@@ -75,6 +79,7 @@ end
 local InitUI = function()
 	ui.dealCard:InitUI()
 	ui.informationCard:InitUI()
+	ui.playHandCard:InitUI()
 	ui.gameBtn:InitUI()
 	ui.chairList:InitUI()
 	ui.identityChoose:InitUI()
@@ -93,6 +98,7 @@ end
 local AddUIEvent = function()
 	ui.dealCard:AddUIEvent()
 	ui.informationCard:AddUIEvent()
+	ui.playHandCard:AddUIEvent()
 	ui.gameBtn:AddUIEvent()
 	ui.chairList:AddUIEvent()
 	ui.identityChoose:AddUIEvent()
@@ -106,6 +112,7 @@ end
 local RemoveUIEvent = function()
 	ui.dealCard:RemoveUIEvent()
 	ui.informationCard:RemoveUIEvent()
+	ui.playHandCard:RemoveUIEvent()
 	ui.gameBtn:RemoveUIEvent()
 	ui.chairList:RemoveUIEvent()
 	ui.identityChoose:RemoveUIEvent()
@@ -164,7 +171,7 @@ local OnInfomationCardReceiveComplete = function()
 	cacheData.isInfomationCardReceiveComplete = true
 	
 	if cacheData.isInfomationCardReceiveComplete and cacheData.GameComplete ~= nil then
-		OnGameComplete()
+		OnGameComplete(cacheData.GameComplete)
 	end
 end
 
@@ -209,7 +216,7 @@ end
 local OnReceiveReadyStatus = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Room, Global.Protos.Class.ReadyStatus_S2C, bytes)
 	if data.code == "Failed" then
-		Global.Methods.ShowTips(data.msg)
+		Global.Methods.ShowTips2(data.msg)
 	end
 end
 
@@ -223,7 +230,7 @@ OnReceiveGameStart = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameStart_S2C, bytes)
 	
 	if data.code == "Success" then
-		Global.Methods.ShowTips2("游戏开始")
+		--Global.Methods.ShowTips2("游戏开始")
 		EventManager:TriggerEvent(Global.Event.GameStage.GameStart, data)
 		
 		SetGameStage(GameStage.WaitIdentityChoose, nil)
@@ -262,20 +269,21 @@ end
 --游戏结束
 local OnReceiveGameComplete = function(bytes)
 	cacheData.GameComplete = bytes
-	
+
 	if cacheData.isInfomationCardReceiveComplete and cacheData.GameComplete ~= nil then
 		OnGameComplete(cacheData.GameComplete)
 	end
 end
 	
 OnGameComplete = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameComplete_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.GameStage.GameComplete, data)
+	
 	cacheData = {}
 	Global.Data.RoomInfo.GameStage = GameStage.WaitGameStart
 	Global.Data.RoomInfo.InformationStage = InformationStage.WaitStart
 	Global.Data.RoomInfo.CurrentGameTurnUserName = nil
 	Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName = nil
-	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameComplete_S2C, bytes)
-	EventManager:TriggerEvent(Global.Event.GameStage.GameComplete, data)
 
 	RequestRoomInfo()
 end
@@ -396,7 +404,7 @@ end
 local OnReceiveHandCardCount = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.HandCardCount_S2C, bytes)
 	if data.userName ~= Global.Data.User.UserName then
-		EventManager:TriggerEvent(Global.Event.ReceiveHandCardCount, data)
+		EventManager:TriggerEvent(Global.Event.InformationStage.ReceiveHandCardCount, data)
 	end
 end
 
@@ -404,15 +412,13 @@ end
 local OnReceiveInformationDeclaration = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationDeclaration_S2C, bytes)
 	Global.Methods.ShowTips2("玩家:"..data.userName.."准备传递情报")
-	
-	SetInformationStage(InformationStage.WaitInformationDeclarationResponse, nil)
 end
 
 --收到等待情报发出协议
 local OnReceiveWaitInformationTransmit = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.WaitInformationTransmit_S2C, bytes)
 	SetInformationStage(InformationStage.WaitInformationTransmit, data)
-	if data.userName ==Global.Data.User.UserName then
+	if data.userName == Global.Data.User.UserName then
 		Global.Methods.ShowTips2("请选择要传递的情报")
 	end
 end
@@ -434,36 +440,16 @@ OnReceiveWaitInformationReceive = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.WaitInformationReceive_S2C, bytes)
 	Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName = data.userName
 	SetInformationStage(InformationStage.WaitInformationReceive, nil)
-	
-	if cacheData.InformationReceive ~= nil then
-		OnReceiveInformationReceive(cacheData.InformationReceive)
-	end
 end
 
 --收到玩家接收情报协议
-OnReceiveInformationReceive = function(bytes)
-	if RoomInfo.InformationStage ~= InformationStage.WaitInformationReceive then
-		cacheData.InformationReceive = bytes
-		return
-	end
-	cacheData.InformationReceive = nil
-	
+local OnReceiveInformationReceive = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationReceive_S2C, bytes)
 	Global.Methods.ShowTips2("玩家:"..data.userName.."准备接收情报")
-	SetInformationStage(InformationStage.WaitInformationReceiveResponse, data)
-	
-	if cacheData.InformationReceiveSuccess ~= nil then
-		OnReceiveInformationReceiveSuccess()
-	end
 end
 
 --收到玩家接收情报成功协议
-OnReceiveInformationReceiveSuccess = function(bytes)
-	if RoomInfo.InformationStage ~= InformationStage.WaitInformationReceiveResponse then
-		cacheData.InformationReceiveSuccess = bytes
-		return
-	end
-	cacheData.InformationReceiveSuccess = nil
+local OnReceiveInformationReceiveSuccess = function(bytes)
 	cacheData.isInfomationCardReceiveComplete = false
 	
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationReceiveSuccess_S2C, bytes)
@@ -478,12 +464,34 @@ end
 --收到玩家持有情报数量协议
 local OnReceiveInformationCount = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationCount_S2C, bytes)
-	EventManager:TriggerEvent(Global.Event.ReceiveInformationCount, data)
+	EventManager:TriggerEvent(Global.Event.InformationStage.ReceiveInformationCount, data)
+end
+
+--询问是否要出牌
+local OnReceiveAskPlayHandCard = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.AskPlayHandCard_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.InformationStage.ReceiveAskPlayHandCard, data)
+end
+
+--玩家想要出牌的通知
+local OnReceivePlayHandCardResponse = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCardResponse_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.InformationStage.PlayerWantPlayHandCard, data)
+end
+
+local OnReceivePlayHandCard = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCard_S2C, bytes)
+	if data.code == "Failed" then
+		Global.Methods.ShowTips2(data.msg)
+		return
+	end
+	EventManager:TriggerEvent(Global.Event.InformationStage.PlayHandCard, data)
 end
 
 local AddListener = function()
 	ui.dealCard:AddListener()
 	ui.informationCard:AddListener()
+	ui.playHandCard:AddListener()
 	ui.gameBtn:AddListener()
 	ui.chairList:AddListener()
 	ui.identityChoose:AddListener()
@@ -519,11 +527,15 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.InformationReceive_S2C, OnReceiveInformationReceive, "Lua.game.OnReceiveInformationReceive")
 	ProtosManager:AddListener(Global.Protos.Cmd.InformationReceiveSuccess_S2C, OnReceiveInformationReceiveSuccess, "Lua.game.OnReceiveInformationReceiveSuccess")
 	ProtosManager:AddListener(Global.Protos.Cmd.InformationCount_S2C, OnReceiveInformationCount, "Lua.game.OnReceiveInformationCount")
+	ProtosManager:AddListener(Global.Protos.Cmd.AskPlayHandCard_S2C, OnReceiveAskPlayHandCard, "Lua.game.OnReceiveAskPlayHandCard")
+	ProtosManager:AddListener(Global.Protos.Cmd.PlayHandCardResponse_S2C, OnReceivePlayHandCardResponse, "Lua.game.OnReceivePlayHandCardResponse")
+	ProtosManager:AddListener(Global.Protos.Cmd.PlayHandCard_S2C, OnReceivePlayHandCard, "Lua.game.OnReceivePlayHandCard")
 end
 
 local RemoveListener = function()
 	ui.dealCard:RemoveListener()
 	ui.informationCard:RemoveListener()
+	ui.playHandCard:RemoveListener()
 	ui.gameBtn:RemoveListener()
 	ui.chairList:RemoveListener()
 	ui.identityChoose:RemoveListener()
@@ -559,6 +571,9 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationReceive_S2C, OnReceiveInformationReceive)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationReceiveSuccess_S2C, OnReceiveInformationReceiveSuccess)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationCount_S2C, OnReceiveInformationCount)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.AskPlayHandCard_S2C, OnReceiveAskPlayHandCard)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.PlayHandCardResponse_S2C, OnReceivePlayHandCardResponse)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.PlayHandCard_S2C, OnReceivePlayHandCard)
 end
 
 RequestRoomInfo = function()
@@ -571,6 +586,7 @@ end
 local Dispose = function()
 	ui.dealCard:Dispose()
 	ui.informationCard:Dispose()
+	ui.playHandCard:Dispose()
 	ui.gameBtn:Dispose()
 	ui.chairList:Dispose()
 	ui.identityChoose:Dispose()

@@ -1,0 +1,73 @@
+PlayHandCard = {}
+PlayHandCard.__index = PlayHandCard
+
+function PlayHandCard:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, PlayHandCard)
+	return item
+end
+
+function PlayHandCard:InitUIReference()
+	self.ui.image = self.transform:Find("Card"):GetComponent(typeof(Image))
+	self.ui.btn = self.transform:Find("Card"):GetComponent(typeof(Button))
+	self.ui.tip = self.transform:Find("Tips"):GetComponent(typeof(Text))
+	self.ui.name = self.transform:Find("Name"):GetComponent(typeof(Text))
+	self.ui.defaultPos = self.ui.image.transform.position
+end
+
+function PlayHandCard:InitUI()
+	self.gameObject:SetActive(true)
+	self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+	self.ui.tip.text = ""
+	self.ui.name.text = ""
+	self.ui.image.gameObject:SetActive(false)
+	self.card = nil
+end
+
+function PlayHandCard:PlayHandCardStart(startPos, data, onComplete)
+	self.ui.image.transform.position = startPos
+	self.ui.image.gameObject:SetActive(true)
+	self.ui.tip.text = ""
+	self.ui.name.text = ""
+	self.card = data.card
+
+	self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
+	self.ui.image.transform:DOMove(self.ui.defaultPos, 0.3):OnComplete(function()
+			self.ui.name.text = "玩家:"..data.userName.."打出的卡牌"
+			if onComplete ~= nil then
+				onComplete()
+			end
+		end)
+end
+
+function PlayHandCard:OnBtnCard()
+	if self.card ~= nil then
+		local data = {}
+		data.path = Global.Resources.Card[self.card.cardName]
+		EventManager:TriggerEvent(Global.Event.DetailCard, data)
+	end
+end
+
+function PlayHandCard:AddUIEvent()
+	UIEventManager:AddListener(self.ui.btn, self.OnBtnCard, self, "lua.game.playHandCard.OnBtnCard")
+end
+
+function PlayHandCard:RemoveUIEvent()
+	UIEventManager:RemoveAllListeners(self.ui.btn)
+end
+
+function PlayHandCard:AddListener()
+	
+end
+
+function PlayHandCard:RemoveListener()
+	
+end
+
+function PlayHandCard:Dispose()
+	self.card = nil
+end

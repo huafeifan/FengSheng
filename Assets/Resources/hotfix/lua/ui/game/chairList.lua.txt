@@ -5,7 +5,7 @@ ChairList.__index = ChairList
 
 local me = 1
 
-function ChairList:New(gameObject, dealCard, informationCard)
+function ChairList:New(gameObject, dealCard, informationCard, playHandCard)
 	local item = {}
 	item.gameObject = gameObject
 	item.transform = gameObject.transform
@@ -13,6 +13,7 @@ function ChairList:New(gameObject, dealCard, informationCard)
 	item.chairs = {}
 	item.dealCard = dealCard
 	item.informationCard = informationCard
+	item.playHandCard = playHandCard
 
 	setmetatable(item, ChairList)
 	return item
@@ -283,6 +284,7 @@ function ChairList:OnWaitInformationReceive()
 			local isHisAskReceive = userData.name == Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName
 			if isHisAskReceive or isHisGameTurn then
 				self.chairs[i]:SetGameTurn(true)
+				self.chairs[i]:SetGameTurnText("")
 			else
 				self.chairs[i]:SetGameTurn(false)
 			end
@@ -319,6 +321,36 @@ function ChairList:OnReceiveInformationCount(data)
 	end
 end
 
+function ChairList:OnReceivePlayerWantPlayHandCard(data)
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil then
+			if userData.name == data.userName and data.isSkip == false then
+				self.chairs[i]:SetGameTurn(true)
+				self.chairs[i]:SetGameTurnText("等我出牌")
+			elseif  userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName then
+				self.chairs[i]:SetGameTurn(true)
+				self.chairs[i]:SetGameTurnText("回合中...")
+			else
+				self.chairs[i]:SetGameTurn(false)
+			end
+		else
+			self.chairs[i]:SetGameTurn(false)
+		end
+	end
+end
+
+function ChairList:OnPlayHandCard(data)
+	for i = 2, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == data.userName then
+			local startPos = self.chairs[i]:GetCharacterPos()
+			self.playHandCard:PlayHandCardStart(startPos, data, nil)
+			break
+		end
+	end
+end
+
 function ChairList:AddListener()
 	for i = 1, #self.chairs do
 		self.chairs[i]:AddListener()
@@ -334,11 +366,13 @@ function ChairList:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnDisCard, function() self:OnWaitGameTurnDisCard() end, "Lua.game.chairList.OnWaitGameTurnDisCard")
 	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnEnd, function() self:OnWaitGameTurnEnd() end, "Lua.game.chairList.OnWaitGameTurnEnd")
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.chairList.OnGameTurnDisCardStart")
-	EventManager:AddListener(Global.Event.ReceiveHandCardCount, function(data) self:OnReceiveHandCardCount(data) end, "Lua.game.chairList.OnReceiveHandCardCount")
+	EventManager:AddListener(Global.Event.InformationStage.ReceiveHandCardCount, function(data) self:OnReceiveHandCardCount(data) end, "Lua.game.chairList.OnReceiveHandCardCount")
 	EventManager:AddListener(Global.Event.InformationStage.InformationTransmitReady, function(data) self:OnInformationTransmitReady(data) end, "Lua.game.chairList.OnInformationTransmitReady")
 	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.chairList.OnWaitInformationReceive")
 	EventManager:AddListener(Global.Event.InformationStage.WaitEnd, function(data) self:OnInformationReceiveSuccess(data) end, "Lua.game.chairList.OnInformationReceiveSuccess")
-	EventManager:AddListener(Global.Event.ReceiveInformationCount, function(data) self:OnReceiveInformationCount(data) end, "Lua.game.chairList.OnReceiveInformationCount")
+	EventManager:AddListener(Global.Event.InformationStage.ReceiveInformationCount, function(data) self:OnReceiveInformationCount(data) end, "Lua.game.chairList.OnReceiveInformationCount")
+	EventManager:AddListener(Global.Event.InformationStage.PlayerWantPlayHandCard, function(data) self:OnReceivePlayerWantPlayHandCard(data) end, "Lua.game.chairList.OnReceivePlayerWantPlayHandCard")
+	EventManager:AddListener(Global.Event.InformationStage.PlayHandCard, function(data) self:OnPlayHandCard(data) end, "Lua.game.chairList.OnPlayHandCard")
 end
 
 function ChairList:RemoveListener()
@@ -356,11 +390,13 @@ function ChairList:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnDisCard, "Lua.game.chairList.OnWaitGameTurnDisCard")
 	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnEnd, "Lua.game.chairList.OnWaitGameTurnEnd")
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardStart, "Lua.game.chairList.OnGameTurnDisCardStart")
-	EventManager:RemoveListener(Global.Event.ReceiveHandCardCount, "Lua.game.chairList.OnReceiveHandCardCount")
+	EventManager:RemoveListener(Global.Event.InformationStage.ReceiveHandCardCount, "Lua.game.chairList.OnReceiveHandCardCount")
 	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmitReady, "Lua.game.chairList.OnInformationTransmitReady")
 	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceive, "Lua.game.chairList.OnWaitInformationReceive")
 	EventManager:RemoveListener(Global.Event.InformationStage.WaitEnd, "Lua.game.chairList.OnInformationReceiveSuccess")
-	EventManager:RemoveListener(Global.Event.ReceiveInformationCount, "Lua.game.chairList.OnReceiveInformationCount")
+	EventManager:RemoveListener(Global.Event.InformationStage.ReceiveInformationCount, "Lua.game.chairList.OnReceiveInformationCount")
+	EventManager:RemoveListener(Global.Event.InformationStage.PlayerWantPlayHandCard, "Lua.game.chairList.OnReceivePlayerWantPlayHandCard")
+	EventManager:RemoveListener(Global.Event.InformationStage.PlayHandCard, "Lua.game.chairList.OnPlayHandCard")
 end
 
 function ChairList:Dispose()

@@ -3,13 +3,14 @@ require "ui/game/handCardBtn"
 HandCard = {}
 HandCard.__index = HandCard
 
-function HandCard:New(gameObject, dealCard, informationCard)
+function HandCard:New(gameObject, dealCard, informationCard, playHandCard)
 	local item = {}
 	item.gameObject = gameObject
 	item.transform = gameObject.transform
 	item.ui = {}
 	item.dealCard = dealCard
 	item.informationCard = informationCard
+	item.playHandCard = playHandCard
 
 	setmetatable(item, HandCard)
 	return item
@@ -220,11 +221,7 @@ function HandCard:OnInformationTransmitReady(data)
 				self:ArrangeHandCard()
 			end)
 		self.handCards[data.handCardIndex] = nil
-	end
-end
-
-function HandCard:OnInformationReceiveSuccess()
-	if Global.Data.User.UserName == Global.Data.RoomInfo.CurrentGameTurnUserName then
+		
 		self.chooseCards = {}
 		for i = 1, 12 do
 			self.ui.cards[i].highLight.gameObject:SetActive(false)
@@ -232,9 +229,21 @@ function HandCard:OnInformationReceiveSuccess()
 	end
 end
 
-function HandCard:OnGameTurnOpertateEnd(data)
+function HandCard:OnWaitGameTurnEnd(data)
+	self.ui.myInformationCard.transform.gameObject:SetActive(false)
+end
+
+function HandCard:OnPlayHandCard(data)
 	if Global.Data.User.UserName == data.userName then
-		self.ui.myInformationCard.transform.gameObject:SetActive(false)
+		self.ui.cards[data.handCardIndex].transform.gameObject:SetActive(false)
+		local startPos = self.ui.cards[data.handCardIndex].transform.position
+		self.playHandCard:PlayHandCardStart(startPos, data, function() self:ArrangeHandCard() end)
+		self.handCards[data.handCardIndex] = nil
+		
+		self.chooseCards = {}
+		for i = 1, 12 do
+			self.ui.cards[i].highLight.gameObject:SetActive(false)
+		end
 	end
 end
 
@@ -245,8 +254,8 @@ function HandCard:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.handCard.OnGameTurnDisCardStart")
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardComplete, function() self:OnGameTurnDisCardComplete() end, "Lua.game.handCard.OnGameTurnDisCardComplete")
 	EventManager:AddListener(Global.Event.InformationStage.InformationTransmitReady, function(data) self:OnInformationTransmitReady(data) end, "Lua.game.handCard.OnInformationTransmitReady")
-	EventManager:AddListener(Global.Event.InformationStage.WaitEnd, function(data) self:OnInformationReceiveSuccess(data) end, "Lua.game.handCard.OnInformationReceiveSuccess")
-	EventManager:AddListener(Global.Event.GameTurnOpertateEnd, function(data) self:OnGameTurnOpertateEnd(data) end, "Lua.game.handCard.OnGameTurnOpertateEnd")
+	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnEnd, function(data) self:OnWaitGameTurnEnd(data) end, "Lua.game.handCard.OnWaitGameTurnEnd")
+	EventManager:AddListener(Global.Event.InformationStage.PlayHandCard, function(data) self:OnPlayHandCard(data) end, "Lua.game.handCard.OnPlayHandCard")
 end
 
 function HandCard:RemoveListener()
@@ -256,8 +265,8 @@ function HandCard:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardStart, "Lua.game.handCard.OnGameTurnDisCardStart")
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardComplete, "Lua.game.handCard.OnGameTurnDisCardComplete")
 	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmitReady, "Lua.game.handCard.OnInformationTransmitReady")
-	EventManager:RemoveListener(Global.Event.InformationStage.WaitEnd, "Lua.game.handCard.OnInformationReceiveSuccess")
-	EventManager:RemoveListener(Global.Event.GameTurnOpertateEnd, "Lua.game.handCard.OnGameTurnOpertateEnd")
+	EventManager:RemoveListener(Global.Event.GameStage.WaitGameTurnEnd, "Lua.game.handCard.OnWaitGameTurnEnd")
+	EventManager:RemoveListener(Global.Event.InformationStage.PlayHandCard, "Lua.game.handCard.OnPlayHandCard")
 end
 
 function HandCard:Dispose()
