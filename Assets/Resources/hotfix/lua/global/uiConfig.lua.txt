@@ -13,9 +13,13 @@ Global.NormalTipPrefab_Path = "prefab/tips/NormalTip"
 Global.NormalTipPrefab_Layer = TopUI_Level1
 Global.NormalTipPrefab_Layer_SiblingIndex = 0
 
+Global.NormalTipPrefab2_Path = "prefab/tips/NormalTip2"
+Global.NormalTipPrefab2_Layer = TopUI_Level1
+Global.NormalTipPrefab2_Layer_SiblingIndex = 1
+
 Global.NetworkWaitingPrefab_Path = "prefab/tips/NetworkWaiting"
 Global.NetworkWaitingPrefab_Layer = TopUI_Level1
-Global.NetworkWaitingPrefab_Layer_SiblingIndex = 1
+Global.NetworkWaitingPrefab_Layer_SiblingIndex = 2
 
 --normal layer
 Global.RoomListPrefab_Path = "prefab/room/RoomList"

@@ -35,7 +35,7 @@ local InitUIReference = function()
 	--发牌器托管
 	ui.dealCard = DealCard:New(self.transform:Find("CardPool").gameObject)
 	ui.dealCard:InitUIReference()
-	
+
 	--传递的情报卡托管
 	ui.informationCard = InformationCard:New(self.transform:Find("InformationCard").gameObject)
 	ui.informationCard:InitUIReference()
@@ -223,7 +223,7 @@ OnReceiveGameStart = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.GameStart_S2C, bytes)
 	
 	if data.code == "Success" then
-		--Global.Methods.ShowTips("游戏开始")
+		Global.Methods.ShowTips2("游戏开始")
 		EventManager:TriggerEvent(Global.Event.GameStage.GameStart, data)
 		
 		SetGameStage(GameStage.WaitIdentityChoose, nil)
@@ -403,7 +403,7 @@ end
 --收到情报宣言协议
 local OnReceiveInformationDeclaration = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationDeclaration_S2C, bytes)
-	Global.Methods.ShowTips("玩家:"..data.userName.."准备传递情报")
+	Global.Methods.ShowTips2("玩家:"..data.userName.."准备传递情报")
 	
 	SetInformationStage(InformationStage.WaitInformationDeclarationResponse, nil)
 end
@@ -413,7 +413,7 @@ local OnReceiveWaitInformationTransmit = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.WaitInformationTransmit_S2C, bytes)
 	SetInformationStage(InformationStage.WaitInformationTransmit, data)
 	if data.userName ==Global.Data.User.UserName then
-		Global.Methods.ShowTips("请选择要传递的情报")
+		Global.Methods.ShowTips2("请选择要传递的情报")
 	end
 end
 
@@ -449,7 +449,7 @@ OnReceiveInformationReceive = function(bytes)
 	cacheData.InformationReceive = nil
 	
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationReceive_S2C, bytes)
-	Global.Methods.ShowTips("玩家:"..data.userName.."准备接收情报")
+	Global.Methods.ShowTips2("玩家:"..data.userName.."准备接收情报")
 	SetInformationStage(InformationStage.WaitInformationReceiveResponse, data)
 	
 	if cacheData.InformationReceiveSuccess ~= nil then
@@ -468,7 +468,7 @@ OnReceiveInformationReceiveSuccess = function(bytes)
 	
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationReceiveSuccess_S2C, bytes)
 	SetInformationStage(InformationStage.WaitEnd, data)
-	--Global.Methods.ShowTips("玩家:"..data.userName.."情报接收成功")
+	Global.Methods.ShowTips2("玩家:"..data.userName.."情报接收成功")
 	
 	if cacheData.GameTurnOpertateEnd ~= nil then
 		OnReceiveGameTurnOpertateEnd(cacheData.GameTurnOpertateEnd)

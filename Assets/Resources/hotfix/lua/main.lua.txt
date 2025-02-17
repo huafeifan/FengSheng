@@ -7,6 +7,7 @@ function PreLoad(onComplete)
 
 	--同步创建的prefab
 	table.insert(loadPrefabs, Global.NormalTipPrefab_Path)
+	table.insert(loadPrefabs, Global.NormalTipPrefab2_Path)
 	table.insert(loadPrefabs, Global.NetworkWaitingPrefab_Path)
 	--异步加载的图片
 	for i = 1, #Global.Resources.Rule_Introduce do
@@ -30,6 +31,7 @@ function PreLoad(onComplete)
 	--异步加载的prefab
 	table.insert(loadPrefabsAsync, Global.GamePrefab_Path)
 	table.insert(loadPrefabsAsync, Global.NormalTipPrefab_Path)
+	table.insert(loadPrefabsAsync, Global.NormalTipPrefab2_Path)
 	table.insert(loadPrefabsAsync, Global.NetworkWaitingPrefab_Path)
 
 	PreLoadAsync(1, function()

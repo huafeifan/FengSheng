@@ -1,0 +1,58 @@
+local ui = {}
+
+local InitUIReference = function()
+	ui.content = self.transform:Find("Content")
+	ui.startPos = ui.content:Find("StartPos").position
+	ui.targetPos = ui.content:Find("TargetPos").position
+	ui.itemPool = ui.content:Find("ItemPool"):GetComponent(typeof(GameObjectPool))
+end
+
+local InitUI = function()
+	
+end
+
+local OnEvent_ShowTips = function(data)
+	local tip = ui.itemPool:Get(true)
+	tip.transform.position = ui.startPos
+	tip.transform:Find("Text"):GetComponent(typeof(Text)).text = data.content
+	tip.transform:GetComponent(typeof(ContentSizeFitter)):SetLayoutHorizontal()
+	tip.transform:DOMove(ui.targetPos, 1.5):OnComplete(function()
+			ui.itemPool:Dispose(tip)
+		end)
+end
+
+local AddUIEvent = function()
+	
+end
+
+local RemoveUIEvent = function()
+	
+end
+
+local AddListener = function()
+	EventManager:AddListener(Global.Event.ShowTips2, OnEvent_ShowTips, "Lua.normalTip2.OnEvent_ShowTips2")
+end
+
+local RemoveListener = function()
+	EventManager:RemoveListener(Global.Event.ShowTips2, OnEvent_ShowTips)
+end
+
+function awake()
+	InitUIReference()
+end
+
+function onenable()
+	InitUI()
+	AddUIEvent()
+	AddListener()
+end
+
+function ondisable()
+	RemoveUIEvent()
+	RemoveListener()
+end
+
+function ondestroy()
+	RemoveUIEvent()
+	RemoveListener()
+end

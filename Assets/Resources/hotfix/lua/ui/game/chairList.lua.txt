@@ -281,12 +281,8 @@ function ChairList:OnWaitInformationReceive()
 		if userData ~= nil then
 			local isHisGameTurn = userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName
 			local isHisAskReceive = userData.name == Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName
-			if isHisAskReceive then
+			if isHisAskReceive or isHisGameTurn then
 				self.chairs[i]:SetGameTurn(true)
-				self.chairs[i]:SetGameTurnText("等待接收情报")
-			elseif isHisGameTurn then
-				self.chairs[i]:SetGameTurn(true)
-				self.chairs[i]:SetGameTurnText("回合中...")
 			else
 				self.chairs[i]:SetGameTurn(false)
 			end

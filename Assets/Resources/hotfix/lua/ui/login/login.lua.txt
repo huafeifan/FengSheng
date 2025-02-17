@@ -71,7 +71,7 @@ end
 
 local CheckInputName = function(s)
 	if s == nil or string.len(s) <= 0 then
-		Global.Methods.ShowTips("请输入名称")
+		Global.Methods.ShowTips2("请输入名称")
 		return false
 	end
 	

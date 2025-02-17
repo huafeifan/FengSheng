@@ -16,6 +16,7 @@ Toggle = CS.UnityEngine.UI.Toggle
 WaitForSeconds = CS.UnityEngine.WaitForSecond
 Screen = CS.UnityEngine.Screen
 HorizontalLayoutGroup = CS.UnityEngine.UI.HorizontalLayoutGroup
+ContentSizeFitter = CS.UnityEngine.UI.ContentSizeFitter
 RectTransform = CS.UnityEngine.RectTransform
 Time = CS.UnityEngine.Time
 

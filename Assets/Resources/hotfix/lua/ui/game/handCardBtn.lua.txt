@@ -34,6 +34,20 @@ function HandCardBtn:InitUI()
 	self:CloseAllBtn()
 end
 
+function HandCardBtn:GetChooseCardInfo()
+	local count, card, index = 0, nil, nil
+	if self.handCard.chooseCards ~= nil then
+		for key, value in pairs(self.handCard.chooseCards) do
+			if value ~= nil then
+				count = count + 1
+				card = value
+				index = key
+			end
+		end
+	end
+	return count, card, index
+end
+
 function HandCardBtn:OnGetCardBtn()
 	Global.Methods.PlayBtnAnimation(self.ui.getCardBtn)
 	self:CloseAllBtn()
@@ -56,35 +70,28 @@ end
 function HandCardBtn:OnInformationTransmitBtn()
 	Global.Methods.PlayBtnAnimation(self.ui.informationTransmitBtn)
 	informationTransmitData = {}
-	local count, card, index = 0, nil, nil
-	if self.handCard.chooseCards ~= nil then
-		for key, value in pairs(self.handCard.chooseCards) do
-			if value ~= nil then
-				count = count + 1
-				card = value
-				index = key
-			end
-		end
-	end
+	local count, card, index = self:GetChooseCardInfo()
+	
 	if count ~= 1 then
-		Global.Methods.ShowTips("请选择1张牌作为情报传出")
-	else
-		informationTransmitData.fromUserName = Global.Data.User.UserName
-		informationTransmitData.card = card
-		informationTransmitData.handCardIndex = index
-		if card.transmit == GameCard.TransmitType.ZhiDa then
-			self:OnZhiDaTransmitBtn()
-		elseif card.transmit == GameCard.TransmitType.MiDian then
-			self:OnMiDianTransmitBtn()
-		elseif card.transmit == GameCard.TransmitType.WenBen then
-			self:OnWenBenTransmitBtn()
-		elseif card.transmit == GameCard.TransmitType.Choose then
-			self:CloseAllBtn()
-			self.ui.miDianTransmitBtn.gameObject:SetActive(true)
-			self.ui.zhiDaTransmitBtn.gameObject:SetActive(true)
-			self.ui.wenBenTransmitBtn.gameObject:SetActive(true)
-			Global.Methods.ShowTips("请选择情报传递方式")
-		end
+		Global.Methods.ShowTips2("请选择1张牌作为情报传出")
+		return
+	end
+	
+	informationTransmitData.fromUserName = Global.Data.User.UserName
+	informationTransmitData.card = card
+	informationTransmitData.handCardIndex = index
+	if card.transmit == GameCard.TransmitType.ZhiDa then
+		self:OnZhiDaTransmitBtn()
+	elseif card.transmit == GameCard.TransmitType.MiDian then
+		self:OnMiDianTransmitBtn()
+	elseif card.transmit == GameCard.TransmitType.WenBen then
+		self:OnWenBenTransmitBtn()
+	elseif card.transmit == GameCard.TransmitType.Choose then
+		self:CloseAllBtn()
+		self.ui.miDianTransmitBtn.gameObject:SetActive(true)
+		self.ui.zhiDaTransmitBtn.gameObject:SetActive(true)
+		self.ui.wenBenTransmitBtn.gameObject:SetActive(true)
+		Global.Methods.ShowTips2("请选择情报传递方式")
 	end
 end
 
@@ -125,7 +132,7 @@ function HandCardBtn:OnZhiDaTransmitBtn()
 	self:CloseAllBtn()
 	informationTransmitData.transmit = GameCard.TransmitType.ZhiDa
 	informationTransmitData.direction = GameCard.DirectionType.None
-	Global.Methods.ShowTips("请选择你要传递的玩家")
+	Global.Methods.ShowTips2("请选择你要传递的玩家")
 	EventManager:TriggerEvent(Global.Event.InformationStage.ZhiDaChoose, nil)
 end
 
@@ -174,7 +181,7 @@ end
 function HandCardBtn:OnDisCardBtn()
 	Global.Methods.PlayBtnAnimation(self.ui.disCardBtn)
 	if #self.handCard.handCards <= 6 then
-		Global.Methods.ShowTips("不需要弃牌")
+		Global.Methods.ShowTips2("不需要弃牌")
 
 		local data = {}
 		data.userName = Global.Data.User.UserName
@@ -193,7 +200,7 @@ function HandCardBtn:OnDisCardBtn()
 	end
 
 	if count ~= 6 then
-		Global.Methods.ShowTips("需要弃至剩余6张牌,请选择"..tostring(#self.handCard.handCards - 6).."张丢弃")
+		Global.Methods.ShowTips2("需要弃至剩余6张牌,请选择"..tostring(#self.handCard.handCards - 6).."张丢弃")
 	else
 		local data = {}
 		data.userName = Global.Data.User.UserName

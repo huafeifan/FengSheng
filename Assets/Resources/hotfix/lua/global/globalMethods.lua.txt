@@ -3,11 +3,16 @@ Global.Methods = {}
 Global.Methods.PlayBtnAnimation = function(btn)
 	btn.transform:DOScale(1.1, 0.1):SetLoops(2, LoopType.Yoyo)
 end
-	Global.Data.RoomInfo.GameStage = GameStage.WaitGameStart
 
 Global.Methods.ShowTips = function(msg, onComplete)
 	local tip = {}
 	tip.content = msg
 	tip.onComplete = onComplete
 	EventManager:TriggerEvent(Global.Event.ShowTips, tip)
+end
+
+Global.Methods.ShowTips2 = function(msg)
+	local tip = {}
+	tip.content = msg
+	EventManager:TriggerEvent(Global.Event.ShowTips2, tip)
 end
