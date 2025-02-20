@@ -276,7 +276,7 @@ function ChairList:OnInformationTransmitReady(data)
 	end
 end
 
-function ChairList:OnWaitInformationReceive()
+function ChairList:OnInformationTransmit()
 	for i = 1, #self.chairs do
 		local userData = self.chairs[i]:GetUserData()
 		if userData ~= nil then
@@ -368,7 +368,7 @@ function ChairList:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.GameTurnDisCardStart, function(data) self:OnGameTurnDisCardStart(data) end, "Lua.game.chairList.OnGameTurnDisCardStart")
 	EventManager:AddListener(Global.Event.InformationStage.ReceiveHandCardCount, function(data) self:OnReceiveHandCardCount(data) end, "Lua.game.chairList.OnReceiveHandCardCount")
 	EventManager:AddListener(Global.Event.InformationStage.InformationTransmitReady, function(data) self:OnInformationTransmitReady(data) end, "Lua.game.chairList.OnInformationTransmitReady")
-	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.chairList.OnWaitInformationReceive")
+	EventManager:AddListener(Global.Event.InformationStage.InformationTransmit, function() self:OnInformationTransmit() end, "Lua.game.chairList.OnInformationTransmit")
 	EventManager:AddListener(Global.Event.InformationStage.WaitEnd, function(data) self:OnInformationReceiveSuccess(data) end, "Lua.game.chairList.OnInformationReceiveSuccess")
 	EventManager:AddListener(Global.Event.InformationStage.ReceiveInformationCount, function(data) self:OnReceiveInformationCount(data) end, "Lua.game.chairList.OnReceiveInformationCount")
 	EventManager:AddListener(Global.Event.InformationStage.PlayerWantPlayHandCard, function(data) self:OnReceivePlayerWantPlayHandCard(data) end, "Lua.game.chairList.OnReceivePlayerWantPlayHandCard")
@@ -392,7 +392,7 @@ function ChairList:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStage.GameTurnDisCardStart, "Lua.game.chairList.OnGameTurnDisCardStart")
 	EventManager:RemoveListener(Global.Event.InformationStage.ReceiveHandCardCount, "Lua.game.chairList.OnReceiveHandCardCount")
 	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmitReady, "Lua.game.chairList.OnInformationTransmitReady")
-	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceive, "Lua.game.chairList.OnWaitInformationReceive")
+	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmit, "Lua.game.chairList.OnInformationTransmit")
 	EventManager:RemoveListener(Global.Event.InformationStage.WaitEnd, "Lua.game.chairList.OnInformationReceiveSuccess")
 	EventManager:RemoveListener(Global.Event.InformationStage.ReceiveInformationCount, "Lua.game.chairList.OnReceiveInformationCount")
 	EventManager:RemoveListener(Global.Event.InformationStage.PlayerWantPlayHandCard, "Lua.game.chairList.OnReceivePlayerWantPlayHandCard")

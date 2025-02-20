@@ -29,7 +29,6 @@ local OnReceiveGameTurnStart = nil
 local OnReceiveGameTurnOpertateEnd = nil
 local OnReceiveGameTurnDisCard = nil
 local OnReceiveGameTurnEnd = nil
-local OnReceiveWaitInformationReceive = nil
                         
 local InitUIReference = function()
 	--发牌器托管
@@ -161,10 +160,7 @@ end
 
 --发出情报动画结束
 local OnInformationTransmitStart = function()
-	SetInformationStage(InformationStage.WaitInformationReceive, nil)
-	if cacheData.WaitInformationReceive ~= nil then
-		OnReceiveWaitInformationReceive(cacheData.WaitInformationReceive)
-	end
+	
 end
 
 local OnInfomationCardReceiveComplete = function()
@@ -304,7 +300,7 @@ end
 
 --轮到某个玩家
 OnReceiveGameTurn = function(bytes)
-	if RoomInfo.GameStage ~= GameStage.WaitGameTurn then
+	if RoomInfo.GameStage ~= GameStage.WaitGameTurn and RoomInfo.GameStage ~= GameStage.WaitGameTurnOpertateEnd then
 		cacheData.GameTurn = bytes
 		return
 	end
@@ -424,22 +420,27 @@ local OnReceiveWaitInformationTransmit = function(bytes)
 end
 
 --收到情报发出协议
-local OnReceiveInformationTransmit = function(bytes)
-	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationTransmit_S2C, bytes)
+local OnReceiveInformationTransmitReady = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationTransmitReady_S2C, bytes)
 	EventManager:TriggerEvent(Global.Event.InformationStage.InformationTransmitReady, data)
 end
 	
 --收到等待情报接收协议
-OnReceiveWaitInformationReceive = function(bytes)
-	if RoomInfo.InformationStage ~= InformationStage.WaitInformationReceive then
-		cacheData.WaitInformationReceive = bytes
-		return
-	end
-	cacheData.WaitInformationReceive = nil
-	
+local OnReceiveWaitInformationReceive = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.WaitInformationReceive_S2C, bytes)
-	Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName = data.userName
 	SetInformationStage(InformationStage.WaitInformationReceive, nil)
+end
+
+local OnReceiveInformationTransmit = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.InformationTransmit_S2C, bytes)
+	Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName = data.userName
+	
+	if Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName ~= Global.Data.RoomInfo.CurrentGameTurnUserName then
+		Global.Methods.ShowTips2("情报传递玩家:" .. data.userName)
+	else
+		Global.Methods.ShowTips2("情报传回传出者:" .. data.userName)
+	end
+	EventManager:TriggerEvent(Global.Event.InformationStage.InformationTransmit, data)
 end
 
 --收到玩家接收情报协议
@@ -488,6 +489,17 @@ local OnReceivePlayHandCard = function(bytes)
 	EventManager:TriggerEvent(Global.Event.InformationStage.PlayHandCard, data)
 end
 
+local OnReceiveAskUseShiPo = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.AskUseShiPo_S2C, bytes)
+	Global.Data.RoomInfo.AskUseShiPo = true
+	EventManager:TriggerEvent(Global.Event.InformationStage.AskUseShiPo, data)
+end
+
+local OnReceiveTriggerCardResult = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.TriggerCardResult_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.InformationStage.TriggerCardResult, data)
+end
+
 local AddListener = function()
 	ui.dealCard:AddListener()
 	ui.informationCard:AddListener()
@@ -522,7 +534,7 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.HandCardCount_S2C, OnReceiveHandCardCount, "Lua.game.OnReceiveHandCardCount")
 	ProtosManager:AddListener(Global.Protos.Cmd.InformationDeclaration_S2C, OnReceiveInformationDeclaration, "Lua.game.OnReceiveInformationDeclaration")
 	ProtosManager:AddListener(Global.Protos.Cmd.WaitInformationTransmit_S2C, OnReceiveWaitInformationTransmit, "Lua.game.OnReceiveWaitInformationTransmit")
-	ProtosManager:AddListener(Global.Protos.Cmd.InformationTransmit_S2C, OnReceiveInformationTransmit, "Lua.game.OnReceiveInformationTransmit")
+	ProtosManager:AddListener(Global.Protos.Cmd.InformationTransmitReady_S2C, OnReceiveInformationTransmitReady, "Lua.game.OnReceiveInformationTransmitReady")
 	ProtosManager:AddListener(Global.Protos.Cmd.WaitInformationReceive_S2C, OnReceiveWaitInformationReceive, "Lua.game.OnReceiveWaitInformationReceive")
 	ProtosManager:AddListener(Global.Protos.Cmd.InformationReceive_S2C, OnReceiveInformationReceive, "Lua.game.OnReceiveInformationReceive")
 	ProtosManager:AddListener(Global.Protos.Cmd.InformationReceiveSuccess_S2C, OnReceiveInformationReceiveSuccess, "Lua.game.OnReceiveInformationReceiveSuccess")
@@ -530,6 +542,9 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.AskPlayHandCard_S2C, OnReceiveAskPlayHandCard, "Lua.game.OnReceiveAskPlayHandCard")
 	ProtosManager:AddListener(Global.Protos.Cmd.PlayHandCardResponse_S2C, OnReceivePlayHandCardResponse, "Lua.game.OnReceivePlayHandCardResponse")
 	ProtosManager:AddListener(Global.Protos.Cmd.PlayHandCard_S2C, OnReceivePlayHandCard, "Lua.game.OnReceivePlayHandCard")
+	ProtosManager:AddListener(Global.Protos.Cmd.AskUseShiPo_S2C, OnReceiveAskUseShiPo, "Lua.game.OnReceiveAskUseShiPo")
+	ProtosManager:AddListener(Global.Protos.Cmd.TriggerCardResult_S2C, OnReceiveTriggerCardResult, "Lua.game.OnReceiveTriggerCardResult")
+	ProtosManager:AddListener(Global.Protos.Cmd.InformationTransmit_S2C, OnReceiveInformationTransmit, "Lua.game.OnReceiveInformationTransmit")
 end
 
 local RemoveListener = function()
@@ -566,7 +581,7 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.HandCardCount_S2C, OnReceiveHandCardCount)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationDeclaration_S2C, OnReceiveInformationDeclaration)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.WaitInformationTransmit_S2C, OnReceiveWaitInformationTransmit)
-	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationTransmit_S2C, OnReceiveInformationTransmit)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationTransmitReady_S2C, OnReceiveInformationTransmitReady)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.WaitInformationReceive_S2C, OnReceiveWaitInformationReceive)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationReceive_S2C, OnReceiveInformationReceive)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationReceiveSuccess_S2C, OnReceiveInformationReceiveSuccess)
@@ -574,6 +589,9 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.AskPlayHandCard_S2C, OnReceiveAskPlayHandCard)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.PlayHandCardResponse_S2C, OnReceivePlayHandCardResponse)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.PlayHandCard_S2C, OnReceivePlayHandCard)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.AskUseShiPo_S2C, OnReceiveAskUseShiPo)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.TriggerCardResult_S2C, OnReceiveTriggerCardResult)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationTransmit_S2C, OnReceiveInformationTransmit)
 end
 
 RequestRoomInfo = function()
@@ -614,6 +632,7 @@ end
 
 function update()
 	ui.waitResponse:Update()
+	ui.handCard:Update()
 end
 
 function ondisable()

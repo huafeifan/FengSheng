@@ -133,11 +133,11 @@ Global.Protos.Class.PlayHandCardResponse_S2C = "loginServer.game.PlayHandCardRes
 Global.Protos.Cmd.WaitInformationTransmit_S2C = 0x020E
 Global.Protos.Class.WaitInformationTransmit_S2C = "loginServer.game.WaitInformationTransmit_S2C"
 
-Global.Protos.Cmd.InformationTransmit_C2S = 0x020F
-Global.Protos.Class.InformationTransmit_C2S = "loginServer.game.InformationTransmit_C2S"
+Global.Protos.Cmd.InformationTransmitReady_C2S = 0x020F
+Global.Protos.Class.InformationTransmitReady_C2S = "loginServer.game.InformationTransmitReady_C2S"
 
-Global.Protos.Cmd.InformationTransmit_S2C = 0x020F
-Global.Protos.Class.InformationTransmit_S2C = "loginServer.game.InformationTransmit_S2C"
+Global.Protos.Cmd.InformationTransmitReady_S2C = 0x020F
+Global.Protos.Class.InformationTransmitReady_S2C = "loginServer.game.InformationTransmitReady_S2C"
 
 Global.Protos.Cmd.WaitInformationReceive_C2S = 0x0210
 Global.Protos.Class.WaitInformationReceive_C2S = "loginServer.game.WaitInformationReceive_C2S"
@@ -160,6 +160,24 @@ Global.Protos.Class.AskPlayHandCard_S2C = "loginServer.game.AskPlayHandCard_S2C"
 Global.Protos.Cmd.InformationReceiveSuccess_S2C = 0x0214
 Global.Protos.Class.InformationReceiveSuccess_S2C = "loginServer.game.InformationReceiveSuccess_S2C"
 
+Global.Protos.Cmd.InformationTransmitSender_S2C = 0x0215
+Global.Protos.Class.InformationTransmitSender_S2C = "loginServer.game.InformationTransmitSender_S2C"
+
 Global.Protos.Cmd.InformationCount_S2C = 0x0216
 Global.Protos.Class.InformationCount_S2C = "loginServer.game.InformationCount_S2C"
+
+Global.Protos.Cmd.TriggerCardEnd_C2S = 0x0217
+Global.Protos.Class.TriggerCardEnd_C2S = "loginServer.game.TriggerCardEnd_C2S"
+
+Global.Protos.Cmd.AskUseShiPo_C2S = 0x0218
+Global.Protos.Class.AskUseShiPo_C2S = "loginServer.game.AskUseShiPo_C2S"
+
+Global.Protos.Cmd.AskUseShiPo_S2C = 0x0218
+Global.Protos.Class.AskUseShiPo_S2C = "loginServer.game.AskUseShiPo_S2C"
+
+Global.Protos.Cmd.TriggerCardResult_S2C = 0x0219
+Global.Protos.Class.TriggerCardResult_S2C = "loginServer.game.TriggerCardResult_S2C"
+
+Global.Protos.Cmd.InformationTransmit_S2C = 0x021A
+Global.Protos.Class.InformationTransmit_S2C = "loginServer.game.InformationTransmit_S2C"
 --game end

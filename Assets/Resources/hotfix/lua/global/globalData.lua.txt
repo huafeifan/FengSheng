@@ -16,6 +16,7 @@ Global.Data.RoomInfo.GameStage = nil
 Global.Data.RoomInfo.InformationStage = nil
 Global.Data.RoomInfo.CurrentGameTurnUserName = nil --当前是哪个玩家的回合
 Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName = nil --当前情报传递到哪个玩家
+Global.Data.RoomInfo.AskUseShiPo = false  --是否使用识破
 
 Global.Data.User.SetData = function(user)
 	Global.Data.User.UserName = user.name
@@ -53,6 +54,7 @@ Global.Data.RoomInfo.Clear = function()
 	Global.Data.RoomInfo.CurrentGameTurnUserName = nil
 	Global.Data.RoomInfo.CurrentInformationTransmitUserName = nil
 	Global.Data.RoomInfo.CurrentInformationResponseUserName = nil
+	Global.Data.RoomInfo.CanUseShiPo = false
 end
 
 Global.Data.RoomInfo.SetGameStage = function(stage, data)

@@ -132,12 +132,22 @@ function InformationCard:OnWaitInformationReceive()
 	self.ui.tip.text = "等待玩家:"..Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName.."接收情报"
 end
 
+function InformationCard:OnInformationTransmit(data)
+	if data.userName == Global.Data.RoomInfo.CurrentGameTurnUserName then
+		self.ui.tip.text = "情报传回玩家:"..data.userName
+	else
+		self.ui.tip.text = "情报传至玩家:"..data.userName
+	end
+end
+
 function InformationCard:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.informationCard.OnWaitInformationReceive")
+	EventManager:AddListener(Global.Event.InformationStage.InformationTransmit, function(data) self:OnInformationTransmit(data) end, "Lua.game.informationCard.OnInformationTransmit")
 end
 
 function InformationCard:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceive, "Lua.game.informationCard.OnWaitInformationReceive")
+	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmit, "Lua.game.informationCard.OnInformationTransmit")
 end
 
 function InformationCard:Dispose()

@@ -160,9 +160,8 @@ end
 local OnLogin = function(bytes)
 	local data = Global.Protos.Methods.Bytes2Lua(Global.Protos.FileName.Login, Global.Protos.Class.Login_S2C, bytes)
 	
-	Global.Methods.ShowTips(data.msg)
-	
 	if data.code == "Success" then
+		Global.Methods.ShowTips2(data.msg)
 		ui.loginBtn.gameObject:SetActive(false)
 		ui.inputName.gameObject:SetActive(false)
 		ui.createRoomBtn.gameObject:SetActive(true)
@@ -172,6 +171,8 @@ local OnLogin = function(bytes)
 		ui.head:SetData(data.user.name)
 		
 		Global.Data.User.SetData(data.user)
+	else
+		Global.Methods.ShowTips(data.msg)
 	end
 	
 end

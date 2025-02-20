@@ -1,8 +1,6 @@
 WaitResponse = {}
 WaitResponse.__index = WaitResponse
 
-local waitTime = 5
-
 function WaitResponse:New(gameObject)
 	local item = {}
 	item.gameObject = gameObject
@@ -18,8 +16,7 @@ function WaitResponse:InitUIReference()
 end
 
 function WaitResponse:InitUI()
-	self.gameObject:SetActive(false)
-	self.isStart = false
+	self:Stop()
 end
 
 function WaitResponse:AddUIEvent()
@@ -31,57 +28,104 @@ function WaitResponse:RemoveUIEvent()
 end
 
 function WaitResponse:Update()
-	if self.isStart == true then
-		if self.remainTime > Time.time then
-			self.ui.slider.fillAmount = (self.remainTime - Time.time) / waitTime
-		else
-			self.ui.slider.fillAmount = 0
-			self.isStart = false
-			self.gameObject:SetActive(false)
-			
-			local sendData = {}
-			sendData.userName = Global.Data.User.UserName
-			sendData.isSkip = true
-			local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCardResponse_C2S, sendData)
-			NetManager:Send(Global.Login.Network, Global.Protos.Cmd.PlayHandCardResponse_C2S, dataBytes)
-		end
+	if self.WaitTimeFunc ~= nil then
+		self:WaitTimeFunc()
+	end
+end
+	
+function WaitResponse:NormalTime()
+	if self.isStart == false then return end
+	
+	if self.remainTime > Time.time then
+		self.ui.slider.fillAmount = (self.remainTime - Time.time) / self.duration
+	else
+		self.ui.slider.fillAmount = 0
+		self:Stop()
+		EventManager:TriggerEvent(Global.Event.InformationStage.OnWaitResponseTimer, nil)
+		local sendData = {}
+		sendData.userName = Global.Data.User.UserName
+		sendData.isSkip = true
+		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCardResponse_C2S, sendData)
+		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.PlayHandCardResponse_C2S, dataBytes)
 	end
 end
 
 function WaitResponse:OnReceiveAskPlayHandCard(data)
-	for i = 1, #data.userName do
-		if data.userName[i] == Global.Data.User.UserName then
-			self.remainTime = Time.time + waitTime
-			self.gameObject:SetActive(true)
-			self.isStart = true
-			break
-		end
-	end
+	self.WaitTimeFunc = self.NormalTime
+	self:Start(5)
 end
 
 function WaitResponse:OnReceiveStopWaitResponseTimer()
+	self:Stop()
+end
+
+function WaitResponse:OnReceivePlayerWantPlayHandCard(data)
+	self:Stop()
+end
+
+function WaitResponse:OnReceiveAskUseShiPo(data)
+	self.WaitTimeFunc = function()
+		if self.isStart == false then return end
+		
+		if self.remainTime > Time.time then
+			self.ui.slider.fillAmount = (self.remainTime - Time.time) / self.duration
+		else
+			self.ui.slider.fillAmount = 0
+			self:Stop()
+
+			Global.Data.RoomInfo.AskUseShiPo = false
+			EventManager:TriggerEvent(Global.Event.InformationStage.AskUseShiPoEnd, nil)
+			
+			local sendData = {}
+			sendData.userName = Global.Data.User.UserName
+			sendData.isUse = false
+			sendData.card = nil
+			sendData.handCardIndex = nil
+			local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.AskUseShiPo_C2S, sendData)
+			NetManager:Send(Global.Login.Network, Global.Protos.Cmd.AskUseShiPo_C2S, dataBytes)
+			
+			self.WaitTimeFunc = self.NormalTime
+		end
+	end
+	
+	self:Start(10)
+end
+
+function WaitResponse:Start(duration)
+	self.duration = duration
+	self.remainTime = Time.time + duration
+	self.isStart = true
+	self.gameObject:SetActive(true)
+end
+
+function WaitResponse:Stop()
 	self.isStart = false
 	self.gameObject:SetActive(false)
 end
 
-function WaitResponse:OnReceivePlayerWantPlayHandCard(data)
-	self.isStart = false
-	self.gameObject:SetActive(false)
+function WaitResponse:OnReceiveAskUseShiPoEnd()
+	self:Stop()
 end
 
 function WaitResponse:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.ReceiveAskPlayHandCard, function(data) self:OnReceiveAskPlayHandCard(data) end, "Lua.game.waitResponse.OnReceiveAskPlayHandCard")
 	EventManager:AddListener(Global.Event.InformationStage.StopWaitResponseTimer, function() self:OnReceiveStopWaitResponseTimer() end, "Lua.game.waitResponse.OnReceiveStopWaitResponseTimer")
 	EventManager:AddListener(Global.Event.InformationStage.PlayerWantPlayHandCard, function(data) self:OnReceivePlayerWantPlayHandCard(data) end, "Lua.game.waitResponse.OnReceivePlayerWantPlayHandCard")
+	EventManager:AddListener(Global.Event.InformationStage.AskUseShiPo, function(data) self:OnReceiveAskUseShiPo(data) end, "Lua.game.waitResponse.OnReceiveAskUseShiPo")
+	EventManager:AddListener(Global.Event.InformationStage.AskUseShiPoEnd, function() self:OnReceiveAskUseShiPoEnd() end, "Lua.game.waitResponse.OnReceiveAskUseShiPoEnd")
 end
 
 function WaitResponse:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.ReceiveAskPlayHandCard, "Lua.game.waitResponse.OnReceiveAskPlayHandCard")
 	EventManager:RemoveListener(Global.Event.InformationStage.StopWaitResponseTimer, "Lua.game.waitResponse.OnReceiveStopWaitResponseTimer")
 	EventManager:RemoveListener(Global.Event.InformationStage.PlayerWantPlayHandCard, "Lua.game.waitResponse.OnReceivePlayerWantPlayHandCard")
+	EventManager:RemoveListener(Global.Event.InformationStage.AskUseShiPo, "Lua.game.waitResponse.OnReceiveAskUseShiPo")
+	EventManager:RemoveListener(Global.Event.InformationStage.AskUseShiPoEnd, "Lua.game.waitResponse.OnReceiveAskUseShiPoEnd")
 end
 
 function WaitResponse:Dispose()
 	self.remainTime = 0
 	self.isStart = false
+	self.duration = 0
+	self.WaitTimeFunc = nil
 end

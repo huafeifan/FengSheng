@@ -274,3 +274,7 @@ function HandCard:Dispose()
 	self.handCards = {}
 	self.chooseCards = {}
 end
+
+function HandCard:Update()
+	self.ui.btnList:Update()
+end
