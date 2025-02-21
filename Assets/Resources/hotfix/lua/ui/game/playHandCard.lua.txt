@@ -12,52 +12,110 @@ function PlayHandCard:New(gameObject)
 end
 
 function PlayHandCard:InitUIReference()
-	self.ui.image = self.transform:Find("Card"):GetComponent(typeof(Image))
-	self.ui.btn = self.transform:Find("Card"):GetComponent(typeof(Button))
-	self.ui.tip = self.transform:Find("Tips"):GetComponent(typeof(Text))
-	self.ui.name = self.transform:Find("Name"):GetComponent(typeof(Text))
-	self.ui.defaultPos = self.ui.image.transform.position
+	self.ui.normalCard = self.transform:Find("Card"):GetComponent(typeof(Image))
+	self.ui.normalCardName = self.transform:Find("Name"):GetComponent(typeof(Text))
+	self.ui.normalCardPos = self.ui.normalCard.transform.position
+	self.ui.normalCardBtn = self.transform:Find("Card"):GetComponent(typeof(Button))
+	self.ui.disable = self.transform:Find("Card/X")
+	
+	self.ui.shiPoCard = self.transform:Find("Card2"):GetComponent(typeof(Image))
+	self.ui.shiPoCardName = self.transform:Find("Name2"):GetComponent(typeof(Text))
+	self.ui.shiPoCardPos = self.ui.shiPoCard.transform.position
+	self.ui.shiPoCardBtn = self.transform:Find("Card2"):GetComponent(typeof(Button))
 end
 
 function PlayHandCard:InitUI()
 	self.gameObject:SetActive(true)
-	self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
-	self.ui.tip.text = ""
-	self.ui.name.text = ""
-	self.ui.image.gameObject:SetActive(false)
-	self.card = nil
+	self.ui.disable.gameObject:SetActive(false)
+	
+	self.ui.normalCard.gameObject:SetActive(false)
+	self.ui.normalCardName.text = ""
+	self.ui.normalCard.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+	self.normalCard = nil
+	
+	self.ui.shiPoCard.gameObject:SetActive(false)
+	self.ui.shiPoCardName.text = ""
+	self.ui.shiPoCard.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+	self.shiPoCard = nil
 end
 
 function PlayHandCard:PlayHandCardStart(startPos, data, onComplete)
-	self.ui.image.transform.position = startPos
-	self.ui.image.gameObject:SetActive(true)
-	self.ui.tip.text = ""
-	self.ui.name.text = ""
-	self.card = data.card
+	if data.card.xiaoguo == GameCard.XiaoGuo.ShiPo then 
+		self:PlayShiPoCardStart(startPos, data, onComplete)
+	else
+		self:PlayNormalCardStart(startPos, data, onComplete)
+	end
+end
 
-	self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
-	self.ui.image.transform:DOMove(self.ui.defaultPos, 0.3):OnComplete(function()
-			self.ui.name.text = "玩家:"..data.userName.."打出的卡牌"
+function PlayHandCard:PlayNormalCardStart(startPos, data, onComplete)
+	self.ui.disable.gameObject:SetActive(false)
+	self.ui.normalCard.transform.position = startPos
+	self.ui.normalCard.gameObject:SetActive(true)
+	self.ui.normalCardName.text = ""
+	self.normalCard = data.card
+	
+	self.ui.shiPoCard.gameObject:SetActive(false)
+	self.ui.shiPoCardName.text = ""
+	self.shiPoCard = nil
+
+	self.ui.normalCard.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
+	self.ui.normalCard.transform:DOMove(self.ui.normalCardPos, 0.3):OnComplete(function()
+			self.ui.normalCardName.text = data.userName.."打出的卡牌"
 			if onComplete ~= nil then
 				onComplete()
 			end
 		end)
 end
 
-function PlayHandCard:OnBtnCard()
-	if self.card ~= nil then
+function PlayHandCard:PlayShiPoCardStart(startPos, data, onComplete)
+	self.ui.shiPoCard.transform.position = startPos
+	self.ui.shiPoCard.gameObject:SetActive(true)
+	self.ui.shiPoCardName.text = ""
+	self.shiPoCard = data.card
+
+	self.ui.shiPoCard.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
+	self.ui.shiPoCard.transform:DOMove(self.ui.shiPoCardPos, 0.3):OnComplete(function()
+			self.ui.shiPoCardName.text = data.userName.."打出的卡牌"
+			self.ui.disable.gameObject:SetActive(not self.ui.disable.gameObject.activeSelf)
+			if onComplete ~= nil then
+				onComplete()
+			end
+		end)
+end
+
+function PlayHandCard:OnBtnNormalCard()
+	if self.normalCard ~= nil then
 		local data = {}
-		data.path = Global.Resources.Card[self.card.cardName]
+		data.path = Global.Resources.Card[self.normalCard.cardName]
 		EventManager:TriggerEvent(Global.Event.DetailCard, data)
 	end
 end
 
+function PlayHandCard:OnBtnShiPoCard()
+	if self.shiPoCard ~= nil then
+		local data = {}
+		data.path = Global.Resources.Card[self.shiPoCard.cardName]
+		EventManager:TriggerEvent(Global.Event.DetailCard, data)
+	end
+end
+
+function PlayHandCard:DiaoBaoAnimation(targetPos, onComplete)
+	self.ui.normalCard.transform:DOMove(targetPos, 0.25):OnComplete(function()
+			if onComplete ~= nil then
+				onComplete()
+			end
+			self:Dispose()
+		end)
+end
+
 function PlayHandCard:AddUIEvent()
-	UIEventManager:AddListener(self.ui.btn, self.OnBtnCard, self, "lua.game.playHandCard.OnBtnCard")
+	UIEventManager:AddListener(self.ui.normalCardBtn, self.OnBtnNormalCard, self, "lua.game.playHandCard.OnBtnNormalCard")
+	UIEventManager:AddListener(self.ui.shiPoCardBtn, self.OnBtnShiPoCard, self, "lua.game.playHandCard.OnBtnShiPoCard")
 end
 
 function PlayHandCard:RemoveUIEvent()
-	UIEventManager:RemoveAllListeners(self.ui.btn)
+	UIEventManager:RemoveAllListeners(self.ui.normalCardBtn)
+	UIEventManager:RemoveAllListeners(self.ui.shiPoCardBtn)
 end
 
 function PlayHandCard:AddListener()
@@ -69,5 +127,18 @@ function PlayHandCard:RemoveListener()
 end
 
 function PlayHandCard:Dispose()
-	self.card = nil
+	if self.ui.normalCard ~= nil then
+		self.ui.normalCard.gameObject:SetActive(false)
+	end
+	if self.ui.shiPoCard ~= nil then
+		self.ui.shiPoCard.gameObject:SetActive(false)
+	end
+	if self.ui.normalCardName ~= nil then
+		self.ui.normalCardName.text = ""
+	end
+	if self.ui.shiPoCardName ~= nil then
+		self.ui.shiPoCardName.text = ""
+	end
+	self.normalCard = nil
+	self.shiPoCard = nil
 end

@@ -1,0 +1,9 @@
+ShiPo = {}
+ShiPo.__index = ShiPo
+
+function ShiPo.CheckUseCondition()
+	Debug.Log("ShiPo")
+	return true
+end
+
+return ShiPo

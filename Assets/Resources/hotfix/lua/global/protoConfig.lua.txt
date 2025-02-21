@@ -166,9 +166,6 @@ Global.Protos.Class.InformationTransmitSender_S2C = "loginServer.game.Informatio
 Global.Protos.Cmd.InformationCount_S2C = 0x0216
 Global.Protos.Class.InformationCount_S2C = "loginServer.game.InformationCount_S2C"
 
-Global.Protos.Cmd.TriggerCardEnd_C2S = 0x0217
-Global.Protos.Class.TriggerCardEnd_C2S = "loginServer.game.TriggerCardEnd_C2S"
-
 Global.Protos.Cmd.AskUseShiPo_C2S = 0x0218
 Global.Protos.Class.AskUseShiPo_C2S = "loginServer.game.AskUseShiPo_C2S"
 
@@ -180,4 +177,10 @@ Global.Protos.Class.TriggerCardResult_S2C = "loginServer.game.TriggerCardResult_
 
 Global.Protos.Cmd.InformationTransmit_S2C = 0x021A
 Global.Protos.Class.InformationTransmit_S2C = "loginServer.game.InformationTransmit_S2C"
+
+Global.Protos.Cmd.UseDiaoBao_C2S = 0x021B
+Global.Protos.Class.UseDiaoBao_C2S = "loginServer.game.UseDiaoBao_C2S"
+
+Global.Protos.Cmd.UseDiaoBao_S2C = 0x021B
+Global.Protos.Class.UseDiaoBao_S2C = "loginServer.game.UseDiaoBao_S2C"
 --game end

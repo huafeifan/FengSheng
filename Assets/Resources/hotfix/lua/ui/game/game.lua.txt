@@ -34,14 +34,14 @@ local InitUIReference = function()
 	--发牌器托管
 	ui.dealCard = DealCard:New(self.transform:Find("CardPool").gameObject)
 	ui.dealCard:InitUIReference()
-
-	--传递的情报卡托管
-	ui.informationCard = InformationCard:New(self.transform:Find("InformationCard").gameObject)
-	ui.informationCard:InitUIReference()
 	
 	--作为效果打出的卡牌托管
 	ui.playHandCard = PlayHandCard:New(self.transform:Find("PlayHandCard").gameObject)
 	ui.playHandCard:InitUIReference()
+	
+	--传递的情报卡托管
+	ui.informationCard = InformationCard:New(self.transform:Find("InformationCard").gameObject, ui.playHandCard)
+	ui.informationCard:InitUIReference()
 	
 	--场景按钮托管
 	ui.gameBtn = GameBtn:New(self.gameObject, ui)
@@ -484,6 +484,7 @@ local OnReceivePlayHandCard = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCard_S2C, bytes)
 	if data.code == "Failed" then
 		Global.Methods.ShowTips2(data.msg)
+		EventManager:TriggerEvent(Global.Event.InformationStage.PlayHandCardFailed, data)
 		return
 	end
 	EventManager:TriggerEvent(Global.Event.InformationStage.PlayHandCard, data)
@@ -491,13 +492,17 @@ end
 
 local OnReceiveAskUseShiPo = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.AskUseShiPo_S2C, bytes)
-	Global.Data.RoomInfo.AskUseShiPo = true
 	EventManager:TriggerEvent(Global.Event.InformationStage.AskUseShiPo, data)
 end
 
 local OnReceiveTriggerCardResult = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.TriggerCardResult_S2C, bytes)
 	EventManager:TriggerEvent(Global.Event.InformationStage.TriggerCardResult, data)
+end
+
+local OnReceiveUseDiaoBao = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseDiaoBao_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.Card.UseDiaoBao, data)
 end
 
 local AddListener = function()
@@ -545,6 +550,7 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.AskUseShiPo_S2C, OnReceiveAskUseShiPo, "Lua.game.OnReceiveAskUseShiPo")
 	ProtosManager:AddListener(Global.Protos.Cmd.TriggerCardResult_S2C, OnReceiveTriggerCardResult, "Lua.game.OnReceiveTriggerCardResult")
 	ProtosManager:AddListener(Global.Protos.Cmd.InformationTransmit_S2C, OnReceiveInformationTransmit, "Lua.game.OnReceiveInformationTransmit")
+	ProtosManager:AddListener(Global.Protos.Cmd.UseDiaoBao_S2C, OnReceiveUseDiaoBao, "Lua.game.OnReceiveUseDiaoBao")
 end
 
 local RemoveListener = function()
@@ -592,6 +598,7 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.AskUseShiPo_S2C, OnReceiveAskUseShiPo)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.TriggerCardResult_S2C, OnReceiveTriggerCardResult)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationTransmit_S2C, OnReceiveInformationTransmit)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.UseDiaoBao_S2C, OnReceiveUseDiaoBao)
 end
 
 RequestRoomInfo = function()

@@ -1,11 +1,12 @@
 InformationCard = {}
 InformationCard.__index = InformationCard
 
-function InformationCard:New(gameObject)
+function InformationCard:New(gameObject, playHandCard)
 	local item = {}
 	item.gameObject = gameObject
 	item.transform = gameObject.transform
 	item.ui = {}
+	item.playHandCard = playHandCard
 
 	setmetatable(item, InformationCard)
 	return item
@@ -113,7 +114,7 @@ function InformationCard:InformationReceiveSuccessAnimation(targetPos)
 end
 
 function InformationCard:OnBtnCard()
-	if self.card ~= nil then
+	if self.card ~= nil and self.card.transmit == GameCard.TransmitType.WenBen then
 		local data = {}
 		data.path = Global.Resources.Card[self.card.cardName]
 		EventManager:TriggerEvent(Global.Event.DetailCard, data)
@@ -140,14 +141,24 @@ function InformationCard:OnInformationTransmit(data)
 	end
 end
 
+function InformationCard:OnUseDiaoBao(data)
+	self.playHandCard:DiaoBaoAnimation(self.ui.image.transform.position, function()
+			self.card = data.card
+			self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
+			EventManager:TriggerEvent(Global.Event.InformationStage.TriggerCardEnd, data)
+		end)
+end
+
 function InformationCard:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.informationCard.OnWaitInformationReceive")
 	EventManager:AddListener(Global.Event.InformationStage.InformationTransmit, function(data) self:OnInformationTransmit(data) end, "Lua.game.informationCard.OnInformationTransmit")
+	EventManager:AddListener(Global.Event.Card.UseDiaoBao, function(data) self:OnUseDiaoBao(data) end, "Lua.game.informationCard.OnUseDiaoBao")
 end
 
 function InformationCard:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceive, "Lua.game.informationCard.OnWaitInformationReceive")
 	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmit, "Lua.game.informationCard.OnInformationTransmit")
+	EventManager:RemoveListener(Global.Event.Card.UseDiaoBao, "Lua.game.informationCard.OnUseDiaoBao")
 end
 
 function InformationCard:Dispose()

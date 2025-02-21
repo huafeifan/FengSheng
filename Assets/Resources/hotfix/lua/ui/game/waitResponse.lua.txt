@@ -73,7 +73,6 @@ function WaitResponse:OnReceiveAskUseShiPo(data)
 			self.ui.slider.fillAmount = 0
 			self:Stop()
 
-			Global.Data.RoomInfo.AskUseShiPo = false
 			EventManager:TriggerEvent(Global.Event.InformationStage.AskUseShiPoEnd, nil)
 			
 			local sendData = {}

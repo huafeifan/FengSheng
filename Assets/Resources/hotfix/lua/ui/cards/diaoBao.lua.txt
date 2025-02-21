@@ -1,0 +1,22 @@
+DiaoBao = {}
+DiaoBao.__index = DiaoBao
+
+function DiaoBao.CheckUseCondition()
+	Debug.Log("DiaoBao")
+	return true
+end
+
+function DiaoBao.OnTriggerCardAnimationEnd(data, script)
+	local sendData = {}
+	sendData.fromUserName = Global.Data.User.UserName
+	sendData.card = data.card
+	sendData.toUserName = nil
+	sendData.transmit = GameCard.TransmitType.WenBen
+	sendData.direction = GameCard.DirectionType.Ni
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseDiaoBao_C2S, sendData)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseDiaoBao_C2S, dataBytes)
+	
+	script.informationTransmitData = sendData
+end
+
+return DiaoBao
