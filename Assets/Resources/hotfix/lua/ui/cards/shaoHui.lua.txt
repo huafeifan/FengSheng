@@ -1,0 +1,16 @@
+ShaoHui = {}
+ShaoHui.__index = ShaoHui
+
+function ShaoHui.CheckUseCondition()
+	Debug.Log("ShaoHui")
+	return true
+end
+
+function ShaoHui.OnTriggerCardAnimationEnd(data, script)
+	local sendData = {}
+	sendData = data.userName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseShaoHui_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseShaoHui_C2S, dataBytes)
+end
+
+return ShaoHui
