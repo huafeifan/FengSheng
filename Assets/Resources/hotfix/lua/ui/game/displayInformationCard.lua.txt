@@ -1,0 +1,81 @@
+DisplayInformationCard = {}
+DisplayInformationCard.__index = DisplayInformationCard
+
+function DisplayInformationCard:New(gameObject)
+	local item = {}
+	item.gameObject = gameObject
+	item.transform = gameObject.transform
+	item.ui = {}
+
+	setmetatable(item, DisplayInformationCard)
+	return item
+end
+
+function DisplayInformationCard:InitUIReference()
+	self.ui.image = self.transform:Find("Card"):GetComponent(typeof(Image))
+	self.ui.btn = self.transform:Find("Card"):GetComponent(typeof(Button))
+end
+
+function DisplayInformationCard:InitUI()
+	self.card = nil
+	self.gameObject:SetActive(false)
+end
+
+function DisplayInformationCard:OnCardBtn()
+	if self.card ~= nil then
+		local data = {}
+		data.path = Global.Resources.Card[self.card.cardName]
+		EventManager:TriggerEvent(Global.Event.DetailCard, data)
+	end
+end
+
+function DisplayInformationCard:AddUIEvent()
+	UIEventManager:AddListener(self.ui.btn, self.OnCardBtn, self, "lua.game.displayInformationCard.OnCardBtn")
+end
+
+function DisplayInformationCard:RemoveUIEvent()
+	UIEventManager:RemoveAllListeners(self.ui.btn)
+end
+
+function DisplayInformationCard:OnInfomationCardReceiveComplete()
+	self.gameObject:SetActive(false)
+end
+
+function DisplayInformationCard:SetData(card)
+	self.gameObject:SetActive(true)
+	self.card = card
+	self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[self.card.cardName])
+end
+
+function DisplayInformationCard:OnInformationTransmitStart(data)
+	self.card = data.card
+	if data.transmit == GameCard.TransmitType.WenBen or data.fromUserName == Global.Data.User.UserName then 
+		self:SetData(data.card)
+	end
+end
+
+function DisplayInformationCard:OnDiaoBaoAnimationEnd(data)
+	self:SetData(data.card)
+end
+
+function DisplayInformationCard:OnPoYiAnimationEnd(data)
+	self:SetData(self.card)
+end
+
+function DisplayInformationCard:AddListener()
+	EventManager:AddListener(Global.Event.InformationStage.InfomationCardReceiveComplete, function() self:OnInfomationCardReceiveComplete() end, "Lua.game.displayInformationCard.OnInfomationCardReceiveComplete")
+	EventManager:AddListener(Global.Event.InformationStage.InformationTransmitStart, function(data) self:OnInformationTransmitStart(data) end, "Lua.game.displayInformationCard.OnInformationTransmitStart")
+	EventManager:AddListener(Global.Event.Card.OnDiaoBaoAnimationEnd, function(data) self:OnDiaoBaoAnimationEnd(data) end, "Lua.game.displayInformationCard.OnDiaoBaoAnimationEnd")
+	EventManager:AddListener(Global.Event.Card.OnPoYiAnimationEnd, function(data) self:OnPoYiAnimationEnd(data) end, "Lua.game.displayInformationCard.OnPoYiAnimationEnd")
+end
+
+function DisplayInformationCard:RemoveListener()
+	EventManager:RemoveListener(Global.Event.InformationStage.InfomationCardReceiveComplete, "Lua.game.displayInformationCard.OnInfomationCardReceiveComplete")
+	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmitStart, "Lua.game.displayInformationCard.OnInformationTransmitStart")
+	EventManager:RemoveListener(Global.Event.Card.OnDiaoBaoAnimationEnd, "Lua.game.displayInformationCard.OnDiaoBaoAnimationEnd")
+	EventManager:RemoveListener(Global.Event.Card.OnPoYiAnimationEnd, "Lua.game.displayInformationCard.OnPoYiAnimationEnd")
+end
+
+function DisplayInformationCard:Dispose()
+	
+end

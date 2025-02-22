@@ -73,7 +73,7 @@ function WaitResponse:OnReceiveAskUseShiPo(data)
 			self.ui.slider.fillAmount = 0
 			self:Stop()
 
-			EventManager:TriggerEvent(Global.Event.InformationStage.AskUseShiPoEnd, nil)
+			EventManager:TriggerEvent(Global.Event.Card.AskUseShiPoEnd, nil)
 			
 			local sendData = {}
 			sendData.userName = Global.Data.User.UserName
@@ -110,16 +110,16 @@ function WaitResponse:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.ReceiveAskPlayHandCard, function(data) self:OnReceiveAskPlayHandCard(data) end, "Lua.game.waitResponse.OnReceiveAskPlayHandCard")
 	EventManager:AddListener(Global.Event.InformationStage.StopWaitResponseTimer, function() self:OnReceiveStopWaitResponseTimer() end, "Lua.game.waitResponse.OnReceiveStopWaitResponseTimer")
 	EventManager:AddListener(Global.Event.InformationStage.PlayerWantPlayHandCard, function(data) self:OnReceivePlayerWantPlayHandCard(data) end, "Lua.game.waitResponse.OnReceivePlayerWantPlayHandCard")
-	EventManager:AddListener(Global.Event.InformationStage.AskUseShiPo, function(data) self:OnReceiveAskUseShiPo(data) end, "Lua.game.waitResponse.OnReceiveAskUseShiPo")
-	EventManager:AddListener(Global.Event.InformationStage.AskUseShiPoEnd, function() self:OnReceiveAskUseShiPoEnd() end, "Lua.game.waitResponse.OnReceiveAskUseShiPoEnd")
+	EventManager:AddListener(Global.Event.Card.AskUseShiPo, function(data) self:OnReceiveAskUseShiPo(data) end, "Lua.game.waitResponse.OnReceiveAskUseShiPo")
+	EventManager:AddListener(Global.Event.Card.AskUseShiPoEnd, function() self:OnReceiveAskUseShiPoEnd() end, "Lua.game.waitResponse.OnReceiveAskUseShiPoEnd")
 end
 
 function WaitResponse:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.ReceiveAskPlayHandCard, "Lua.game.waitResponse.OnReceiveAskPlayHandCard")
 	EventManager:RemoveListener(Global.Event.InformationStage.StopWaitResponseTimer, "Lua.game.waitResponse.OnReceiveStopWaitResponseTimer")
 	EventManager:RemoveListener(Global.Event.InformationStage.PlayerWantPlayHandCard, "Lua.game.waitResponse.OnReceivePlayerWantPlayHandCard")
-	EventManager:RemoveListener(Global.Event.InformationStage.AskUseShiPo, "Lua.game.waitResponse.OnReceiveAskUseShiPo")
-	EventManager:RemoveListener(Global.Event.InformationStage.AskUseShiPoEnd, "Lua.game.waitResponse.OnReceiveAskUseShiPoEnd")
+	EventManager:RemoveListener(Global.Event.Card.AskUseShiPo, "Lua.game.waitResponse.OnReceiveAskUseShiPo")
+	EventManager:RemoveListener(Global.Event.Card.AskUseShiPoEnd, "Lua.game.waitResponse.OnReceiveAskUseShiPoEnd")
 end
 
 function WaitResponse:Dispose()

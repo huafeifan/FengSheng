@@ -251,9 +251,9 @@ function HandCardBtn:OnPlayHandBtn()
 		return
 	end
 	
-	--if self.cardScripts[card.xiaoguo].CheckUseCondition() == false then
-		--return
-	--end
+	if self.cardScripts[card.xiaoguo].CheckUseCondition() == false then
+		return
+	end
 	
 	self.ui[HandCardBtn.PlayHandBtn].activeFlag.noPlayingCard = false
 	self.ui[HandCardBtn.InformationDeclarationBtn].activeFlag.noPlayingCard = false
@@ -536,13 +536,21 @@ function HandCardBtn:OnPlayHandCardFailed(data)
 	self.ui[HandCardBtn.SkipBtn].activeFlag.noPlayingCard = true
 end
 
-function HandCardBtn:OnTriggerCardEnd(data)
+function HandCardBtn:OnCardAnimationEnd(data)
+	self.cardScripts[data.card.xiaoguo].OnTriggerCardAnimationEnd(data, self)
+	self.ui[HandCardBtn.PlayHandBtn].activeFlag.noPlayingCard = true
+	self.ui[HandCardBtn.InformationDeclarationBtn].activeFlag.noPlayingCard = true
+	self.ui[HandCardBtn.SkipBtn].activeFlag.noPlayingCard = true
+end
+
+function HandCardBtn:OnDiaoBaoAnimationEnd(data)
 	if data.userName == Global.Data.User.UserName then
-		self.cardScripts[data.card.xiaoguo].OnTriggerCardAnimationEnd(data, self)
-		self.ui[HandCardBtn.PlayHandBtn].activeFlag.noPlayingCard = true
-		self.ui[HandCardBtn.InformationDeclarationBtn].activeFlag.noPlayingCard = true
-		self.ui[HandCardBtn.SkipBtn].activeFlag.noPlayingCard = true
+		self:OnCardAnimationEnd(data)
 	end
+end
+
+function HandCardBtn:OnPoYiAnimationEnd(data)
+	self:OnCardAnimationEnd(data)
 end
 
 function HandCardBtn:AddListener()
@@ -556,13 +564,14 @@ function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.handCard.handCardBtn.OnWaitInformationReceive")
 	EventManager:AddListener(Global.Event.InformationStage.ReceiveAskPlayHandCard, function(data) self:OnReceiveAskPlayHandCard(data) end, "Lua.game.handCard.handCardBtn.OnReceiveAskPlayHandCard")
 	EventManager:AddListener(Global.Event.InformationStage.PlayerWantPlayHandCard, function(data) self:OnReceivePlayerWantPlayHandCard(data) end, "Lua.game.handCard.handCardBtn.OnReceivePlayerWantPlayHandCard")
-	EventManager:AddListener(Global.Event.InformationStage.AskUseShiPo, function(data) self:OnReceiveAskUseShiPo(data) end, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPo")
-	EventManager:AddListener(Global.Event.InformationStage.AskUseShiPoEnd, function() self:OnReceiveAskUseShiPoEnd() end, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPoEnd")
+	EventManager:AddListener(Global.Event.Card.AskUseShiPo, function(data) self:OnReceiveAskUseShiPo(data) end, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPo")
+	EventManager:AddListener(Global.Event.Card.AskUseShiPoEnd, function() self:OnReceiveAskUseShiPoEnd() end, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPoEnd")
 	EventManager:AddListener(Global.Event.InformationStage.OnWaitResponseTimer, function() self:OnWaitResponseTimer() end, "Lua.game.handCard.handCardBtn.OnWaitResponseTimer")
 	EventManager:AddListener(Global.Event.InformationStage.TriggerCardResult, function(data) self:OnTriggerCardResult(data) end, "Lua.game.handCard.handCardBtn.OnTriggerCardResult")
 	EventManager:AddListener(Global.Event.InformationStage.InformationTransmit, function(data) self:OnInformationTransmit(data) end, "Lua.game.handCard.handCardBtn.OnInformationTransmit")
 	EventManager:AddListener(Global.Event.InformationStage.PlayHandCardFailed, function(data) self:OnPlayHandCardFailed(data) end, "Lua.game.handCard.handCardBtn.OnPlayHandCardFailed")
-	EventManager:AddListener(Global.Event.InformationStage.TriggerCardEnd, function(data) self:OnTriggerCardEnd(data) end, "Lua.game.handCard.handCardBtn.OnTriggerCardEnd")
+	EventManager:AddListener(Global.Event.Card.OnDiaoBaoAnimationEnd, function(data) self:OnDiaoBaoAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnDiaoBaoAnimationEnd")
+	EventManager:AddListener(Global.Event.Card.OnPoYiAnimationEnd, function(data) self:OnPoYiAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnPoYiAnimationEnd")
 end
 
 function HandCardBtn:RemoveListener()
@@ -576,13 +585,14 @@ function HandCardBtn:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceive, "Lua.game.handCard.handCardBtn.OnWaitInformationReceive")
 	EventManager:RemoveListener(Global.Event.InformationStage.ReceiveAskPlayHandCard, "Lua.game.handCard.handCardBtn.OnReceiveAskPlayHandCard")
 	EventManager:RemoveListener(Global.Event.InformationStage.PlayerWantPlayHandCard, "Lua.game.handCard.handCardBtn.OnReceivePlayerWantPlayHandCard")
-	EventManager:RemoveListener(Global.Event.InformationStage.AskUseShiPo, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPo")
-	EventManager:RemoveListener(Global.Event.InformationStage.AskUseShiPoEnd, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPoEnd")
+	EventManager:RemoveListener(Global.Event.Card.AskUseShiPo, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPo")
+	EventManager:RemoveListener(Global.Event.Card.AskUseShiPoEnd, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPoEnd")
 	EventManager:RemoveListener(Global.Event.InformationStage.OnWaitResponseTimer, "Lua.game.handCard.handCardBtn.OnWaitResponseTimer")
 	EventManager:RemoveListener(Global.Event.InformationStage.TriggerCardResult, "Lua.game.handCard.handCardBtn.OnTriggerCardResult")
 	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmit, "Lua.game.handCard.handCardBtn.OnInformationTransmit")
 	EventManager:RemoveListener(Global.Event.InformationStage.PlayHandCardFailed, "Lua.game.handCard.handCardBtn.OnPlayHandCardFailed")
-	EventManager:RemoveListener(Global.Event.InformationStage.TriggerCardEnd, "Lua.game.handCard.handCardBtn.OnTriggerCardEnd")
+	EventManager:RemoveListener(Global.Event.Card.OnDiaoBaoAnimationEnd, "Lua.game.handCard.handCardBtn.OnDiaoBaoAnimationEnd")
+	EventManager:RemoveListener(Global.Event.Card.OnPoYiAnimationEnd, "Lua.game.handCard.handCardBtn.OnPoYiAnimationEnd")
 end
 
 function HandCardBtn:Dispose()

@@ -6,4 +6,8 @@ function ShiPo.CheckUseCondition()
 	return true
 end
 
+function ShiPo.OnTriggerCardAnimationEnd(data, script)
+	
+end
+
 return ShiPo

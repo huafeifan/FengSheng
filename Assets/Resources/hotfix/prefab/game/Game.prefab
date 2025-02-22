@@ -7223,7 +7223,6 @@ RectTransform:
   - {fileID: 6366234151255512903}
   - {fileID: 5208243616278751170}
   - {fileID: 4760639034981176071}
-  - {fileID: 5625279197569346769}
   m_Father: {fileID: 9134836850402125003}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -7688,7 +7687,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -7707,7 +7706,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u6211\u9001\u51FA\u7684\u60C5\u62A5"
+  m_Text: "\u4F20\u9012\u4E2D\u7684\u60C5\u62A5"
 --- !u!1 &2713523315326433547
 GameObject:
   m_ObjectHideFlags: 0
@@ -21396,7 +21395,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5625279197569346769}
   m_Layer: 5
-  m_Name: MyInformationCard
+  m_Name: DisplayInformationCard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21409,18 +21408,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7671730738306148056}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1161583247875458681}
   - {fileID: 8824815819986450991}
-  m_Father: {fileID: 13553059919335455}
+  m_Father: {fileID: 4354313743715363759}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -485.4, y: 7.3}
+  m_AnchoredPosition: {x: -463.9862, y: -284.433}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7728401978576601956
@@ -22915,6 +22914,7 @@ RectTransform:
   - {fileID: 5631421937862780245}
   - {fileID: 3773254371017343155}
   - {fileID: 6605387067110724856}
+  - {fileID: 5625279197569346769}
   - {fileID: 6214274218641492384}
   - {fileID: 8285377216767374675}
   - {fileID: 6453596525110204000}

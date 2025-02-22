@@ -60,7 +60,7 @@ function InformationCard:InformationDeclarationStart(startPos, data, isSelf, onC
 			if onComplete ~= nil then
 				onComplete()
 			end
-			EventManager:TriggerEvent(Global.Event.InformationStage.InformationTransmitStart, nil)
+			EventManager:TriggerEvent(Global.Event.InformationStage.InformationTransmitStart, data)
 		end
 	end
 	Step4 = function()
@@ -71,7 +71,7 @@ function InformationCard:InformationDeclarationStart(startPos, data, isSelf, onC
 		if onComplete ~= nil then
 			onComplete()
 		end
-		EventManager:TriggerEvent(Global.Event.InformationStage.InformationTransmitStart, nil)
+		EventManager:TriggerEvent(Global.Event.InformationStage.InformationTransmitStart, data)
 	end
 	--method
 
@@ -145,20 +145,47 @@ function InformationCard:OnUseDiaoBao(data)
 	self.playHandCard:DiaoBaoAnimation(self.ui.image.transform.position, function()
 			self.card = data.card
 			self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[data.card.cardName])
-			EventManager:TriggerEvent(Global.Event.InformationStage.TriggerCardEnd, data)
+			EventManager:TriggerEvent(Global.Event.Card.OnDiaoBaoAnimationEnd, data)
 		end)
+end
+
+function InformationCard:OnUsePoYi(data)
+	--method
+	local Step0, Step1, Step2, Step3, Step4 = nil, nil, nil, nil, nil
+	Step0 = function()
+		self.ui.image.transform:DOLocalRotate(Vector3(0, 90, 0), 0.2):SetEase(Ease.Linear):OnComplete(Step1)
+	end
+	Step1 = function()
+		self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card[self.card.cardName])
+		self.ui.image.transform:DOLocalRotate(Vector3.zero, 0.2):SetEase(Ease.Linear):OnComplete(Step2)
+	end
+	Step2 = function()
+		self.ui.image.transform:DOLocalRotate(Vector3(0, 90, 0), 0.2):SetDelay(1.5):SetEase(Ease.Linear):OnComplete(Step3)
+	end
+	Step3 = function()
+		self.ui.image.sprite = ResourcesManager:LoadSprite(Global.Resources.Card.None)
+		self.ui.image.transform:DOLocalRotate(Vector3.zero, 0.2):SetEase(Ease.Linear):OnComplete(Step4)
+	end
+	Step4 = function()
+		EventManager:TriggerEvent(Global.Event.Card.OnPoYiAnimationEnd, data)
+	end
+	--method
+	
+	Step0()
 end
 
 function InformationCard:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.informationCard.OnWaitInformationReceive")
 	EventManager:AddListener(Global.Event.InformationStage.InformationTransmit, function(data) self:OnInformationTransmit(data) end, "Lua.game.informationCard.OnInformationTransmit")
 	EventManager:AddListener(Global.Event.Card.UseDiaoBao, function(data) self:OnUseDiaoBao(data) end, "Lua.game.informationCard.OnUseDiaoBao")
+	EventManager:AddListener(Global.Event.Card.UsePoYi, function(data) self:OnUsePoYi(data) end, "Lua.game.informationCard.OnUsePoYi")
 end
 
 function InformationCard:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.WaitInformationReceive, "Lua.game.informationCard.OnWaitInformationReceive")
 	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmit, "Lua.game.informationCard.OnInformationTransmit")
 	EventManager:RemoveListener(Global.Event.Card.UseDiaoBao, "Lua.game.informationCard.OnUseDiaoBao")
+	EventManager:RemoveListener(Global.Event.Card.UsePoYi, "Lua.game.informationCard.OnUsePoYi")
 end
 
 function InformationCard:Dispose()

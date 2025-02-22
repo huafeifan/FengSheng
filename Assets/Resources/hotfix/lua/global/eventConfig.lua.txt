@@ -48,11 +48,13 @@ Global.Event.InformationStage.ReceiveInformationCount = "Event_InformationStage_
 Global.Event.InformationStage.ReceiveAskPlayHandCard = "Event_InformationStage_ReceiveAskPlayHandCard"
 Global.Event.InformationStage.PlayHandCard = "Event_InformationStage_PlayHandCard"
 Global.Event.InformationStage.PlayHandCardFailed = "Event_InformationStage_PlayHandCardFailed"
-Global.Event.InformationStage.AskUseShiPo = "Event_InformationStage_AskUseShiPo"
-Global.Event.InformationStage.AskUseShiPoEnd = "Event_InformationStage_AskUseShiPoEnd"
 Global.Event.InformationStage.TriggerCardResult = "Event_InformationStage_TriggerCardResult"
-Global.Event.InformationStage.TriggerCardEnd = "Event_InformationStage_TriggerCardEnd"
 Global.Event.InformationStage.InformationTransmit = "Event_InformationStage_InformationTransmit"
 
 Global.Event.Card = {}
+Global.Event.Card.AskUseShiPo = "Event_Card_AskUseShiPo"
+Global.Event.Card.AskUseShiPoEnd = "Event_Card_AskUseShiPoEnd"
 Global.Event.Card.UseDiaoBao = "Event_Card_UseDiaoBao"
+Global.Event.Card.OnDiaoBaoAnimationEnd = "Event_Card_OnDiaoBaoAnimationEnd"
+Global.Event.Card.UsePoYi = "Event_Card_UsePoYi"
+Global.Event.Card.OnPoYiAnimationEnd = "Event_Card_OnPoYiAnimationEnd"

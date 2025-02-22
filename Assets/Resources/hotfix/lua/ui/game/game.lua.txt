@@ -9,6 +9,7 @@ require "ui/game/informationCard"
 require "ui/game/waitResponse"
 require "ui/game/gameComplete"
 require "ui/game/playHandCard"
+require "ui/game/displayInformationCard"
 
 local SetGameStage = Global.Data.RoomInfo.SetGameStage
 local SetInformationStage = Global.Data.RoomInfo.SetInformationStage
@@ -71,8 +72,13 @@ local InitUIReference = function()
 	ui.waitResponse = WaitResponse:New(self.transform:Find("WaitResponse").gameObject)
 	ui.waitResponse:InitUIReference()
 	
+	--游戏完成结算
 	ui.gameComplete = GameComplete:New(self.transform:Find("GameComplete").gameObject)
 	ui.gameComplete:InitUIReference()
+	
+	--展示已知或者已破译的情报内容
+	ui.displayInformationCard = DisplayInformationCard:New(self.transform:Find("DisplayInformationCard").gameObject)
+	ui.displayInformationCard:InitUIReference()
 end
 	
 local InitUI = function()
@@ -87,6 +93,7 @@ local InitUI = function()
 	ui.detailCard:InitUI()
 	ui.waitResponse:InitUI()
 	ui.gameComplete:InitUI()
+	ui.displayInformationCard:InitUI()
 end
 
 local RefreshRoomInfo = function()
@@ -106,6 +113,7 @@ local AddUIEvent = function()
 	ui.detailCard:AddUIEvent()
 	ui.waitResponse:AddUIEvent()
 	ui.gameComplete:AddUIEvent()
+	ui.displayInformationCard:AddUIEvent()
 end
 
 local RemoveUIEvent = function()
@@ -120,6 +128,7 @@ local RemoveUIEvent = function()
 	ui.detailCard:RemoveUIEvent()
 	ui.waitResponse:RemoveUIEvent()
 	ui.gameComplete:RemoveUIEvent()
+	ui.displayInformationCard:RemoveUIEvent()
 end
 
 --身份选择完成
@@ -156,11 +165,6 @@ local OnDealCardsComplete = function()
 		Global.Data.User.UserName == Global.Data.RoomInfo.CurrentGameTurnUserName then
 		EventManager:TriggerEvent(Global.Event.InformationStage.WaitInformationTransmit, nil)
 	end
-end
-
---发出情报动画结束
-local OnInformationTransmitStart = function()
-	
 end
 
 local OnInfomationCardReceiveComplete = function()
@@ -492,7 +496,7 @@ end
 
 local OnReceiveAskUseShiPo = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.AskUseShiPo_S2C, bytes)
-	EventManager:TriggerEvent(Global.Event.InformationStage.AskUseShiPo, data)
+	EventManager:TriggerEvent(Global.Event.Card.AskUseShiPo, data)
 end
 
 local OnReceiveTriggerCardResult = function(bytes)
@@ -503,6 +507,13 @@ end
 local OnReceiveUseDiaoBao = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseDiaoBao_S2C, bytes)
 	EventManager:TriggerEvent(Global.Event.Card.UseDiaoBao, data)
+end
+
+local OnReceiveUsePoYi = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UsePoYi_S2C, bytes)
+	if data.userName == Global.Data.User.UserName then
+		EventManager:TriggerEvent(Global.Event.Card.UsePoYi, data)
+	end
 end
 
 local AddListener = function()
@@ -517,10 +528,10 @@ local AddListener = function()
 	ui.detailCard:AddListener()
 	ui.waitResponse:AddListener()
 	ui.gameComplete:AddListener()
+	ui.displayInformationCard:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.IdentityChooseComplete, OnIdentityChooseComplete, "Lua.game.OnIdentityChooseComplete")
 	EventManager:AddListener(Global.Event.GameStage.CharacterChooseComplete, OnCharacterChooseComplete, "Lua.game.OnCharacterChooseComplete")
 	EventManager:AddListener(Global.Event.GameStage.DealCardsComplete, OnDealCardsComplete, "Lua.game.OnDealCardsComplete")
-	EventManager:AddListener(Global.Event.InformationStage.InformationTransmitStart, OnInformationTransmitStart, "Lua.game.OnInformationTransmitStart")
 	EventManager:AddListener(Global.Event.InformationStage.InfomationCardReceiveComplete, OnInfomationCardReceiveComplete, "Lua.game.OnInfomationCardReceiveComplete")
 	ProtosManager:AddListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom, "Lua.game.OnReceiveExitRoom")
 	ProtosManager:AddListener(Global.Protos.Cmd.RoomInfoChange_S2C, OnReceiveRoomInfoChange, "Lua.game.OnReceiveRoomInfoChange")
@@ -551,6 +562,7 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.TriggerCardResult_S2C, OnReceiveTriggerCardResult, "Lua.game.OnReceiveTriggerCardResult")
 	ProtosManager:AddListener(Global.Protos.Cmd.InformationTransmit_S2C, OnReceiveInformationTransmit, "Lua.game.OnReceiveInformationTransmit")
 	ProtosManager:AddListener(Global.Protos.Cmd.UseDiaoBao_S2C, OnReceiveUseDiaoBao, "Lua.game.OnReceiveUseDiaoBao")
+	ProtosManager:AddListener(Global.Protos.Cmd.UsePoYi_S2C, OnReceiveUsePoYi, "Lua.game.OnReceiveUsePoYi")
 end
 
 local RemoveListener = function()
@@ -565,10 +577,10 @@ local RemoveListener = function()
 	ui.detailCard:RemoveListener()
 	ui.waitResponse:RemoveListener()
 	ui.gameComplete:RemoveListener()
+	ui.displayInformationCard:RemoveListener()
 	EventManager:RemoveListener(Global.Event.GameStage.IdentityChooseComplete, OnIdentityChooseComplete)
 	EventManager:RemoveListener(Global.Event.GameStage.CharacterChooseComplete, OnCharacterChooseComplete)
 	EventManager:RemoveListener(Global.Event.GameStage.DealCardsComplete, OnDealCardsComplete)
-	EventManager:RemoveListener(Global.Event.InformationStage.InformationTransmitStart, OnInformationTransmitStart)
 	EventManager:RemoveListener(Global.Event.InformationStage.InfomationCardReceiveComplete, OnInfomationCardReceiveComplete)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.ExitRoom_S2C, OnReceiveExitRoom)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.RoomInfoChange_S2C, OnReceiveRoomInfoChange)
@@ -599,6 +611,7 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.TriggerCardResult_S2C, OnReceiveTriggerCardResult)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.InformationTransmit_S2C, OnReceiveInformationTransmit)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseDiaoBao_S2C, OnReceiveUseDiaoBao)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.UsePoYi_S2C, OnReceiveUsePoYi)
 end
 
 RequestRoomInfo = function()
@@ -620,6 +633,7 @@ local Dispose = function()
 	ui.detailCard:Dispose()
 	ui.waitResponse:Dispose()
 	ui.gameComplete:Dispose()
+	ui.displayInformationCard:Dispose()
 	
 	cacheData = {}
 end

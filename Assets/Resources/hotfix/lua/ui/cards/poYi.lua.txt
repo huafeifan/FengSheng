@@ -1,0 +1,19 @@
+PoYi = {}
+PoYi.__index = PoYi
+
+function PoYi.CheckUseCondition()
+	if Global.Data.User.UserName == Global.Data.RoomInfo.CurrentGameTurnUserName then
+		Global.Methods.ShowTips2("不需要对自己发出的情报使用")
+		return false
+	end
+	return true
+end
+
+function PoYi.OnTriggerCardAnimationEnd(data, script)
+	local sendData = {}
+	sendData.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UsePoYi_C2S, sendData)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UsePoYi_C2S, dataBytes)
+end
+
+return PoYi

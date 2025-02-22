@@ -256,11 +256,12 @@ function ChairList:OnGameTurnDisCardStart(data)
 end
 
 function ChairList:OnReceiveHandCardCount(data)
-	for i = 2, #self.chairs do
-		local userData = self.chairs[i]:GetUserData()
-		if userData ~= nil and userData.name == data.userName then
-			self.chairs[i]:SetHandCardCount(data.count)
-			break
+	for i = 1, #data.infos do
+		for j = 2, #self.chairs do
+			local userData = self.chairs[i]:GetUserData()
+			if userData ~= nil and userData.name == data.userName then
+				self.chairs[i]:SetHandCardCount(data.count)
+			end
 		end
 	end
 end

@@ -183,4 +183,10 @@ Global.Protos.Class.UseDiaoBao_C2S = "loginServer.game.UseDiaoBao_C2S"
 
 Global.Protos.Cmd.UseDiaoBao_S2C = 0x021B
 Global.Protos.Class.UseDiaoBao_S2C = "loginServer.game.UseDiaoBao_S2C"
+
+Global.Protos.Cmd.UsePoYi_C2S = 0x021C
+Global.Protos.Class.UsePoYi_C2S = "loginServer.game.UsePoYi_C2S"
+
+Global.Protos.Cmd.UsePoYi_S2C = 0x021C
+Global.Protos.Class.UsePoYi_S2C = "loginServer.game.UsePoYi_S2C"
 --game end
