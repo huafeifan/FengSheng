@@ -13,4 +13,8 @@ function ShaoHui.OnTriggerCardAnimationEnd(data, script)
 	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseShaoHui_C2S, dataBytes)
 end
 
+function ShaoHui.Dispose()
+
+end
+
 return ShaoHui

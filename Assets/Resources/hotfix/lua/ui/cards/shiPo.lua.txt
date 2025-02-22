@@ -10,4 +10,8 @@ function ShiPo.OnTriggerCardAnimationEnd(data, script)
 	
 end
 
+function ShiPo.Dispose()
+
+end
+
 return ShiPo

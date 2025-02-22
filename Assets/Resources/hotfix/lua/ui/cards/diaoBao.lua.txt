@@ -19,4 +19,8 @@ function DiaoBao.OnTriggerCardAnimationEnd(data, script)
 	script.informationTransmitData = sendData
 end
 
+function DiaoBao.Dispose()
+	
+end
+
 return DiaoBao

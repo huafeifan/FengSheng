@@ -1,0 +1,27 @@
+ZengYuan = {}
+ZengYuan.__index = ZengYuan
+
+Global.UseZengYuanFlag = false
+
+function ZengYuan.CheckUseCondition()
+	if Global.Data.RoomInfo.CurrentGameTurnUserName ~= Global.Data.User.UserName then
+		Global.Methods.ShowTips2("只能在自己回合中使用")
+		return false
+	end
+	return true
+end
+
+function ZengYuan.OnTriggerCardAnimationEnd(data, script)
+	script.cache.zengYuan = nil
+	Global.UseZengYuanFlag = false
+	local sendData = {}
+	sendData.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseZengYuan_C2S, sendData)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseZengYuan_C2S, dataBytes)
+end
+
+function ZengYuan.Dispose()
+	Global.UseZengYuanFlag = false
+end
+
+return ZengYuan

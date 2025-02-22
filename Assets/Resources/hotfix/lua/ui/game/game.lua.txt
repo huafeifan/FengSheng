@@ -161,6 +161,8 @@ local OnDealCardsComplete = function()
 		SetGameStage(GameStage.WaitGameTurnOpertateEnd, nil)
 		SetInformationStage(InformationStage.WaitStart, nil)
 		SetInformationStage(InformationStage.WaitInformationDeclaration, nil)
+	elseif Global.UseZengYuanFlag then
+		EventManager:TriggerEvent(Global.Event.Card.OnZengYuanAnimationEnd, nil)
 	elseif RoomInfo.GameStage == GameStage.WaitInformationTransmit and
 		Global.Data.User.UserName == Global.Data.RoomInfo.CurrentGameTurnUserName then
 		EventManager:TriggerEvent(Global.Event.InformationStage.WaitInformationTransmit, nil)
@@ -290,16 +292,31 @@ end
 
 --抽牌
 OnReceiveDealCards = function(bytes)
-	if RoomInfo.GameStage == GameStage.WaitDealCards or --处于发牌阶段时
-		RoomInfo.GameStage == GameStage.WaitGameTurnDealCards or --处于玩家抽卡阶段时
-		(RoomInfo.GameStage == GameStage.WaitGameTurnOpertateEnd and 
-		RoomInfo.InformationStage == InformationStage.WaitInformationTransmit) --处于玩家情报牌不足等待送出情报阶段时
-		then
+	if RoomInfo.GameStage == GameStage.WaitDealCards then
 		local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_S2C, bytes)
 		EventManager:TriggerEvent(Global.Event.GameStage.DealCardsStart, data)
-	else
-		cacheData.DealCards = bytes
+		return
 	end
+	
+	if RoomInfo.GameStage == GameStage.WaitGameTurnDealCards then
+		local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_S2C, bytes)
+		EventManager:TriggerEvent(Global.Event.GameStage.DealCardsStart, data)
+		return
+	end
+	
+	if RoomInfo.GameStage == GameStage.WaitGameTurnOpertateEnd and RoomInfo.InformationStage == InformationStage.WaitInformationTransmit then
+		local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_S2C, bytes)
+		EventManager:TriggerEvent(Global.Event.GameStage.DealCardsStart, data)
+		return
+	end
+	
+	if Global.UseZengYuanFlag then
+		local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_S2C, bytes)
+		EventManager:TriggerEvent(Global.Event.GameStage.DealCardsStart, data)
+		return
+	end
+	
+	cacheData.DealCards = bytes
 end
 
 --轮到某个玩家
@@ -522,6 +539,14 @@ local OnReceiveUseShaoHui = function(bytes)
 	EventManager:TriggerEvent(Global.Event.Card.OnShaoHuiAnimationEnd, data)
 end
 
+local OnReceiveUseZengYuan = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseZengYuan_S2C, bytes)
+	if data.userName == Global.Data.User.UserName then
+		Global.UseZengYuanFlag = true
+		EventManager:TriggerEvent(Global.Event.Card.UseZengYuan, data)
+	end
+end
+
 local AddListener = function()
 	ui.dealCard:AddListener()
 	ui.informationCard:AddListener()
@@ -570,6 +595,7 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.UseDiaoBao_S2C, OnReceiveUseDiaoBao, "Lua.game.OnReceiveUseDiaoBao")
 	ProtosManager:AddListener(Global.Protos.Cmd.UsePoYi_S2C, OnReceiveUsePoYi, "Lua.game.OnReceiveUsePoYi")
 	ProtosManager:AddListener(Global.Protos.Cmd.UseShaoHui_S2C, OnReceiveUseShaoHui, "Lua.game.OnReceiveUseShaoHui")
+	ProtosManager:AddListener(Global.Protos.Cmd.UseZengYuan_S2C, OnReceiveUseZengYuan, "Lua.game.OnReceiveUseZengYuan")
 end
 
 local RemoveListener = function()
@@ -620,6 +646,7 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseDiaoBao_S2C, OnReceiveUseDiaoBao)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UsePoYi_S2C, OnReceiveUsePoYi)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseShaoHui_S2C, OnReceiveUseShaoHui)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.UseZengYuan_S2C, OnReceiveUseZengYuan)
 end
 
 RequestRoomInfo = function()

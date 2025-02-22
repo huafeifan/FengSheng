@@ -16,4 +16,8 @@ function PoYi.OnTriggerCardAnimationEnd(data, script)
 	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UsePoYi_C2S, dataBytes)
 end
 
+function PoYi.Dispose()
+
+end
+
 return PoYi

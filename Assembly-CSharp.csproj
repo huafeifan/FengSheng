@@ -665,6 +665,7 @@
     <None Include="Assets\Resources\hotfix\lua\ui\game\characterChoose.lua.txt" />
     <None Include="Assets\Resources\hotfix\protos\loginServer.game.bytes.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\eventConfig.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\cards\zengYuan.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\cards\poYi.lua.txt" />
     <None Include="Assets\XLua\Resources\perf\profiler.lua.txt" />
     <None Include="Assets\DOTween\DOTween.dll" />

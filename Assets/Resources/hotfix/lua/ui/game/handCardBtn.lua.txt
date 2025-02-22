@@ -73,6 +73,7 @@ function HandCardBtn:InitUI()
 		value.activeFlag.activeSelf = false
 		value.btn.gameObject:SetActive(false)
 	end
+	self.cache = {}
 end
 
 function HandCardBtn:InitBtn(name)
@@ -559,6 +560,14 @@ function HandCardBtn:OnShaoHuiAnimationEnd(data)
 	end
 end
 
+function HandCardBtn:OnZengYuanAnimationEnd()
+	self:OnCardAnimationEnd(self.cache.zengYuan)
+end
+
+function HandCardBtn:OnUseZengYuan(data)
+	self.cache.zengYuan = data
+end
+
 function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnDealCards, function() self:OnWaitGameTurnDealCards() end, "Lua.game.handCard.handCardBtn.OnWaitGameTurnDealCards")
 	EventManager:AddListener(Global.Event.GameStage.DealCardsStart, function(data) self:OnDealCardsStart(data) end, "Lua.game.handCard.handCardBtn.OnDealCardsStart")
@@ -579,6 +588,8 @@ function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.Card.OnDiaoBaoAnimationEnd, function(data) self:OnDiaoBaoAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnDiaoBaoAnimationEnd")
 	EventManager:AddListener(Global.Event.Card.OnPoYiAnimationEnd, function(data) self:OnPoYiAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnPoYiAnimationEnd")
 	EventManager:AddListener(Global.Event.Card.OnShaoHuiAnimationEnd, function(data) self:OnShaoHuiAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnShaoHuiAnimationEnd")
+	EventManager:AddListener(Global.Event.Card.OnZengYuanAnimationEnd, function() self:OnZengYuanAnimationEnd() end, "Lua.game.handCard.handCardBtn.OnZengYuanAnimationEnd")
+	EventManager:AddListener(Global.Event.Card.UseZengYuan, function(data) self:OnUseZengYuan(data) end, "Lua.game.handCard.handCardBtn.OnUseZengYuan")
 end
 
 function HandCardBtn:RemoveListener()
@@ -601,8 +612,15 @@ function HandCardBtn:RemoveListener()
 	EventManager:RemoveListener(Global.Event.Card.OnDiaoBaoAnimationEnd, "Lua.game.handCard.handCardBtn.OnDiaoBaoAnimationEnd")
 	EventManager:RemoveListener(Global.Event.Card.OnPoYiAnimationEnd, "Lua.game.handCard.handCardBtn.OnPoYiAnimationEnd")
 	EventManager:RemoveListener(Global.Event.Card.OnShaoHuiAnimationEnd, "Lua.game.handCard.handCardBtn.OnShaoHuiAnimationEnd")
+	EventManager:RemoveListener(Global.Event.Card.OnZengYuanAnimationEnd, "Lua.game.handCard.handCardBtn.OnZengYuanAnimationEnd")
+	EventManager:RemoveListener(Global.Event.Card.UseZengYuan, "Lua.game.handCard.handCardBtn.OnUseZengYuan")
 end
 
 function HandCardBtn:Dispose()
-	
+	if self.cardScripts ~= nil then
+		for key, value in pairs(self.cardScripts) do
+			value.Dispose()
+		end
+	end
+	self.cache = nil
 end
