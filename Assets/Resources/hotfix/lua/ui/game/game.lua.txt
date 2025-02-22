@@ -163,6 +163,10 @@ local OnDealCardsComplete = function()
 		SetInformationStage(InformationStage.WaitInformationDeclaration, nil)
 	elseif Global.UseZengYuanFlag then
 		EventManager:TriggerEvent(Global.Event.Card.OnZengYuanAnimationEnd, nil)
+		
+	elseif Global.UseJiMiWenJianFlag then
+		EventManager:TriggerEvent(Global.Event.Card.OnJiMiWenJianAnimationEnd, nil)
+		
 	elseif RoomInfo.GameStage == GameStage.WaitInformationTransmit and
 		Global.Data.User.UserName == Global.Data.RoomInfo.CurrentGameTurnUserName then
 		EventManager:TriggerEvent(Global.Event.InformationStage.WaitInformationTransmit, nil)
@@ -310,7 +314,7 @@ OnReceiveDealCards = function(bytes)
 		return
 	end
 	
-	if Global.UseZengYuanFlag then
+	if Global.UseZengYuanFlag or Global.UseJiMiWenJianFlag then
 		local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_S2C, bytes)
 		EventManager:TriggerEvent(Global.Event.GameStage.DealCardsStart, data)
 		return
@@ -547,6 +551,14 @@ local OnReceiveUseZengYuan = function(bytes)
 	end
 end
 
+local OnReceiveUseJiMiWenJian = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseJiMiWenJian_S2C, bytes)
+	if data.userName == Global.Data.User.UserName then
+		Global.UseJiMiWenJianFlag = true
+		EventManager:TriggerEvent(Global.Event.Card.UseJiMiWenJian, data)
+	end
+end
+
 local AddListener = function()
 	ui.dealCard:AddListener()
 	ui.informationCard:AddListener()
@@ -596,6 +608,7 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.UsePoYi_S2C, OnReceiveUsePoYi, "Lua.game.OnReceiveUsePoYi")
 	ProtosManager:AddListener(Global.Protos.Cmd.UseShaoHui_S2C, OnReceiveUseShaoHui, "Lua.game.OnReceiveUseShaoHui")
 	ProtosManager:AddListener(Global.Protos.Cmd.UseZengYuan_S2C, OnReceiveUseZengYuan, "Lua.game.OnReceiveUseZengYuan")
+	ProtosManager:AddListener(Global.Protos.Cmd.UseJiMiWenJian_S2C, OnReceiveUseJiMiWenJian, "Lua.game.OnReceiveUseJiMiWenJian")
 end
 
 local RemoveListener = function()
@@ -647,6 +660,7 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UsePoYi_S2C, OnReceiveUsePoYi)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseShaoHui_S2C, OnReceiveUseShaoHui)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseZengYuan_S2C, OnReceiveUseZengYuan)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.UseJiMiWenJian_S2C, OnReceiveUseJiMiWenJian)
 end
 
 RequestRoomInfo = function()

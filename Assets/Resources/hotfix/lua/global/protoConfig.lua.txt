@@ -201,4 +201,10 @@ Global.Protos.Class.UseZengYuan_C2S = "loginServer.game.UseZengYuan_C2S"
 
 Global.Protos.Cmd.UseZengYuan_S2C = 0x021E
 Global.Protos.Class.UseZengYuan_S2C = "loginServer.game.UseZengYuan_S2C"
+
+Global.Protos.Cmd.UseJiMiWenJian_C2S = 0x021F
+Global.Protos.Class.UseJiMiWenJian_C2S = "loginServer.game.UseJiMiWenJian_C2S"
+
+Global.Protos.Cmd.UseJiMiWenJian_S2C = 0x021F
+Global.Protos.Class.UseJiMiWenJian_S2C = "loginServer.game.UseJiMiWenJian_S2C"
 --game end

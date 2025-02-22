@@ -1,0 +1,23 @@
+JiMiWenJian = {}
+JiMiWenJian.__index = JiMiWenJian
+
+Global.UseJiMiWenJianFlag = false
+
+function JiMiWenJian.CheckUseCondition()
+	Debug.Log("JiMiWenJian")
+	return true
+end
+
+function JiMiWenJian.OnTriggerCardAnimationEnd(data, script)
+	Global.UseJiMiWenJianFlag = false
+	local sendData = {}
+	sendData.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseJiMiWenJian_C2S, sendData)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseJiMiWenJian_C2S, dataBytes)
+end
+
+function JiMiWenJian.Dispose()
+	Global.UseJiMiWenJianFlag = false
+end
+
+return JiMiWenJian

@@ -562,10 +562,20 @@ end
 
 function HandCardBtn:OnZengYuanAnimationEnd()
 	self:OnCardAnimationEnd(self.cache.zengYuan)
+	self.cache.zengYuan = nil
 end
 
 function HandCardBtn:OnUseZengYuan(data)
 	self.cache.zengYuan = data
+end
+
+function HandCardBtn:OnUseJiMiWenJian(data)
+	self.cache.jiMiWenJian = data
+end
+
+function HandCardBtn:OnJiMiWenJianAnimationEnd()
+	self:OnCardAnimationEnd(self.cache.jiMiWenJian)
+	self.cache.jiMiWenJian = nil
 end
 
 function HandCardBtn:AddListener()
@@ -590,6 +600,8 @@ function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.Card.OnShaoHuiAnimationEnd, function(data) self:OnShaoHuiAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnShaoHuiAnimationEnd")
 	EventManager:AddListener(Global.Event.Card.OnZengYuanAnimationEnd, function() self:OnZengYuanAnimationEnd() end, "Lua.game.handCard.handCardBtn.OnZengYuanAnimationEnd")
 	EventManager:AddListener(Global.Event.Card.UseZengYuan, function(data) self:OnUseZengYuan(data) end, "Lua.game.handCard.handCardBtn.OnUseZengYuan")
+	EventManager:AddListener(Global.Event.Card.UseJiMiWenJian, function(data) self:OnUseJiMiWenJian(data) end, "Lua.game.handCard.handCardBtn.OnUseJiMiWenJian")
+	EventManager:AddListener(Global.Event.Card.OnJiMiWenJianAnimationEnd, function(data) self:OnJiMiWenJianAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnJiMiWenJianAnimationEnd")
 end
 
 function HandCardBtn:RemoveListener()
@@ -614,6 +626,8 @@ function HandCardBtn:RemoveListener()
 	EventManager:RemoveListener(Global.Event.Card.OnShaoHuiAnimationEnd, "Lua.game.handCard.handCardBtn.OnShaoHuiAnimationEnd")
 	EventManager:RemoveListener(Global.Event.Card.OnZengYuanAnimationEnd, "Lua.game.handCard.handCardBtn.OnZengYuanAnimationEnd")
 	EventManager:RemoveListener(Global.Event.Card.UseZengYuan, "Lua.game.handCard.handCardBtn.OnUseZengYuan")
+	EventManager:RemoveListener(Global.Event.Card.UseJiMiWenJian, "Lua.game.handCard.handCardBtn.OnUseJiMiWenJian")
+	EventManager:RemoveListener(Global.Event.Card.OnJiMiWenJianAnimationEnd, "Lua.game.handCard.handCardBtn.OnJiMiWenJianAnimationEnd")
 end
 
 function HandCardBtn:Dispose()

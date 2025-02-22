@@ -672,6 +672,7 @@
     <None Include="Assets\Resources\hotfix\lua\link.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\handCardBtn.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\game.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\cards\jiMiWenJian.lua.txt" />
     <None Include="Assets\XLua\Resources\perf\memory.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\dealCard.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\gameConfig.lua.txt" />
