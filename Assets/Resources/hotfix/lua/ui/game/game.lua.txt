@@ -453,7 +453,7 @@ end
 --收到等待情报接收协议
 local OnReceiveWaitInformationReceive = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.WaitInformationReceive_S2C, bytes)
-	SetInformationStage(InformationStage.WaitInformationReceive, nil)
+	SetInformationStage(InformationStage.WaitInformationReceive, data)
 end
 
 local OnReceiveInformationTransmit = function(bytes)
@@ -559,6 +559,14 @@ local OnReceiveUseJiMiWenJian = function(bytes)
 	end
 end
 
+local OnReceiveUseSuoDing = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseSuoDing_S2C, bytes)
+	if data.userName == Global.Data.User.UserName then
+		EventManager:TriggerEvent(Global.Event.Card.UseSuoDing, data)
+		EventManager:TriggerEvent(Global.Event.Card.OnSuoDingAnimationEnd, data)
+	end
+end
+
 local AddListener = function()
 	ui.dealCard:AddListener()
 	ui.informationCard:AddListener()
@@ -609,6 +617,7 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.UseShaoHui_S2C, OnReceiveUseShaoHui, "Lua.game.OnReceiveUseShaoHui")
 	ProtosManager:AddListener(Global.Protos.Cmd.UseZengYuan_S2C, OnReceiveUseZengYuan, "Lua.game.OnReceiveUseZengYuan")
 	ProtosManager:AddListener(Global.Protos.Cmd.UseJiMiWenJian_S2C, OnReceiveUseJiMiWenJian, "Lua.game.OnReceiveUseJiMiWenJian")
+	ProtosManager:AddListener(Global.Protos.Cmd.UseSuoDing_C2S, OnReceiveUseSuoDing, "Lua.game.OnReceiveUseSuoDing")
 end
 
 local RemoveListener = function()
@@ -661,6 +670,7 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseShaoHui_S2C, OnReceiveUseShaoHui)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseZengYuan_S2C, OnReceiveUseZengYuan)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseJiMiWenJian_S2C, OnReceiveUseJiMiWenJian)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.UseSuoDing_C2S, OnReceiveUseSuoDing)
 end
 
 RequestRoomInfo = function()

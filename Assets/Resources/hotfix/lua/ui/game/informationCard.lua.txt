@@ -129,8 +129,8 @@ function InformationCard:RemoveUIEvent()
 	UIEventManager:RemoveAllListeners(self.ui.btn)
 end
 
-function InformationCard:OnWaitInformationReceive()
-	self.ui.tip.text = "等待玩家:"..Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName.."接收情报"
+function InformationCard:OnWaitInformationReceive(data)
+	self.ui.tip.text = "等待玩家:"..data.userName.."接收情报"
 end
 
 function InformationCard:OnInformationTransmit(data)
@@ -175,7 +175,7 @@ function InformationCard:OnUsePoYi(data)
 end
 
 function InformationCard:AddListener()
-	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.informationCard.OnWaitInformationReceive")
+	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function(data) self:OnWaitInformationReceive(data) end, "Lua.game.informationCard.OnWaitInformationReceive")
 	EventManager:AddListener(Global.Event.InformationStage.InformationTransmit, function(data) self:OnInformationTransmit(data) end, "Lua.game.informationCard.OnInformationTransmit")
 	EventManager:AddListener(Global.Event.Card.UseDiaoBao, function(data) self:OnUseDiaoBao(data) end, "Lua.game.informationCard.OnUseDiaoBao")
 	EventManager:AddListener(Global.Event.Card.UsePoYi, function(data) self:OnUsePoYi(data) end, "Lua.game.informationCard.OnUsePoYi")

@@ -679,6 +679,7 @@
     <None Include="Assets\Resources\hotfix\lua\ui\cards\shiPo.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\cards\diaoBao.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\room\roomItemInfo.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\cards\suoDing.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\main.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\chair.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\playHandCard.lua.txt" />

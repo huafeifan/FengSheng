@@ -1,0 +1,20 @@
+SuoDing = {}
+SuoDing.__index = SuoDing
+
+function SuoDing.CheckUseCondition()
+	Debug.Log("SuoDing")
+	return true
+end
+
+function SuoDing.OnTriggerCardAnimationEnd(data, script)
+	local sendData = {}
+	sendData.userName = data.userName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseSuoDing_C2S, sendData)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseSuoDing_C2S, dataBytes)
+end
+
+function SuoDing.Dispose()
+
+end
+
+return SuoDing

@@ -469,11 +469,10 @@ function HandCardBtn:OnZhiDaChooseComplete(userName)
 	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationTransmitReady_C2S, dataBytes)
 end
 
-function HandCardBtn:OnWaitInformationReceive()
-	if Global.Data.User.UserName == Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName then
-		self.ui[HandCardBtn.ReceiveInformationBtn].activeFlag.activeSelf = true
-		self.ui[HandCardBtn.RefuseInformationBtn].activeFlag.activeSelf = 
-			(Global.Data.RoomInfo.CurrentGameTurnUserName ~= Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName)
+function HandCardBtn:OnWaitInformationReceive(data)
+	if Global.Data.User.UserName == data.userName then
+		self.ui[HandCardBtn.ReceiveInformationBtn].activeFlag.activeSelf = data.canReceive
+		self.ui[HandCardBtn.RefuseInformationBtn].activeFlag.activeSelf = data.canRefuse
 	end
 end
 
@@ -578,6 +577,10 @@ function HandCardBtn:OnJiMiWenJianAnimationEnd()
 	self.cache.jiMiWenJian = nil
 end
 
+function HandCardBtn:OnSuoDingAnimationEnd(data)
+	self:OnCardAnimationEnd(data)
+end
+
 function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnDealCards, function() self:OnWaitGameTurnDealCards() end, "Lua.game.handCard.handCardBtn.OnWaitGameTurnDealCards")
 	EventManager:AddListener(Global.Event.GameStage.DealCardsStart, function(data) self:OnDealCardsStart(data) end, "Lua.game.handCard.handCardBtn.OnDealCardsStart")
@@ -586,7 +589,7 @@ function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.WaitInformationDeclaration, function() self:OnWaitInformationDeclaration() end, "Lua.game.handCard.handCardBtn.OnWaitInformationDeclaration")
 	EventManager:AddListener(Global.Event.InformationStage.WaitInformationTransmit, function() self:OnWaitInformationTransmit() end, "Lua.game.handCard.handCardBtn.OnWaitInformationTransmit")
 	EventManager:AddListener(Global.Event.InformationStage.ZhiDaChooseComplete, function(data) self:OnZhiDaChooseComplete(data) end, "Lua.game.handCard.handCardBtn.OnZhiDaChooseComplete")
-	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function() self:OnWaitInformationReceive() end, "Lua.game.handCard.handCardBtn.OnWaitInformationReceive")
+	EventManager:AddListener(Global.Event.InformationStage.WaitInformationReceive, function(data) self:OnWaitInformationReceive(data) end, "Lua.game.handCard.handCardBtn.OnWaitInformationReceive")
 	EventManager:AddListener(Global.Event.InformationStage.ReceiveAskPlayHandCard, function(data) self:OnReceiveAskPlayHandCard(data) end, "Lua.game.handCard.handCardBtn.OnReceiveAskPlayHandCard")
 	EventManager:AddListener(Global.Event.InformationStage.PlayerWantPlayHandCard, function(data) self:OnReceivePlayerWantPlayHandCard(data) end, "Lua.game.handCard.handCardBtn.OnReceivePlayerWantPlayHandCard")
 	EventManager:AddListener(Global.Event.Card.AskUseShiPo, function(data) self:OnReceiveAskUseShiPo(data) end, "Lua.game.handCard.handCardBtn.OnReceiveAskUseShiPo")
@@ -601,7 +604,8 @@ function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.Card.OnZengYuanAnimationEnd, function() self:OnZengYuanAnimationEnd() end, "Lua.game.handCard.handCardBtn.OnZengYuanAnimationEnd")
 	EventManager:AddListener(Global.Event.Card.UseZengYuan, function(data) self:OnUseZengYuan(data) end, "Lua.game.handCard.handCardBtn.OnUseZengYuan")
 	EventManager:AddListener(Global.Event.Card.UseJiMiWenJian, function(data) self:OnUseJiMiWenJian(data) end, "Lua.game.handCard.handCardBtn.OnUseJiMiWenJian")
-	EventManager:AddListener(Global.Event.Card.OnJiMiWenJianAnimationEnd, function(data) self:OnJiMiWenJianAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnJiMiWenJianAnimationEnd")
+	EventManager:AddListener(Global.Event.Card.OnJiMiWenJianAnimationEnd, function() self:OnJiMiWenJianAnimationEnd() end, "Lua.game.handCard.handCardBtn.OnJiMiWenJianAnimationEnd")
+	EventManager:AddListener(Global.Event.Card.OnSuoDingAnimationEnd, function(data) self:OnSuoDingAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnSuoDingAnimationEnd")
 end
 
 function HandCardBtn:RemoveListener()
@@ -628,6 +632,7 @@ function HandCardBtn:RemoveListener()
 	EventManager:RemoveListener(Global.Event.Card.UseZengYuan, "Lua.game.handCard.handCardBtn.OnUseZengYuan")
 	EventManager:RemoveListener(Global.Event.Card.UseJiMiWenJian, "Lua.game.handCard.handCardBtn.OnUseJiMiWenJian")
 	EventManager:RemoveListener(Global.Event.Card.OnJiMiWenJianAnimationEnd, "Lua.game.handCard.handCardBtn.OnJiMiWenJianAnimationEnd")
+	EventManager:RemoveListener(Global.Event.Card.OnSuoDingAnimationEnd, "Lua.game.handCard.handCardBtn.OnSuoDingAnimationEnd")
 end
 
 function HandCardBtn:Dispose()
