@@ -58,7 +58,10 @@ function CharacterChoose:OnBtnAffirm()
 		return 
 	end
 	
-	Global.Protos.Game.SendCharacterChoose(self.affirmCharacter)
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	data.character = self.affirmCharacter
+	Global.Protos.Game.SendCharacterChoose(data)
 	
 	self.ui.character.Content.gameObject:SetActive(false)
 	self.ui.affirmBtn.gameObject:SetActive(false)

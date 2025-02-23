@@ -7,10 +7,7 @@ Global.Protos.Game.SendGameStart = function()
 	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameStart_C2S, dataBytes)
 end
 
-Global.Protos.Game.SendCharacterChoose = function(character)
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	data.character = character
+Global.Protos.Game.SendCharacterChoose = function(data)
 	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.CharacterChoose_C2S, data)
 	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.CharacterChoose_C2S, dataBytes)
 end

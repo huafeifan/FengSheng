@@ -150,6 +150,8 @@ function InformationCard:OnUseDiaoBao(data)
 end
 
 function InformationCard:OnUsePoYi(data)
+	if data.userName ~= Global.Data.User.UserName then return end
+	
 	--method
 	local Step0, Step1, Step2, Step3, Step4 = nil, nil, nil, nil, nil
 	Step0 = function()

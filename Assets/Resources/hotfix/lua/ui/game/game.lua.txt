@@ -530,9 +530,7 @@ end
 
 local OnReceiveUsePoYi = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UsePoYi_S2C, bytes)
-	if data.userName == Global.Data.User.UserName then
-		EventManager:TriggerEvent(Global.Event.Card.UsePoYi, data)
-	end
+	EventManager:TriggerEvent(Global.Event.Card.UsePoYi, data)
 end
 
 local OnReceiveUseShaoHui = function(bytes)
@@ -545,25 +543,19 @@ end
 local OnReceiveUseZengYuan = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseZengYuan_S2C, bytes)
 	Global.UseZengYuanFlag = true
-	if data.userName == Global.Data.User.UserName then
-		EventManager:TriggerEvent(Global.Event.Card.UseZengYuan, data)
-	end
+	EventManager:TriggerEvent(Global.Event.Card.UseZengYuan, data)
 end
 
 local OnReceiveUseJiMiWenJian = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseJiMiWenJian_S2C, bytes)
 	Global.JiMiWenJianDealCardsFlag = true
-	if data.userName == Global.Data.User.UserName then
-		EventManager:TriggerEvent(Global.Event.Card.UseJiMiWenJian, data)
-	end
+	EventManager:TriggerEvent(Global.Event.Card.UseJiMiWenJian, data)
 end
 
 local OnReceiveUseSuoDing = function(bytes)
 	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseSuoDing_S2C, bytes)
-	if data.userName == Global.Data.User.UserName then
-		EventManager:TriggerEvent(Global.Event.Card.UseSuoDing, data)
-		EventManager:TriggerEvent(Global.Event.Card.OnSuoDingAnimationEnd, data)
-	end
+	EventManager:TriggerEvent(Global.Event.Card.UseSuoDing, data)
+	EventManager:TriggerEvent(Global.Event.Card.OnSuoDingAnimationEnd, data)
 end
 
 local AddListener = function()

@@ -285,14 +285,13 @@ function ChairList:OnInformationTransmit()
 			local isHisGameTurn = userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName
 			local isHisAskReceive = userData.name == Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName
 			if isHisAskReceive then
-				self.chairs[i]:SetGameTurn(true)
 				self.chairs[i]:SetGameTurnText("传递中")
 			elseif isHisGameTurn then
-				self.chairs[i]:SetGameTurn(true)
 				self.chairs[i]:SetGameTurnText("回合中")
 			else
 				self.chairs[i]:SetGameTurn(false)
 			end
+			self.chairs[i]:SetGameTurn(isHisGameTurn)
 		else
 			self.chairs[i]:SetGameTurn(false)
 		end
@@ -313,6 +312,7 @@ function ChairList:OnInformationReceiveSuccess(data)
 				self.chairs[i]:SetGameTurn(false)
 			end
 		end
+		self.chairs[i]:SetLock(false)
 	end
 end
 
@@ -331,15 +331,17 @@ function ChairList:OnReceivePlayerWantPlayHandCard(data)
 	for i = 1, #self.chairs do
 		local userData = self.chairs[i]:GetUserData()
 		if userData ~= nil then
+			local isHisGameTurn = userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName
 			if userData.name == data.userName and data.isSkip == false then
-				self.chairs[i]:SetGameTurn(true)
 				self.chairs[i]:SetGameTurnText("出牌中")
-			elseif  userData.name == Global.Data.RoomInfo.CurrentGameTurnUserName then
-				self.chairs[i]:SetGameTurn(true)
+			elseif  isHisGameTurn then
 				self.chairs[i]:SetGameTurnText("回合中")
+			elseif userData.name == Global.Data.RoomInfo.CurrentAskInformationReceivedPlayerName then
+				self.chairs[i]:SetGameTurnText("传递中")
 			else
 				self.chairs[i]:SetGameTurn(false)
 			end
+			self.chairs[i]:SetGameTurn(isHisGameTurn)
 		else
 			self.chairs[i]:SetGameTurn(false)
 		end
@@ -352,6 +354,16 @@ function ChairList:OnPlayHandCard(data)
 		if userData ~= nil and userData.name == data.userName then
 			local startPos = self.chairs[i]:GetCharacterPos()
 			self.playHandCard:PlayHandCardStart(startPos, data, nil)
+			break
+		end
+	end
+end
+
+function ChairList:OnUseSuoDing(data)
+	for i = 1, #self.chairs do
+		local userData = self.chairs[i]:GetUserData()
+		if userData ~= nil and userData.name == data.targetUserName then
+			self.chairs[i]:SetLock(true)
 			break
 		end
 	end
@@ -379,6 +391,7 @@ function ChairList:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.ReceiveInformationCount, function(data) self:OnReceiveInformationCount(data) end, "Lua.game.chairList.OnReceiveInformationCount")
 	EventManager:AddListener(Global.Event.InformationStage.PlayerWantPlayHandCard, function(data) self:OnReceivePlayerWantPlayHandCard(data) end, "Lua.game.chairList.OnReceivePlayerWantPlayHandCard")
 	EventManager:AddListener(Global.Event.InformationStage.PlayHandCard, function(data) self:OnPlayHandCard(data) end, "Lua.game.chairList.OnPlayHandCard")
+	EventManager:AddListener(Global.Event.Card.UseSuoDing, function(data) self:OnUseSuoDing(data) end, "Lua.game.chairList.OnUseSuoDing")
 end
 
 function ChairList:RemoveListener()
@@ -403,6 +416,7 @@ function ChairList:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.ReceiveInformationCount, "Lua.game.chairList.OnReceiveInformationCount")
 	EventManager:RemoveListener(Global.Event.InformationStage.PlayerWantPlayHandCard, "Lua.game.chairList.OnReceivePlayerWantPlayHandCard")
 	EventManager:RemoveListener(Global.Event.InformationStage.PlayHandCard, "Lua.game.chairList.OnPlayHandCard")
+	EventManager:RemoveListener(Global.Event.Card.UseSuoDing, "Lua.game.chairList.OnUseSuoDing")
 end
 
 function ChairList:Dispose()

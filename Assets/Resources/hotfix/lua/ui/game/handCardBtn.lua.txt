@@ -504,7 +504,9 @@ function HandCardBtn:OnDiaoBaoAnimationEnd(data)
 end
 
 function HandCardBtn:OnPoYiAnimationEnd(data)
-	self:OnCardAnimationEnd(data)
+	if data.userName == Global.Data.User.UserName then
+		self:OnCardAnimationEnd(data)
+	end
 end
 
 function HandCardBtn:OnShaoHuiAnimationEnd(data)
@@ -521,11 +523,15 @@ function HandCardBtn:OnZengYuanAnimationEnd()
 end
 
 function HandCardBtn:OnUseZengYuan(data)
-	self.cache.receivedZengYuanData = data
+	if data.userName == Global.Data.User.UserName then
+		self.cache.receivedZengYuanData = data
+	end
 end
 
 function HandCardBtn:OnUseJiMiWenJian(data)
-	self.cache.receivedJiMiWenJianData = data
+	if data.userName == Global.Data.User.UserName then
+		self.cache.receivedJiMiWenJianData = data
+	end
 end
 
 function HandCardBtn:OnJiMiWenJianAnimationEnd()
@@ -536,7 +542,9 @@ function HandCardBtn:OnJiMiWenJianAnimationEnd()
 end
 
 function HandCardBtn:OnSuoDingAnimationEnd(data)
-	self:OnCardAnimationEnd(data)
+	if data.userName == Global.Data.User.UserName then
+		self:OnCardAnimationEnd(data)
+	end
 end
 
 function HandCardBtn:OnSuoDingChooseComplete(userName)

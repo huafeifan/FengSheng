@@ -2,15 +2,21 @@ SuoDing = {}
 SuoDing.__index = SuoDing
 
 function SuoDing.CheckUseCondition()
-	Debug.Log("SuoDing")
+	if Global.Data.RoomInfo.CurrentGameTurnUserName ~= Global.Data.User.UserName then
+		Global.Methods.ShowTips2("只能在自己回合中使用")
+		return false
+	end
 	return true
 end
 
 function SuoDing.OnTriggerCardAnimationEnd(data, script)
-	local sendData = {}
-	sendData.userName = data.userName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseSuoDing_C2S, sendData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseSuoDing_C2S, dataBytes)
+	Global.Protos.Game.SendUseSuoDing()
+end
+
+function SuoDing.ChooseTarget()
+	Global.Methods.ShowTips("请选择你要锁定的玩家")
+	EventManager:TriggerEvent(Global.Event.Card.SuoDingChoose, nil)
+	return true
 end
 
 function SuoDing.Dispose()
