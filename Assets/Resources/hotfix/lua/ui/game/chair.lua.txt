@@ -135,11 +135,15 @@ end
 
 function Chair:SetGameTurn(b)
 	self.ui.gameTurn.transform.gameObject:SetActive(b)
-	self.ui.statusTip.task.gameObject:SetActive(b)
 end
 
 function Chair:SetGameTurnText(tips)
-	self.ui.statusTip.taskContent.text = tips
+	if tips == nil then
+		self.ui.statusTip.task.gameObject:SetActive(false)
+	else
+		self.ui.statusTip.task.gameObject:SetActive(true)
+		self.ui.statusTip.taskContent.text = tips
+	end
 end
 
 function Chair:SetLock(b)

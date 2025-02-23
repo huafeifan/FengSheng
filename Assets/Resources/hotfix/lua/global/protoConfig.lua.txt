@@ -213,4 +213,10 @@ Global.Protos.Class.UseSuoDing_C2S = "loginServer.game.UseSuoDing_C2S"
 
 Global.Protos.Cmd.UseSuoDing_S2C = 0x0220
 Global.Protos.Class.UseSuoDing_S2C = "loginServer.game.UseSuoDing_S2C"
+
+Global.Protos.Cmd.UseJieHuo_C2S = 0x0221
+Global.Protos.Class.UseJieHuo_C2S = "loginServer.game.UseJieHuo_C2S"
+
+Global.Protos.Cmd.UseJieHuo_S2C = 0x0221
+Global.Protos.Class.UseJieHuo_S2C = "loginServer.game.UseJieHuo_S2C"
 --game end

@@ -13,7 +13,7 @@ function DiaoBao.OnTriggerCardAnimationEnd(data, script)
 	sendData.toUserName = nil
 	sendData.transmit = GameCard.TransmitType.WenBen
 	sendData.direction = GameCard.DirectionType.Ni
-	Global.Protos.Game.SendUseDiaoBao(data.card, GameCard.DirectionType.Ni)
+	Global.Protos.Game.SendUseDiaoBao(sendData)
 	
 	script.informationTransmitData = sendData
 end

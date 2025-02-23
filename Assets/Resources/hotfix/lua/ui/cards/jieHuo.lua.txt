@@ -1,0 +1,24 @@
+JieHuo = {}
+JieHuo.__index = JieHuo
+
+function JieHuo.CheckUseCondition()
+	if Global.Data.RoomInfo.CurrentGameTurnUserName == Global.Data.User.UserName then
+		Global.Methods.ShowTips2("只能在他人回合使用")
+		return false
+	end
+	return true
+end
+
+function JieHuo.OnTriggerCardAnimationEnd(data, script)
+	Global.Protos.Game.SendUseJieHuo()
+end
+
+function JieHuo.ChooseTarget()
+	return false
+end
+
+function JieHuo.Dispose()
+
+end
+
+return JieHuo

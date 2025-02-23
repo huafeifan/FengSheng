@@ -558,6 +558,12 @@ local OnReceiveUseSuoDing = function(bytes)
 	EventManager:TriggerEvent(Global.Event.Card.OnSuoDingAnimationEnd, data)
 end
 
+local OnReceiveUseJieHuo = function(bytes)
+	local data = Bytes2Lua(Global.Protos.FileName.Game, Global.Protos.Class.UseJieHuo_S2C, bytes)
+	EventManager:TriggerEvent(Global.Event.Card.UseJieHuo, data)
+	EventManager:TriggerEvent(Global.Event.Card.OnJieHuoAnimationEnd, data)
+end
+
 local AddListener = function()
 	ui.dealCard:AddListener()
 	ui.informationCard:AddListener()
@@ -609,6 +615,7 @@ local AddListener = function()
 	ProtosManager:AddListener(Global.Protos.Cmd.UseZengYuan_S2C, OnReceiveUseZengYuan, "Lua.game.OnReceiveUseZengYuan")
 	ProtosManager:AddListener(Global.Protos.Cmd.UseJiMiWenJian_S2C, OnReceiveUseJiMiWenJian, "Lua.game.OnReceiveUseJiMiWenJian")
 	ProtosManager:AddListener(Global.Protos.Cmd.UseSuoDing_S2C, OnReceiveUseSuoDing, "Lua.game.OnReceiveUseSuoDing")
+	ProtosManager:AddListener(Global.Protos.Cmd.UseJieHuo_S2C, OnReceiveUseJieHuo, "Lua.game.OnReceiveUseJieHuo")
 end
 
 local RemoveListener = function()
@@ -662,6 +669,7 @@ local RemoveListener = function()
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseZengYuan_S2C, OnReceiveUseZengYuan)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseJiMiWenJian_S2C, OnReceiveUseJiMiWenJian)
 	ProtosManager:RemoveListener(Global.Protos.Cmd.UseSuoDing_S2C, OnReceiveUseSuoDing)
+	ProtosManager:RemoveListener(Global.Protos.Cmd.UseJieHuo_S2C, OnReceiveUseJieHuo)
 end
 
 local Dispose = function()
