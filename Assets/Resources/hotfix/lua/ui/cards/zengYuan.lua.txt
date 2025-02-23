@@ -1,7 +1,7 @@
 ZengYuan = {}
 ZengYuan.__index = ZengYuan
 
-Global.UseZengYuanFlag = false
+Global.ZengYuanDealCardsFlag = false
 
 function ZengYuan.CheckUseCondition()
 	if Global.Data.RoomInfo.CurrentGameTurnUserName ~= Global.Data.User.UserName then
@@ -12,15 +12,15 @@ function ZengYuan.CheckUseCondition()
 end
 
 function ZengYuan.OnTriggerCardAnimationEnd(data, script)
-	Global.UseZengYuanFlag = false
-	local sendData = {}
-	sendData.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseZengYuan_C2S, sendData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseZengYuan_C2S, dataBytes)
+	Global.Protos.Game.SendUseZengYuan()
+end
+
+function ZengYuan.ChooseTarget()
+	return false
 end
 
 function ZengYuan.Dispose()
-	Global.UseZengYuanFlag = false
+	Global.ZengYuanDealCardsFlag = false
 end
 
 return ZengYuan

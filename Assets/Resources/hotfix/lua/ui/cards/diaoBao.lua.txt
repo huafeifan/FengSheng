@@ -13,10 +13,13 @@ function DiaoBao.OnTriggerCardAnimationEnd(data, script)
 	sendData.toUserName = nil
 	sendData.transmit = GameCard.TransmitType.WenBen
 	sendData.direction = GameCard.DirectionType.Ni
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseDiaoBao_C2S, sendData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseDiaoBao_C2S, dataBytes)
+	Global.Protos.Game.SendUseDiaoBao(data.card, GameCard.DirectionType.Ni)
 	
 	script.informationTransmitData = sendData
+end
+
+function DiaoBao.ChooseTarget()
+	return false
 end
 
 function DiaoBao.Dispose()

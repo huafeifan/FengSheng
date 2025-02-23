@@ -664,6 +664,8 @@
     <None Include="Assets\Resources\hotfix\lua\global\protoMethods.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\characterChoose.lua.txt" />
     <None Include="Assets\Resources\hotfix\protos\loginServer.game.bytes.txt" />
+    <None Include="Assets\Resources\hotfix\lua\global\protosGameSend.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\global\protosRoomSend.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\eventConfig.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\cards\zengYuan.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\cards\poYi.lua.txt" />
@@ -695,6 +697,7 @@
     <None Include="Assets\Resources\hotfix\lua\global\globalConfig.lua.txt" />
     <None Include="Assets\XLua\CHANGELOG.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\handCard.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\global\protosLoginSend.lua.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

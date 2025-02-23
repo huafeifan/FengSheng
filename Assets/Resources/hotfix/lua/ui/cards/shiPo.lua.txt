@@ -10,6 +10,10 @@ function ShiPo.OnTriggerCardAnimationEnd(data, script)
 	
 end
 
+function ShiPo.ChooseTarget()
+	return false
+end
+
 function ShiPo.Dispose()
 
 end

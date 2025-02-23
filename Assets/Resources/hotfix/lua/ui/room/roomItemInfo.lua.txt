@@ -36,12 +36,7 @@ end
 
 function RoomInfoItem:OnBtnEnter()
 	Global.Methods.PlayBtnAnimation(self.ui.enterBtn)
-	
-	local enterRoomData = {}
-	enterRoomData.roomNub = self.roomInfo.roomNub
-	enterRoomData.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.EnterRoom_C2S, enterRoomData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.EnterRoom_C2S, dataBytes)
+	Global.Protos.Room.SendEnterRoom(self.roomInfo.roomNub)
 end
 
 function RoomInfoItem:AddUIEvent()

@@ -1,0 +1,137 @@
+Global.Protos.Game = {}
+
+Global.Protos.Game.SendGameStart = function()
+	local data = {}
+	data.roomNub = Global.Data.RoomInfo.RoomNub
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameStart_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameStart_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendCharacterChoose = function(character)
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	data.character = character
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.CharacterChoose_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.CharacterChoose_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendDealCards = function(count)
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	data.count = count
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.DealCards_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendGameTurnEnd = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnEnd_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnEnd_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendGameTurnStart = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnStart_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnStart_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendGameTurnOpertateEnd = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnOpertateEnd_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnOpertateEnd_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendGameTurnDisCard = function(cards, indexs)
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	data.cards = cards
+	data.indexs = indexs
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnDisCard_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnDisCard_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendInformationDeclaration = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.InformationDeclaration_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationDeclaration_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendPlayHandCardResponse = function(isSkip)
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	data.isSkip = isSkip
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCardResponse_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.PlayHandCardResponse_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendInformationTransmitReady = function(data)
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.InformationTransmitReady_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationTransmitReady_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendWaitInformationReceive = function(isReceive)
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	data.isReceive = isReceive
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.WaitInformationReceive_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.WaitInformationReceive_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendPlayHandCard = function(data)
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCard_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.PlayHandCard_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendAskUseShiPo = function(isUse, card, handCardIndex)
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	data.isUse = isUse
+	data.card = card
+	data.handCardIndex = handCardIndex
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.AskUseShiPo_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.AskUseShiPo_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendUseDiaoBao = function(data)
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseDiaoBao_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseDiaoBao_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendUsePoYi = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UsePoYi_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UsePoYi_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendUseShaoHui = function()
+	local data = {}
+	data = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseShaoHui_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseShaoHui_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendUseZengYuan = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseZengYuan_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseZengYuan_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendUseJiMiWenJian = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseJiMiWenJian_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseJiMiWenJian_C2S, dataBytes)
+end
+
+Global.Protos.Game.SendUseSuoDing = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseSuoDing_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseSuoDing_C2S, dataBytes)
+end

@@ -8,4 +8,7 @@ global/globalData
 global/protoMethods
 global/eventConfig
 global/globalMethods
+global/protosLoginSend
+global/protosRoomSend
+global/protosGameSend
 main

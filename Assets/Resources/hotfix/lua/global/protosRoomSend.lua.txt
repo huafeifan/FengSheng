@@ -1,0 +1,41 @@
+Global.Protos.Room = {}
+
+Global.Protos.Room.SendRoomList = function()
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.RoomList_C2S, nil)
+end
+
+Global.Protos.Room.SendCreateRoom = function(data)
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.CreateRoom_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.CreateRoom_C2S, dataBytes)
+end
+
+Global.Protos.Room.SendEnterRoom = function(roomNub)
+	local sendData = {}
+	sendData.userName = Global.Data.User.UserName
+	sendData.roomNub = roomNub
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.EnterRoom_C2S, sendData)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.EnterRoom_C2S, dataBytes)
+end
+
+Global.Protos.Room.SendExitRoom = function()
+	local sendData = {}
+	sendData.userName = Global.Data.User.UserName
+	sendData.roomNub = Global.Data.RoomInfo.RoomNub
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.ExitRoom_C2S, sendData)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.ExitRoom_C2S, dataBytes)
+end
+
+Global.Protos.Room.SendRequestRoomInfo = function(roomNub)
+	local data = {}
+	data.roomNub = roomNub
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.RequestRoomInfo_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.RequestRoomInfo_C2S, dataBytes)
+end
+
+Global.Protos.Room.SendReadyStatus = function(isReady)
+	local data = {}
+	data.isReady = isReady
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.ReadyStatus_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.ReadyStatus_C2S, dataBytes)
+end

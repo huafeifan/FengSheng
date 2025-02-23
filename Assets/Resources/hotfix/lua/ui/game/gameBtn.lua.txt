@@ -40,30 +40,19 @@ end
 
 function GameBtn:OnBtnStart()
 	Global.Methods.PlayBtnAnimation(self.ui.startBtn)
-	local data = {}
-	data.roomNub = Global.Data.RoomInfo.RoomNub
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameStart_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameStart_C2S, dataBytes)
+	Global.Protos.Game.SendGameStart()
 end
 
 function GameBtn:OnBtnExit()
 	Global.Methods.PlayBtnAnimation(self.ui.exitBtn)
-	local data = {}
-	data.roomNub = Global.Data.RoomInfo.RoomNub
-	data.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.ExitRoom_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.ExitRoom_C2S, dataBytes)
+	Global.Protos.Room.SendExitRoom()
 end
 
 function GameBtn:OnBtnReady()
 	Global.Methods.PlayBtnAnimation(self.ui.readyBtn)
 	local myChair = self.main.chairList:GetMyChair()
 	if myChair:IsOwner() == false then
-		local data = {}
-		data.isReady = true
-		data.userName = Global.Data.User.UserName
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.ReadyStatus_C2S, data)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.ReadyStatus_C2S, dataBytes)
+		Global.Protos.Room.SendReadyStatus(true)
 	end
 end
 

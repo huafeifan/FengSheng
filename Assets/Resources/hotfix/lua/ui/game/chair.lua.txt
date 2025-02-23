@@ -19,7 +19,6 @@ function Chair:InitUIReference()
 	self.ui.gameTurn = {}
 	self.ui.gameTurn.transform = self.transform:Find("GameTurn")
 	self.ui.gameTurn.highLight = self.ui.gameTurn.transform:Find("HighLight")
-	self.ui.gameTurn.text = self.ui.gameTurn.transform:Find("Text"):GetComponent(typeof(Text))
 	self.ui.character = {}
 	self.ui.character.transform = self.transform:Find("User/Character")
 	self.ui.character.btn = self.ui.character.transform:GetComponent(typeof(Button))
@@ -34,6 +33,11 @@ function Chair:InitUIReference()
 	self.ui.informationDetail.blueCount = self.ui.informationDetail.transform:Find("Blue/Count"):GetComponent(typeof(Text))
 	self.ui.informationDetail.grayCount = self.ui.informationDetail.transform:Find("Gray/Count"):GetComponent(typeof(Text))
 	self.ui.informationDetail.redBlueCount = self.ui.informationDetail.transform:Find("RedBlue/Count"):GetComponent(typeof(Text))
+	self.ui.statusTip = {}
+	self.ui.statusTip.transform = self.transform:Find("StatusTip")
+	self.ui.statusTip.task = self.ui.statusTip.transform:Find("Task")
+	self.ui.statusTip.taskContent = self.ui.statusTip.transform:Find("Task/Text"):GetComponent(typeof(Text))
+	self.ui.statusTip.lock = self.ui.statusTip.transform:Find("Lock")
 	
 	self.ui.head = UserHead:New(self.transform:Find("User").gameObject)
 	self.ui.head:InitUIReference()
@@ -47,6 +51,10 @@ function Chair:InitUI()
 	self.ui.character.bigerBtn.gameObject:SetActive(false)
 	self.ui.handCard.transform.gameObject:SetActive(false)
 	self.ui.informationDetail.transform.gameObject:SetActive(false)
+	self.ui.statusTip.transform.gameObject:SetActive(true)
+	self.ui.statusTip.task.gameObject:SetActive(false)
+	self.ui.statusTip.lock.gameObject:SetActive(false)
+	self.chooseCallback = {}
 	self:ShowHead()
 	self.ui.head:SetData("")
 end
@@ -127,10 +135,11 @@ end
 
 function Chair:SetGameTurn(b)
 	self.ui.gameTurn.transform.gameObject:SetActive(b)
+	self.ui.statusTip.task.gameObject:SetActive(b)
 end
 
 function Chair:SetGameTurnText(tips)
-	self.ui.gameTurn.text.text = tips
+	self.ui.statusTip.taskContent.text = tips
 end
 
 function Chair:IsOwner()
@@ -158,9 +167,10 @@ function Chair:IsReady()
 end
 
 function Chair:OnBtnCharacter()
-	if self.zhiDaCallBack ~= nil then
-		self.zhiDaCallBack()
-		return
+	if self.chooseCallback.ZhiDa ~= nil then
+		self.chooseCallback.ZhiDa()
+	elseif self.chooseCallback.SuoDing ~= nil then
+		self.chooseCallback.SuoDing()
 	end
 	
 end
@@ -189,12 +199,12 @@ function Chair:OnReceiveGameStart()
 end
 
 function Chair:OnZhiDaChoose()
-	self.zhiDaCallBack = function()
+	self.chooseCallback.ZhiDa = function()
 		local userName = nil
 		if self:GetUserData() ~= nil then
 			userName = self:GetUserData().name
 		else
-			userName = "xxx"
+			userName = ""
 		end
 		if userName == Global.Data.User.UserName then
 			Global.Methods.ShowTips2("情报不能以自己为目标")
@@ -207,23 +217,50 @@ function Chair:OnZhiDaChoose()
 end
 
 function Chair:OnZhiDaChooseComplete()
-	self.zhiDaCallBack = nil
+	self.chooseCallback.ZhiDa = nil
+end
+
+function Chair:OnSuoDingChoose()
+	self.chooseCallback.SuoDing = function()
+		local userName = nil
+		if self:GetUserData() ~= nil then
+			userName = self:GetUserData().name
+		else
+			userName = ""
+		end
+		if userName == Global.Data.User.UserName then
+			Global.Methods.ShowTips2("锁定不能以自己为目标")
+		else
+			Global.Methods.ShowTips("锁定玩家"..userName, function()
+					EventManager:TriggerEvent(Global.Event.Card.SuoDingChooseComplete, userName)
+				end)
+		end
+	end
+end
+
+function Chair:OnSuoDingChooseComplete()
+	self.chooseCallback.SuoDing = nil
 end
 
 function Chair:AddListener()
 	self.ui.head:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.ZhiDaChoose, function() self:OnZhiDaChoose() end, "Lua.game.chair.OnZhiDaChoose")
 	EventManager:AddListener(Global.Event.InformationStage.ZhiDaChooseComplete, function() self:OnZhiDaChooseComplete() end, "Lua.game.chair.OnZhiDaChooseComplete")
+	EventManager:AddListener(Global.Event.Card.SuoDingChoose, function() self:OnSuoDingChoose() end, "Lua.game.chair.OnSuoDingChoose")
+	EventManager:AddListener(Global.Event.Card.SuoDingChooseComplete, function() self:OnSuoDingChooseComplete() end, "Lua.game.chair.OnSuoDingChooseComplete")
 end
 
 function Chair:RemoveListener()
 	self.ui.head:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.ZhiDaChoose, "Lua.game.chair.OnZhiDaChoose")
 	EventManager:RemoveListener(Global.Event.InformationStage.ZhiDaChooseComplete, "Lua.game.chair.OnZhiDaChooseComplete")
+	EventManager:RemoveListener(Global.Event.Card.SuoDingChoose, "Lua.game.chair.OnSuoDingChoose")
+	EventManager:RemoveListener(Global.Event.Card.SuoDingChooseComplete, "Lua.game.chair.OnSuoDingChooseComplete")
 end
 
 function Chair:Dispose()
 	if self.ui.head ~= nil then
 		self.ui.head:Dispose()
 	end
+	self.chooseCallback = nil
 end

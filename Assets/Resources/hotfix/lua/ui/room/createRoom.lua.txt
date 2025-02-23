@@ -36,8 +36,7 @@ end
 local OnBtnCreate = function()
 	Global.Methods.PlayBtnAnimation(ui.createRoomBtn)
 	if CheckInputRoomName(roomData.roomName) == true then
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Room, Global.Protos.Class.CreateRoom_C2S, roomData)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.CreateRoom_C2S, dataBytes)
+		Global.Protos.Room.SendCreateRoom(roomData)
 	end
 end
 

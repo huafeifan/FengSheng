@@ -118,29 +118,20 @@ end
 function HandCardBtn:OnGetCardBtn()
 	Global.Methods.PlayBtnAnimation(self.ui[HandCardBtn.GetCardBtn].btn)
 	self.ui[HandCardBtn.GetCardBtn].activeFlag.activeSelf = false
-	
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	data.count = 2
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.DealCards_C2S, dataBytes)
+	Global.Protos.Game.SendDealCards(2)
 end
 
 function HandCardBtn:OnInformationDeclarationBtn()
 	Global.Methods.PlayBtnAnimation(self.ui[HandCardBtn.InformationDeclarationBtn].btn)
 	self.ui[HandCardBtn.InformationDeclarationBtn].activeFlag.activeSelf = false
 	self.ui[HandCardBtn.PlayHandBtn].activeFlag.activeSelf = false
-
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.InformationDeclaration_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationDeclaration_C2S, dataBytes)
+	Global.Protos.Game.SendInformationDeclaration()
 end
 
 function HandCardBtn:OnInformationTransmitBtn()
 	Global.Methods.PlayBtnAnimation(self.ui[HandCardBtn.InformationTransmitBtn].btn)
 	
-	self.informationTransmitData = {}
+	self.cache.sendInformationTransmitData = {}
 	local count, card, index = self:GetChooseCardInfo()
 	
 	if count ~= 1 then
@@ -149,9 +140,9 @@ function HandCardBtn:OnInformationTransmitBtn()
 	end
 	
 	self.ui[HandCardBtn.InformationTransmitBtn].activeFlag.activeSelf = false
-	self.informationTransmitData.fromUserName = Global.Data.User.UserName
-	self.informationTransmitData.card = card
-	self.informationTransmitData.handCardIndex = index
+	self.cache.sendInformationTransmitData.fromUserName = Global.Data.User.UserName
+	self.cache.sendInformationTransmitData.card = card
+	self.cache.sendInformationTransmitData.handCardIndex = index
 	if card.transmit == GameCard.TransmitType.ZhiDa then
 		self:OnZhiDaTransmitBtn()
 	elseif card.transmit == GameCard.TransmitType.MiDian then
@@ -170,24 +161,14 @@ function HandCardBtn:OnReceiveInformationBtn()
 	Global.Methods.PlayBtnAnimation(self.ui[HandCardBtn.ReceiveInformationBtn].btn)
 	self.ui[HandCardBtn.ReceiveInformationBtn].activeFlag.activeSelf = false
 	self.ui[HandCardBtn.RefuseInformationBtn].activeFlag.activeSelf = false
-	
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	data.isReceive = true
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.WaitInformationReceive_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.WaitInformationReceive_C2S, dataBytes)
+	Global.Protos.Game.SendWaitInformationReceive(true)
 end
 
 function HandCardBtn:OnRefuseInformationBtn()
 	Global.Methods.PlayBtnAnimation(self.ui[HandCardBtn.RefuseInformationBtn].btn)
 	self.ui[HandCardBtn.ReceiveInformationBtn].activeFlag.activeSelf = false
 	self.ui[HandCardBtn.RefuseInformationBtn].activeFlag.activeSelf = false
-	
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	data.isReceive = false
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.WaitInformationReceive_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.WaitInformationReceive_C2S, dataBytes)
+	Global.Protos.Game.SendWaitInformationReceive(false)
 end
 
 function HandCardBtn:OnMiDianTransmitBtn()
@@ -196,12 +177,12 @@ function HandCardBtn:OnMiDianTransmitBtn()
 	self.ui[HandCardBtn.ZhiDaTransmitBtn].activeFlag.activeSelf = false
 	self.ui[HandCardBtn.WenBenTransmitBtn].activeFlag.activeSelf = false
 	
-	if self.informationTransmitData == nil then return end
-	self.informationTransmitData.transmit = GameCard.TransmitType.MiDian
-	self.informationTransmitData.direction = GameCard.DirectionType.Ni
-	self.informationTransmitData.toUserName = nil
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.InformationTransmitReady_C2S, self.informationTransmitData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationTransmitReady_C2S, dataBytes)
+	if self.cache.sendInformationTransmitData == nil then return end
+	self.cache.sendInformationTransmitData.transmit = GameCard.TransmitType.MiDian
+	self.cache.sendInformationTransmitData.direction = GameCard.DirectionType.Ni
+	self.cache.sendInformationTransmitData.toUserName = nil
+	Global.Protos.Game.SendInformationTransmitReady(self.cache.sendInformationTransmitData)
+	self.cache.sendInformationTransmitData = nil
 end
 
 function HandCardBtn:OnZhiDaTransmitBtn()
@@ -210,10 +191,10 @@ function HandCardBtn:OnZhiDaTransmitBtn()
 	self.ui[HandCardBtn.ZhiDaTransmitBtn].activeFlag.activeSelf = false
 	self.ui[HandCardBtn.WenBenTransmitBtn].activeFlag.activeSelf = false
 	
-	if self.informationTransmitData == nil then return end
-	self.informationTransmitData.transmit = GameCard.TransmitType.ZhiDa
-	self.informationTransmitData.direction = GameCard.DirectionType.None
-	Global.Methods.ShowTips2("请选择你要传递的玩家")
+	if self.cache.sendInformationTransmitData == nil then return end
+	self.cache.sendInformationTransmitData.transmit = GameCard.TransmitType.ZhiDa
+	self.cache.sendInformationTransmitData.direction = GameCard.DirectionType.None
+	Global.Methods.ShowTips("请选择你要传递的玩家")
 	EventManager:TriggerEvent(Global.Event.InformationStage.ZhiDaChoose, nil)
 end
 
@@ -223,12 +204,12 @@ function HandCardBtn:OnWenBenTransmitBtn()
 	self.ui[HandCardBtn.ZhiDaTransmitBtn].activeFlag.activeSelf = false
 	self.ui[HandCardBtn.WenBenTransmitBtn].activeFlag.activeSelf = false
 	
-	if self.informationTransmitData == nil then return end
-	self.informationTransmitData.transmit = GameCard.TransmitType.WenBen
-	self.informationTransmitData.direction = GameCard.DirectionType.Ni
-	self.informationTransmitData.toUserName = nil
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.InformationTransmitReady_C2S, self.informationTransmitData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationTransmitReady_C2S, dataBytes)
+	if self.cache.sendInformationTransmitData == nil then return end
+	self.cache.sendInformationTransmitData.transmit = GameCard.TransmitType.WenBen
+	self.cache.sendInformationTransmitData.direction = GameCard.DirectionType.Ni
+	self.cache.sendInformationTransmitData.toUserName = nil
+	Global.Protos.Game.SendInformationTransmitReady(self.cache.sendInformationTransmitData)
+	self.cache.sendInformationTransmitData = nil
 end
 
 function HandCardBtn:OnWaitPlayHandBtn()
@@ -236,11 +217,7 @@ function HandCardBtn:OnWaitPlayHandBtn()
 	self.ui[HandCardBtn.WaitPlayHandBtn].activeFlag.activeSelf = false
 	
 	EventManager:TriggerEvent(Global.Event.InformationStage.StopWaitResponseTimer, nil)
-	local sendData = {}
-	sendData.userName = Global.Data.User.UserName
-	sendData.isSkip = false
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCardResponse_C2S, sendData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.PlayHandCardResponse_C2S, dataBytes)
+	Global.Protos.Game.SendPlayHandCardResponse(false)
 end
 
 function HandCardBtn:OnPlayHandBtn()
@@ -265,8 +242,14 @@ function HandCardBtn:OnPlayHandBtn()
 	data.isPlayHandCard = true
 	data.card = card
 	data.handCardIndex = index
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCard_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.PlayHandCard_C2S, dataBytes)
+	data.targetUserName = nil
+	
+	if self.cardScripts[card.xiaoguo].ChooseTarget() == true then
+		self.cache.sendPlayHandCardData = data
+		return
+	end
+	
+	Global.Protos.Game.SendPlayHandCard(data)
 end
 
 function HandCardBtn:OnSkipBtn()
@@ -279,8 +262,9 @@ function HandCardBtn:OnSkipBtn()
 	data.isPlayHandCard = false
 	data.card = nil
 	data.handCardIndex = nil
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCard_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.PlayHandCard_C2S, dataBytes)
+	data.targetUserName = nil
+	
+	Global.Protos.Game.SendPlayHandCard(data)
 end
 
 function HandCardBtn:OnShiPoBtn()
@@ -291,14 +275,7 @@ function HandCardBtn:OnShiPoBtn()
 		Global.Methods.ShowTips2("请选择1张识破打出")
 	else
 		self.ui[HandCardBtn.ShiPoBtn].activeFlag.activeSelf = false
-		
-		local data = {}
-		data.userName = Global.Data.User.UserName
-		data.isUse = true
-		data.card = card
-		data.handCardIndex = index
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.AskUseShiPo_C2S, data)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.AskUseShiPo_C2S, dataBytes)
+		Global.Protos.Game.SendAskUseShiPo(true, card, index)
 	end
 	return
 end
@@ -306,22 +283,14 @@ end
 function HandCardBtn:OnOperateEndBtn()
 	Global.Methods.PlayBtnAnimation(self.ui[HandCardBtn.OperateEndBtn].btn)
 	self.ui[HandCardBtn.OperateEndBtn].activeFlag.activeSelf = false
-	
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnOpertateEnd_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnOpertateEnd_C2S, dataBytes)
+	Global.Protos.Game.SendGameTurnOpertateEnd()
 end
 
 function HandCardBtn:OnDisCardBtn()
 	Global.Methods.PlayBtnAnimation(self.ui[HandCardBtn.DisCardBtn].btn)
 	if #self.handCard.handCards <= 6 then
 		Global.Methods.ShowTips2("不需要弃牌")
-
-		local data = {}
-		data.userName = Global.Data.User.UserName
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnDisCard_C2S, data)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnDisCard_C2S, dataBytes)
+		Global.Protos.Game.SendGameTurnDisCard(nil, nil)
 		return
 	end
 
@@ -337,33 +306,25 @@ function HandCardBtn:OnDisCardBtn()
 	if count ~= 6 then
 		Global.Methods.ShowTips2("需要弃至剩余6张牌,请选择"..tostring(#self.handCard.handCards - 6).."张丢弃")
 	else
-		local data = {}
-		data.userName = Global.Data.User.UserName
-		data.cards = {}
-		data.indexs = {}
+		local cards, indexs = {}, {}
 		if self.handCard.chooseCards ~= nil then
 			for key, value in pairs(self.handCard.chooseCards) do
 				if value ~= nil then
-					table.insert(data.cards, value)
-					table.insert(data.indexs, key)
+					table.insert(cards, value)
+					table.insert(indexs, key)
 				end
 			end
 		end
 		self.ui[HandCardBtn.DisCardBtn].activeFlag.activeSelf = false
 		
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnDisCard_C2S, data)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnDisCard_C2S, dataBytes)
+		Global.Protos.Game.SendGameTurnDisCard(cards, indexs)
 	end
 end
 
 function HandCardBtn:OnEndTurnBtn()
 	Global.Methods.PlayBtnAnimation(self.ui[HandCardBtn.EndTurnBtn].btn)
 	self.ui[HandCardBtn.EndTurnBtn].activeFlag.activeSelf = false
-	
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnEnd_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnEnd_C2S, dataBytes)
+	Global.Protos.Game.SendGameTurnEnd()
 end
 
 function HandCardBtn:AddUIEvent()
@@ -421,10 +382,7 @@ function HandCardBtn:OnWaitGameTurnDisCard()
 		if #self.handCard.handCards > 6 then
 			self.ui[HandCardBtn.DisCardBtn].activeFlag.activeSelf = true
 		else
-			local data = {}
-			data.userName = Global.Data.User.UserName
-			local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.GameTurnDisCard_C2S, data)
-			NetManager:Send(Global.Login.Network, Global.Protos.Cmd.GameTurnDisCard_C2S, dataBytes)
+			Global.Protos.Game.SendGameTurnDisCard(nil, nil)
 		end
 	end
 
@@ -454,19 +412,15 @@ function HandCardBtn:OnWaitInformationTransmit()
 		self.ui[HandCardBtn.InformationTransmitBtn].activeFlag.activeSelf = true
 		
 		if #self.handCard.handCards <= 0 then
-			local data = {}
-			data.userName = Global.Data.User.UserName
-			data.count = 1
-			local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.DealCards_C2S, data)
-			NetManager:Send(Global.Login.Network, Global.Protos.Cmd.DealCards_C2S, dataBytes)
+			Global.Protos.Game.SendDealCards(1)
 		end
 	end
 end
 
 function HandCardBtn:OnZhiDaChooseComplete(userName)
-	self.informationTransmitData.toUserName = userName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.InformationTransmitReady_C2S, self.informationTransmitData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.InformationTransmitReady_C2S, dataBytes)
+	self.cache.sendInformationTransmitData.toUserName = userName
+	Global.Protos.Game.SendInformationTransmitReady(self.cache.sendInformationTransmitData)
+	self.cache.sendInformationTransmitData = nil
 end
 
 function HandCardBtn:OnWaitInformationReceive(data)
@@ -560,25 +514,35 @@ function HandCardBtn:OnShaoHuiAnimationEnd(data)
 end
 
 function HandCardBtn:OnZengYuanAnimationEnd()
-	self:OnCardAnimationEnd(self.cache.zengYuan)
-	self.cache.zengYuan = nil
+	if self.cache.receivedZengYuanData ~= nil then
+		self:OnCardAnimationEnd(self.cache.receivedZengYuanData)
+		self.cache.receivedZengYuanData = nil
+	end
 end
 
 function HandCardBtn:OnUseZengYuan(data)
-	self.cache.zengYuan = data
+	self.cache.receivedZengYuanData = data
 end
 
 function HandCardBtn:OnUseJiMiWenJian(data)
-	self.cache.jiMiWenJian = data
+	self.cache.receivedJiMiWenJianData = data
 end
 
 function HandCardBtn:OnJiMiWenJianAnimationEnd()
-	self:OnCardAnimationEnd(self.cache.jiMiWenJian)
-	self.cache.jiMiWenJian = nil
+	if self.cache.receivedJiMiWenJianData ~= nil then
+		self:OnCardAnimationEnd(self.cache.receivedJiMiWenJianData)
+		self.cache.receivedJiMiWenJianData = nil
+	end
 end
 
 function HandCardBtn:OnSuoDingAnimationEnd(data)
 	self:OnCardAnimationEnd(data)
+end
+
+function HandCardBtn:OnSuoDingChooseComplete(userName)
+	self.cache.sendPlayHandCardData.targetUserName = userName
+	Global.Protos.Game.SendPlayHandCard(self.cache.sendPlayHandCardData)
+	self.cache.sendPlayHandCardData = nil
 end
 
 function HandCardBtn:AddListener()
@@ -606,6 +570,7 @@ function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.Card.UseJiMiWenJian, function(data) self:OnUseJiMiWenJian(data) end, "Lua.game.handCard.handCardBtn.OnUseJiMiWenJian")
 	EventManager:AddListener(Global.Event.Card.OnJiMiWenJianAnimationEnd, function() self:OnJiMiWenJianAnimationEnd() end, "Lua.game.handCard.handCardBtn.OnJiMiWenJianAnimationEnd")
 	EventManager:AddListener(Global.Event.Card.OnSuoDingAnimationEnd, function(data) self:OnSuoDingAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnSuoDingAnimationEnd")
+	EventManager:AddListener(Global.Event.Card.SuoDingChooseComplete, function(data) self:OnSuoDingChooseComplete(data) end, "Lua.game.handCard.handCardBtn.OnSuoDingChooseComplete")
 end
 
 function HandCardBtn:RemoveListener()
@@ -633,6 +598,7 @@ function HandCardBtn:RemoveListener()
 	EventManager:RemoveListener(Global.Event.Card.UseJiMiWenJian, "Lua.game.handCard.handCardBtn.OnUseJiMiWenJian")
 	EventManager:RemoveListener(Global.Event.Card.OnJiMiWenJianAnimationEnd, "Lua.game.handCard.handCardBtn.OnJiMiWenJianAnimationEnd")
 	EventManager:RemoveListener(Global.Event.Card.OnSuoDingAnimationEnd, "Lua.game.handCard.handCardBtn.OnSuoDingAnimationEnd")
+	EventManager:RemoveListener(Global.Event.Card.SuoDingChooseComplete, "Lua.game.handCard.handCardBtn.OnSuoDingChooseComplete")
 end
 
 function HandCardBtn:Dispose()

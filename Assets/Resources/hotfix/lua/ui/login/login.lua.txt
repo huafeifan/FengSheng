@@ -81,10 +81,7 @@ end
 local OnBtnLogin = function()
 	Global.Methods.PlayBtnAnimation(ui.loginBtn)
 	if CheckInputName(inputName) == true then
-		local data = {}
-		data.name = inputName
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Login, Global.Protos.Class.Login_C2S, data)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.Login_C2S, dataBytes)
+		Global.Protos.Login.SendLogin(inputName)
 	end
 end
 

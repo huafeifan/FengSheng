@@ -1,23 +1,26 @@
 JiMiWenJian = {}
 JiMiWenJian.__index = JiMiWenJian
 
-Global.UseJiMiWenJianFlag = false
+Global.JiMiWenJianDealCardsFlag = false
 
 function JiMiWenJian.CheckUseCondition()
-	Debug.Log("JiMiWenJian")
+	if Global.Data.RoomInfo.CurrentGameTurnUserName ~= Global.Data.User.UserName then
+		Global.Methods.ShowTips2("只能在自己回合中使用")
+		return false
+	end
 	return true
 end
 
 function JiMiWenJian.OnTriggerCardAnimationEnd(data, script)
-	Global.UseJiMiWenJianFlag = false
-	local sendData = {}
-	sendData.userName = Global.Data.User.UserName
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseJiMiWenJian_C2S, sendData)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseJiMiWenJian_C2S, dataBytes)
+	Global.Protos.Game.SendUseJiMiWenJian()
+end
+
+function JieHuo.ChooseTarget()
+	return false
 end
 
 function JiMiWenJian.Dispose()
-	Global.UseJiMiWenJianFlag = false
+	Global.JiMiWenJianDealCardsFlag = false
 end
 
 return JiMiWenJian

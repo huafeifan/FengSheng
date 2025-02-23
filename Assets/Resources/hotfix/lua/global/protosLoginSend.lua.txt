@@ -1,0 +1,8 @@
+Global.Protos.Login = {}
+
+Global.Protos.Login.SendLogin = function(name)
+	local data = {}
+	data.name = name
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Login, Global.Protos.Class.Login_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.Login_C2S, dataBytes)
+end

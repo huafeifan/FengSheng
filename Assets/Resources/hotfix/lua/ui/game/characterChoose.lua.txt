@@ -58,11 +58,7 @@ function CharacterChoose:OnBtnAffirm()
 		return 
 	end
 	
-	local data = {}
-	data.userName = Global.Data.User.UserName
-	data.character = self.affirmCharacter
-	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.CharacterChoose_C2S, data)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.CharacterChoose_C2S, dataBytes)
+	Global.Protos.Game.SendCharacterChoose(self.affirmCharacter)
 	
 	self.ui.character.Content.gameObject:SetActive(false)
 	self.ui.affirmBtn.gameObject:SetActive(false)

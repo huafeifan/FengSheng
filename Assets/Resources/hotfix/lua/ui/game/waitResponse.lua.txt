@@ -42,11 +42,7 @@ function WaitResponse:NormalTime()
 		self.ui.slider.fillAmount = 0
 		self:Stop()
 		EventManager:TriggerEvent(Global.Event.InformationStage.OnWaitResponseTimer, nil)
-		local sendData = {}
-		sendData.userName = Global.Data.User.UserName
-		sendData.isSkip = true
-		local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.PlayHandCardResponse_C2S, sendData)
-		NetManager:Send(Global.Login.Network, Global.Protos.Cmd.PlayHandCardResponse_C2S, dataBytes)
+		Global.Protos.Game.SendPlayHandCardResponse(true)
 	end
 end
 
@@ -75,13 +71,7 @@ function WaitResponse:OnReceiveAskUseShiPo(data)
 
 			EventManager:TriggerEvent(Global.Event.Card.AskUseShiPoEnd, nil)
 			
-			local sendData = {}
-			sendData.userName = Global.Data.User.UserName
-			sendData.isUse = false
-			sendData.card = nil
-			sendData.handCardIndex = nil
-			local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.AskUseShiPo_C2S, sendData)
-			NetManager:Send(Global.Login.Network, Global.Protos.Cmd.AskUseShiPo_C2S, dataBytes)
+			Global.Protos.Game.SendAskUseShiPo(false, nil, nil)
 			
 			self.WaitTimeFunc = self.NormalTime
 		end

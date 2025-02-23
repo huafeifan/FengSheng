@@ -20,7 +20,7 @@ end
 
 local OnBtnFlash = function()
 	Global.Methods.PlayBtnAnimation(ui.flashBtn)
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.RoomList_C2S, nil)
+	Global.Protos.Room.SendRoomList()
 end
 
 local GetRoomInfoItemScript = function(index)
@@ -82,7 +82,7 @@ local RemoveListener = function()
 end
 
 local RequestRoomList = function()
-	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.RoomList_C2S, nil)
+	Global.Protos.Room.SendRoomList()
 end
 
 
