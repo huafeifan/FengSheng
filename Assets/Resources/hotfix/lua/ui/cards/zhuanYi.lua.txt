@@ -1,0 +1,28 @@
+ZhuanYi = {}
+ZhuanYi.__index = ZhuanYi
+
+function ZhuanYi.CheckUseCondition()
+	Debug.Log("ZhuanYi")
+	return true
+end
+
+function ZhuanYi.OnTriggerCardAnimationEnd(data, script)
+	Global.Protos.Game.SendUseZhuanYi()
+end
+
+function ZhuanYi.ChooseTarget()
+	Global.Methods.ShowTips("请选择你要转移的玩家")
+	EventManager:TriggerEvent(Global.Event.Card.ZhuanYiChoose, nil)
+	return true
+end
+
+--在触发效果后,是否立刻结束回合
+function ZhuanYi.IsEndTurnImmediatelyAfterTrigger()
+	return true
+end
+
+function ZhuanYi.Dispose()
+
+end
+
+return ZhuanYi

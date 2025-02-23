@@ -661,6 +661,7 @@
     <None Include="Assets\XLua\Gen\link.xml" />
     <None Include="Assets\Resources\hotfix\lua\ui\tips\normalTip.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\protoConfig.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\cards\zhuanYi.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\protoMethods.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\characterChoose.lua.txt" />
     <None Include="Assets\Resources\hotfix\protos\loginServer.game.bytes.txt" />
@@ -684,6 +685,7 @@
     <None Include="Assets\Resources\hotfix\lua\ui\cards\suoDing.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\main.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\chair.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\cards\diaoHuLiShan.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\playHandCard.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\cards\shaoHui.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\login\userHead.lua.txt" />
@@ -693,6 +695,7 @@
     <None Include="Assets\Resources\hotfix\lua\ui\game\gameBtn.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\ui\game\detailCard.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\tools\dump.lua.txt" />
+    <None Include="Assets\Resources\hotfix\lua\ui\cards\jieHuo.lua.txt" />
     <None Include="Assets\XLua\Resources\tdr\tdr.lua.txt" />
     <None Include="Assets\Resources\hotfix\lua\global\globalConfig.lua.txt" />
     <None Include="Assets\XLua\CHANGELOG.txt" />

@@ -225,4 +225,10 @@ Global.Protos.Class.UseDiaoHuLiShan_C2S = "loginServer.game.UseDiaoHuLiShan_C2S"
 
 Global.Protos.Cmd.UseDiaoHuLiShan_S2C = 0x0222
 Global.Protos.Class.UseDiaoHuLiShan_S2C = "loginServer.game.UseDiaoHuLiShan_S2C"
+
+Global.Protos.Cmd.UseZhuanYi_C2S = 0x0223
+Global.Protos.Class.UseZhuanYi_C2S = "loginServer.game.UseZhuanYi_C2S"
+
+Global.Protos.Cmd.UseZhuanYi_S2C = 0x0223
+Global.Protos.Class.UseZhuanYi_S2C = "loginServer.game.UseZhuanYi_S2C"
 --game end

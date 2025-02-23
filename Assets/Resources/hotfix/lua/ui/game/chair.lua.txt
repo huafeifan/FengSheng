@@ -179,6 +179,8 @@ function Chair:OnBtnCharacter()
 		self.chooseCallback.ZhiDa()
 	elseif self.chooseCallback.SuoDing ~= nil then
 		self.chooseCallback.SuoDing()
+	elseif self.chooseCallback.ZhuanYi ~= nil then
+		self.chooseCallback.ZhuanYi()
 	end
 	
 end
@@ -218,14 +220,11 @@ function Chair:OnZhiDaChoose()
 			Global.Methods.ShowTips2("情报不能以自己为目标")
 		else
 			Global.Methods.ShowTips("情报将传递给"..userName, function()
-				EventManager:TriggerEvent(Global.Event.InformationStage.ZhiDaChooseComplete, userName)
-			end)
+					EventManager:TriggerEvent(Global.Event.InformationStage.ZhiDaChooseComplete, userName)
+					self.chooseCallback.ZhiDa = nil
+				end)
 		end
 	end
-end
-
-function Chair:OnZhiDaChooseComplete()
-	self.chooseCallback.ZhiDa = nil
 end
 
 function Chair:OnSuoDingChoose()
@@ -241,29 +240,43 @@ function Chair:OnSuoDingChoose()
 		else
 			Global.Methods.ShowTips("锁定玩家"..userName, function()
 					EventManager:TriggerEvent(Global.Event.Card.SuoDingChooseComplete, userName)
+					self.chooseCallback.SuoDing = nil
 				end)
 		end
 	end
 end
 
-function Chair:OnSuoDingChooseComplete()
-	self.chooseCallback.SuoDing = nil
+function Chair:OnZhuanYiChoose()
+	self.chooseCallback.ZhuanYi = function()
+		local userName = nil
+		if self:GetUserData() ~= nil then
+			userName = self:GetUserData().name
+		else
+			userName = ""
+		end
+		if userName == Global.Data.User.UserName then
+			Global.Methods.ShowTips2("转移不能以自己为目标")
+		else
+			Global.Methods.ShowTips("转移玩家"..userName, function()
+					EventManager:TriggerEvent(Global.Event.Card.ZhuanYiChooseComplete, userName)
+					self.chooseCallback.ZhuanYi = nil
+				end)
+		end
+	end
 end
 
 function Chair:AddListener()
 	self.ui.head:AddListener()
 	EventManager:AddListener(Global.Event.InformationStage.ZhiDaChoose, function() self:OnZhiDaChoose() end, "Lua.game.chair.OnZhiDaChoose")
-	EventManager:AddListener(Global.Event.InformationStage.ZhiDaChooseComplete, function() self:OnZhiDaChooseComplete() end, "Lua.game.chair.OnZhiDaChooseComplete")
 	EventManager:AddListener(Global.Event.Card.SuoDingChoose, function() self:OnSuoDingChoose() end, "Lua.game.chair.OnSuoDingChoose")
-	EventManager:AddListener(Global.Event.Card.SuoDingChooseComplete, function() self:OnSuoDingChooseComplete() end, "Lua.game.chair.OnSuoDingChooseComplete")
+	EventManager:AddListener(Global.Event.Card.ZhuanYiChoose, function() self:OnZhuanYiChoose() end, "Lua.game.chair.OnZhuanYiChoose")
 end
 
 function Chair:RemoveListener()
 	self.ui.head:RemoveListener()
 	EventManager:RemoveListener(Global.Event.InformationStage.ZhiDaChoose, "Lua.game.chair.OnZhiDaChoose")
-	EventManager:RemoveListener(Global.Event.InformationStage.ZhiDaChooseComplete, "Lua.game.chair.OnZhiDaChooseComplete")
 	EventManager:RemoveListener(Global.Event.Card.SuoDingChoose, "Lua.game.chair.OnSuoDingChoose")
-	EventManager:RemoveListener(Global.Event.Card.SuoDingChooseComplete, "Lua.game.chair.OnSuoDingChooseComplete")
+	EventManager:RemoveListener(Global.Event.Card.ZhuanYiChoose, "Lua.game.chair.OnZhuanYiChoose")
 end
 
 function Chair:Dispose()
