@@ -139,3 +139,10 @@ Global.Protos.Game.SendUseJieHuo = function()
 	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseJieHuo_C2S, data)
 	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseJieHuo_C2S, dataBytes)
 end
+
+Global.Protos.Game.SendUseDiaoHuLiShan = function()
+	local data = {}
+	data.userName = Global.Data.User.UserName
+	local dataBytes = Global.Protos.Methods.Lua2Bytes(Global.Protos.FileName.Game, Global.Protos.Class.UseDiaoHuLiShan_C2S, data)
+	NetManager:Send(Global.Login.Network, Global.Protos.Cmd.UseDiaoHuLiShan_C2S, dataBytes)
+end

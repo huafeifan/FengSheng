@@ -177,7 +177,7 @@ function ChairList:OnDealCardsStart(data)
 				for k = 1, #dealCards.cards do
 					self.dealCard:AddDealCard(self.chairs[j]:GetCharacterPos(), nil, nil)
 				end
-				self.chairs[j]:SetHandCardCount()
+				--self.chairs[j]:SetHandCardCount()
 			end
 		end
 	end

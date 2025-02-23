@@ -19,6 +19,11 @@ function ZengYuan.ChooseTarget()
 	return false
 end
 
+--在触发效果后,是否立刻结束回合
+function ZengYuan.IsEndTurnImmediatelyAfterTrigger()
+	return false
+end
+
 function ZengYuan.Dispose()
 	Global.ZengYuanDealCardsFlag = false
 end

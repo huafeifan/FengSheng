@@ -17,6 +17,11 @@ function JieHuo.ChooseTarget()
 	return false
 end
 
+--在触发效果后,是否立刻结束回合
+function JieHuo.IsEndTurnImmediatelyAfterTrigger()
+	return true
+end
+
 function JieHuo.Dispose()
 
 end

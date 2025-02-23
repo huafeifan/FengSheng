@@ -14,6 +14,11 @@ function PoYi.ChooseTarget()
 	return false
 end
 
+--在触发效果后,是否立刻结束回合
+function PoYi.IsEndTurnImmediatelyAfterTrigger()
+	return false
+end
+
 function PoYi.Dispose()
 
 end

@@ -15,7 +15,12 @@ function JiMiWenJian.OnTriggerCardAnimationEnd(data, script)
 	Global.Protos.Game.SendUseJiMiWenJian()
 end
 
-function JieHuo.ChooseTarget()
+function JiMiWenJian.ChooseTarget()
+	return false
+end
+
+--在触发效果后,是否立刻结束回合
+function JiMiWenJian.IsEndTurnImmediatelyAfterTrigger()
 	return false
 end
 

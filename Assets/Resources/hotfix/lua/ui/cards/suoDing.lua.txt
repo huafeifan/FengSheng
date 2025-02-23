@@ -19,6 +19,11 @@ function SuoDing.ChooseTarget()
 	return true
 end
 
+--在触发效果后,是否立刻结束回合
+function SuoDing.IsEndTurnImmediatelyAfterTrigger()
+	return false
+end
+
 function SuoDing.Dispose()
 
 end

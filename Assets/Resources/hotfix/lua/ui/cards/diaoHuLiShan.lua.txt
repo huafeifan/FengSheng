@@ -1,0 +1,27 @@
+DiaoHuLiShan = {}
+DiaoHuLiShan.__index = DiaoHuLiShan
+
+function DiaoHuLiShan.CheckUseCondition()
+	Debug.Log("DiaoHuLiShan")
+	return true
+end
+
+function DiaoHuLiShan.OnTriggerCardAnimationEnd(data, script)
+	Global.Protos.Game.SendUseDiaoHuLiShan()
+end
+
+function DiaoHuLiShan.ChooseTarget()
+	return false
+end
+
+--在触发效果后,是否立刻结束回合
+function DiaoHuLiShan.IsEndTurnImmediatelyAfterTrigger()
+	return true
+end
+
+function DiaoHuLiShan.Dispose()
+
+end
+
+
+return DiaoHuLiShan

@@ -496,6 +496,8 @@ function HandCardBtn:OnCardAnimationEnd(data)
 	self.ui[HandCardBtn.PlayHandBtn].activeFlag.noPlayingCard = true
 	self.ui[HandCardBtn.InformationDeclarationBtn].activeFlag.noPlayingCard = true
 	self.ui[HandCardBtn.SkipBtn].activeFlag.noPlayingCard = true
+	self.ui[HandCardBtn.PlayHandBtn].activeFlag.activeSelf = not self.cardScripts[data.card.xiaoguo].IsEndTurnImmediatelyAfterTrigger()
+	self.ui[HandCardBtn.SkipBtn].activeFlag.activeSelf = not self.cardScripts[data.card.xiaoguo].IsEndTurnImmediatelyAfterTrigger()
 end
 
 function HandCardBtn:OnDiaoBaoAnimationEnd(data)
@@ -560,6 +562,12 @@ function HandCardBtn:OnJieHuoAnimationEnd(data)
 	end
 end
 
+function HandCardBtn:OnDiaoHuLiShanAnimationEnd(data)
+	if data.userName == Global.Data.User.UserName then
+		self:OnCardAnimationEnd(data)
+	end
+end
+
 function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.GameStage.WaitGameTurnDealCards, function() self:OnWaitGameTurnDealCards() end, "Lua.game.handCard.handCardBtn.OnWaitGameTurnDealCards")
 	EventManager:AddListener(Global.Event.GameStage.DealCardsStart, function(data) self:OnDealCardsStart(data) end, "Lua.game.handCard.handCardBtn.OnDealCardsStart")
@@ -587,6 +595,7 @@ function HandCardBtn:AddListener()
 	EventManager:AddListener(Global.Event.Card.OnSuoDingAnimationEnd, function(data) self:OnSuoDingAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnSuoDingAnimationEnd")
 	EventManager:AddListener(Global.Event.Card.SuoDingChooseComplete, function(data) self:OnSuoDingChooseComplete(data) end, "Lua.game.handCard.handCardBtn.OnSuoDingChooseComplete")
 	EventManager:AddListener(Global.Event.Card.OnJieHuoAnimationEnd, function(data) self:OnJieHuoAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnJieHuoAnimationEnd")
+	EventManager:AddListener(Global.Event.Card.OnDiaoHuLiShanAnimationEnd, function(data) self:OnDiaoHuLiShanAnimationEnd(data) end, "Lua.game.handCard.handCardBtn.OnDiaoHuLiShanAnimationEnd")
 end
 
 function HandCardBtn:RemoveListener()
@@ -616,6 +625,7 @@ function HandCardBtn:RemoveListener()
 	EventManager:RemoveListener(Global.Event.Card.OnSuoDingAnimationEnd, "Lua.game.handCard.handCardBtn.OnSuoDingAnimationEnd")
 	EventManager:RemoveListener(Global.Event.Card.SuoDingChooseComplete, "Lua.game.handCard.handCardBtn.OnSuoDingChooseComplete")
 	EventManager:RemoveListener(Global.Event.Card.OnJieHuoAnimationEnd, "Lua.game.handCard.handCardBtn.OnJieHuoAnimationEnd")
+	EventManager:RemoveListener(Global.Event.Card.OnDiaoHuLiShanAnimationEnd, "Lua.game.handCard.handCardBtn.OnDiaoHuLiShanAnimationEnd")
 end
 
 function HandCardBtn:Dispose()
